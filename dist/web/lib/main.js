@@ -1,0 +1,3 @@
+(() => {
+    MusicAddict2.main()
+})()
