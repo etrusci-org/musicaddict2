@@ -1,3 +1,5 @@
 *.code-workspace
 
 0000/
+
+dist/data/*

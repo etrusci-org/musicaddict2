@@ -31,11 +31,13 @@ const MusicAddict2 = {
         backgroundUpdateInterval: 500, // do stuff every N, millisec
         clickSpeed: 1_000, // how fast we can click, millisec
         exitDelay: 3_000, // timeout after we clicked exit before the page gets reloaded, millisec
+        autoSaveInterval: 30_000, // interval for auto saving, millisec
     },
 
     // Temporary stuff the app needs to work.
     ram: {
         backgroundUpdateIntervalID: null,
+        lastSavedOn: null,
     },
 
 
@@ -72,9 +74,58 @@ const MusicAddict2 = {
 
     // Start or continue playing. Mainly used by ctrlRegisterHandler() and ctrlContinueHandler()
     startGame() {
+        // We don't need the auth part anymore now.
+        // Only the fun stuff.
         this.uiVis('groupAuth', 'hide')
         this.uiVis('groupPlay', 'show')
+
+        // We don't want to auto-save right after starting.
+        this.ram.lastSavedOn = Date.now()
+
+        // Start background update.
         this.backgroundUpdate(true)
+    },
+
+
+    // Save progress.
+    saveGame(exit=false) {
+        if (!this.sd.token) {
+            return
+        }
+
+        this.sd.cash = Math.floor(Math.random()*1000) // for testing only
+
+        // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
+        this.ram.lastSavedOn = Date.now()
+
+        console.debug('saving your progress...')
+
+        this.apiRequest({action: 'save', token: this.sd.token, saveData: JSON.stringify(this.sd)}, (response) => {
+            if (!response.saved) {
+                console.warn('Error while saving')
+                return
+            }
+
+            if (exit) {
+                this.exitGame()
+            }
+        })
+
+    },
+
+
+    // Stop the world from turning and reload life.
+    exitGame() {
+        this.backgroundUpdateStop()
+
+        this.ui.ctrlProgress.disabled = true
+        this.ui.ctrlExit.disabled = true
+
+        this.uiSetEle('actionLog', `Bye!`)
+
+        setTimeout(() => {
+            location.reload()
+        }, this.conf.exitDelay);
     },
 
 
@@ -92,11 +143,12 @@ const MusicAddict2 = {
         // Request new token from api
         this.apiRequest({action: 'register'}, (response) => {
             if (!response.token) {
-                console.error('did not get token from api')
+                console.error('Got no token from api')
                 return
             }
 
             this.sd.token = response.token
+
             this.startGame()
         })
     },
@@ -123,6 +175,7 @@ const MusicAddict2 = {
             }
 
             this.sd = response.saveData
+
             this.startGame()
         })
     },
@@ -141,16 +194,7 @@ const MusicAddict2 = {
     ctrlExitHandler(e) {
         this.uiSetEle('actionLog', `<strong>${e.target.dataset.uikey}</strong>`)
 
-        this.backgroundUpdateStop()
-
-        this.ui.ctrlProgress.disabled = true
-        this.ui.ctrlExit.disabled = true
-
-        this.uiSetEle('actionLog', `Bye!`)
-
-        setTimeout(() => {
-            location.reload()
-        }, this.conf.exitDelay);
+        this.saveGame(true)
     },
 
 
@@ -167,7 +211,12 @@ const MusicAddict2 = {
             }, this.conf.backgroundUpdateInterval)
         }
 
-        // Update stuff
+        // Auto-save from time to time.
+        if (Date.now() - this.ram.lastSavedOn > this.conf.autoSaveInterval) {
+            this.saveGame()
+        }
+
+        // Update stuff.
         this.uiSetEle('actionLog', `backgroundUpdate`)
     },
 
@@ -229,6 +278,10 @@ const MusicAddict2 = {
                 this.ui[uikey].style.display = vis
         }
     },
+
+    // Set UI element state. E.g. e.disabled = true|false
+    // TODO
+    uiState(uikey='', state='') {},
 
 
 
