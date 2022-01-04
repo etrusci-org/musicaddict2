@@ -1,7 +1,13 @@
 <?php
+error_reporting(E_ALL | E_STRICT);
+
+
+$query = array_merge($_GET, $_POST);
+
+
 $response = array(
-    'yo' => 'api dummy response',
-    'microtime' => microtime(),
+    '_errors' => array(),
+    '_query'  => $query,
 );
 
 
