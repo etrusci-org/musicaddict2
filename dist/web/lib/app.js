@@ -95,8 +95,6 @@ const MusicAddict2 = {
             return
         }
 
-        this.sd.cash = Math.floor(Math.random()*1000) // for testing only
-
         // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
         this.ram.lastSavedOn = Date.now()
 
@@ -185,6 +183,9 @@ const MusicAddict2 = {
     // Handle ctrlProgress clicks
     ctrlProgressHandler(e) {
         this.uiSetEle('actionLog', `<strong>${e.target.dataset.uikey}</strong>`)
+
+        this.sd.cash = Math.floor(Math.random()*1000) // for testing only
+        this.uiSetEle('actionLog', `cash: ${this.sd.cash}`)
 
         this.ui.ctrlProgress.disabled = true
         setTimeout(() => {
