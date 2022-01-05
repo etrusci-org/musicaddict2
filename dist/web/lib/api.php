@@ -72,7 +72,16 @@ class MusicAddictAPI {
 
                 $this->Database->open();
 
-                $q = 'SELECT * FROM sd WHERE token = :token;';
+                $validCols = array_keys(array(
+                    'token'      => SQLITE3_TEXT,
+                    'playerName' => SQLITE3_TEXT,
+                    'playerHash' => SQLITE3_TEXT,
+                    'cash'       => SQLITE3_INTEGER,
+                    'records'    => SQLITE3_TEXT,
+                ));
+                $validCols = implode(', ', $validCols);
+
+                $q = sprintf('SELECT %s FROM sd WHERE token = :token;', $validCols);
                 $r = $this->Database->querySingle($q, array(
                     array('token', $this->query['token'], SQLITE3_TEXT),
                 ));
@@ -83,6 +92,8 @@ class MusicAddictAPI {
                     $this->response['_errors'][] = 'Unknown token.';
                     break;
                 }
+
+                $r['records'] = jdec($r['records']);
 
                 $this->response['saveData'] = $r;
                 break;
@@ -131,6 +142,8 @@ class MusicAddictAPI {
                         return;
                     }
                 }
+
+                // $saveData['records'] = jenc($saveData['records']);
 
                 $c = array(
                     'lastSaved = :lastSaved',
