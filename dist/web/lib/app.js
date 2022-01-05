@@ -384,7 +384,7 @@ const MusicAddict2 = {
         }
 
         // Update stuff.
-        // this.uiSetEle('actionLog', `backgroundUpdate`)
+        this.uiSetEle('sdCash', `<span class="cur">${this.sd.cash}</span>`)
     },
 
     // Stop updating stuff in the background.

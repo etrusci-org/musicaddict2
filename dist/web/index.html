@@ -21,19 +21,25 @@
         <div data-uikey="groupAuth">
 
             <!-- Controls for authentication -->
-            <button data-uikey="ctrlRegister">register</button> or enter your
-            <input type="text" data-uikey="inputToken" placeholder="Secet Token"> to
-            <button data-uikey="ctrlContinue">continue</button>
-
+            <p>Register, or enter your secret token to continue.</p>
+            <p><button data-uikey="ctrlRegister">register</button></p>
+            <p>
+                <input type="text" data-uikey="inputToken">
+                <button data-uikey="ctrlContinue">continue</button>
+            </p>
         </div>
 
 
         <!-- AFTER authentication -->
         <div data-uikey="groupPlay">
+            <!-- Stats and game info -->
+            cash: <span data-uikey="sdCash"></span><br>
 
             <!-- Controls for playing and exiting -->
-            <button data-uikey="ctrlProgress">progress</button>
-            <button data-uikey="ctrlExit">exit</button>
+            <p>
+                <button data-uikey="ctrlProgress">progress</button>
+                <button data-uikey="ctrlExit">exit</button>
+            </p>
 
             <!-- Action log -->
             <div data-uikey="actionLog"></div>
