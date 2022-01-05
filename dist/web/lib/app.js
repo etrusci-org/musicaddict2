@@ -13,7 +13,9 @@ const MusicAddict2 = {
         playerName: 'Anonymous',
         playerHash: '294de3557d9d00b3d2d8a1e6aab028cf',
         cash: 7,
-        records: [],
+        records: [
+            // { title: 'Record1', format: 'Cassette', price: 10 }
+        ],
     },
 
     // Static configuration.
@@ -102,7 +104,7 @@ const MusicAddict2 = {
 
         this.apiRequest({action: 'save', token: this.sd.token, saveData: JSON.stringify(this.sd)}, (response) => {
             if (!response.saved) {
-                console.warn('Error while saving')
+                console.warn('Error while saving', response._errors)
                 return
             }
 

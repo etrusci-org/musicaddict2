@@ -13,7 +13,7 @@ class MusicAddictAPI {
         $this->query = array_merge($_GET, $_POST);
 
         // Check if action is in query and stop if it is not.
-        if (!isset($this->query['action']) || empty(trim($this->query['action']))) {
+        if (!isset($this->query['action']) || !array_key_exists('action', $this->query) || empty(trim($this->query['action']))) {
             $this->response['_errors'][] = 'missing query action.';
             $this->output();
         }
@@ -65,7 +65,7 @@ class MusicAddictAPI {
                 break;
 
             case 'continue':
-                if (!isset($this->query['token']) || empty(trim($this->query['token']))) {
+                if (!isset($this->query['token']) || !array_key_exists('token', $this->query) || empty(trim($this->query['token']))) {
                     $this->response['_errors'][] = 'missing query token.';
                     break;
                 }
@@ -88,7 +88,7 @@ class MusicAddictAPI {
                 break;
 
             case 'save':
-                if (!isset($this->query['saveData']) || empty(trim($this->query['saveData']))) {
+                if (!isset($this->query['saveData']) || !array_key_exists('saveData', $this->query) || empty(trim($this->query['saveData']))) {
                     $this->response['_errors'][] = 'missing query saveData.';
                     break;
                 }
@@ -103,17 +103,42 @@ class MusicAddictAPI {
                 $this->Database->open(TRUE);
 
                 $validCols = array(
-                    array('playerName', SQLITE3_TEXT),
-                    array('playerHash', SQLITE3_TEXT),
-                    array('cash',       SQLITE3_INTEGER),
-                    array('records',    SQLITE3_TEXT),
+                    'token'      => SQLITE3_TEXT,
+                    'playerName' => SQLITE3_TEXT,
+                    'playerHash' => SQLITE3_TEXT,
+                    'cash'       => SQLITE3_INTEGER,
+                    'records'    => SQLITE3_TEXT,
                 );
+                // unset($saveData['playerName']); // sim error
+
+                $colDiff = array_diff_key($validCols, $saveData);
+                if ($colDiff) {
+                    $this->response['_errors'][] = 'Missing saveData keys: '.implode(', ', array_keys($colDiff));
+                    return;
+                }
+
+                $saveData['records'] = jenc($saveData['records']);
+
+                $q = 'SELECT token FROM sd WHERE token = :token;';
+                $v = array(
+                    array('token', $saveData['token'], SQLITE3_TEXT),
+                );
+                $r = $this->Database->query($q, $v);
+                if (!$r) {
+                    $q = 'INSERT INTO sd (token) VALUES (:token);';
+                    if (!$this->Database->write($q, $v)) {
+                        $this->response['_errors'][] = 'Could not create database row.';
+                        return;
+                    }
+                }
 
                 $c = array();
                 $v = array();
-                foreach ($validCols as $col) {
-                    $c[] = sprintf('%1$s = :%1$s', $col[0]);
-                    $v[] = array($col[0], $saveData[$col[0]], $col[1]);
+                foreach ($validCols as $colName => $colType) {
+                    if ($colName != 'token') {
+                        $c[] = sprintf('%1$s = :%1$s', $colName);
+                    }
+                    $v[] = array($colName, $saveData[$colName], $colType);
                 }
                 $c = implode(', ', $c);
                 $q = sprintf('UPDATE sd SET %s WHERE token = :token;', $c);
