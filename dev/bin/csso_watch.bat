@@ -1,6 +1,9 @@
 @echo off
 
 @REM Usage:
+@REM
+@REM Adjust input:output paths first.
+@REM
 @REM $ cd musicaddict2/dev/
 @REM $ bin/csso_watch.bat
 

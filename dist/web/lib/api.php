@@ -3,14 +3,33 @@ require 'shared.php';
 
 
 class MusicAddictAPI {
+    protected $querySrc = 'post';
     protected $query;
     protected $response;
     protected $Database;
 
 
-    public function __construct() {
-        // Bake query from both GET and POST. Post wins if same keys.
-        $this->query = array_merge($_GET, $_POST);
+    public function __construct($querySrc='post') {
+        switch ($querySrc) {
+            case 'post':
+                $this->querySrc = $querySrc;
+                $this->query = $_POST;
+                break;
+
+            case 'get':
+                $this->querySrc = $querySrc;
+                $this->query = $_GET;
+                break;
+
+            case 'both':
+                $this->querySrc = $querySrc;
+                $this->query = array_merge($_GET, $_POST);
+                break;
+
+            default:
+                $this->querySrc = 'post';
+                $this->query = $_POST;
+        }
 
         // Check if action is in query and stop if it is not.
         if (!isset($this->query['action']) || !array_key_exists('action', $this->query) || empty(trim($this->query['action']))) {
@@ -142,8 +161,6 @@ class MusicAddictAPI {
                         return;
                     }
                 }
-
-                // $saveData['records'] = jenc($saveData['records']);
 
                 $c = array(
                     'lastSaved = :lastSaved',

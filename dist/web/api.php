@@ -1,4 +1,5 @@
 <?php
 require 'lib/api.php';
 
-$API = new MusicAddictAPI();
+
+$API = new MusicAddictAPI($querySrc='both');

@@ -185,7 +185,7 @@ const MusicAddict2 = {
         this.uiSetEle('actionLog', `<strong>${e.target.dataset.uikey}</strong>`)
 
         this.sd.cash = Math.floor(Math.random()*1000) // for testing only
-        this.uiSetEle('actionLog', `cash: ${this.sd.cash}`)
+        this.uiSetEle('actionLog', `cash: ${this.sd.cash}`) // for testing only
 
         this.ui.ctrlProgress.disabled = true
         setTimeout(() => {
