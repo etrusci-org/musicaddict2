@@ -29,17 +29,22 @@ const MusicAddict2 = {
             { uikey: 'ctrlProgress', type: 'click' },
             { uikey: 'ctrlExit',     type: 'click' },
         ],
-        actionLogMax: 5, // how many lines to keep in the actionlog
+        actionLogMax: 100, // how many lines to keep in the actionlog
         backgroundUpdateInterval: 500, // do stuff every N, millisec
-        clickSpeed: 1_000, // how fast we can click, millisec
-        exitDelay: 3_000, // timeout after we clicked exit before the page gets reloaded, millisec
+        clickSpeed: 250, // how fast we can click, millisec
+        exitDelay: 2_000, // timeout after we clicked exit before the page gets reloaded, millisec
         autoSaveInterval: 30_000, // interval for auto saving, millisec
+
+        recordsMax: 5, // how many records the player can keep in their collection, integer
     },
 
     // Temporary stuff the app needs to work.
     ram: {
         backgroundUpdateIntervalID: null,
         lastSavedOn: null,
+
+        nextProgressAction: null,
+        nextProgressActionChoices: null,
     },
 
 
@@ -75,7 +80,7 @@ const MusicAddict2 = {
     },
 
     // Start or continue playing. Mainly used by ctrlRegisterHandler() and ctrlContinueHandler()
-    startGame() {
+    start() {
         // We don't need the auth part anymore now.
         // Only the fun stuff.
         this.uiVis('groupAuth', 'hide')
@@ -88,9 +93,8 @@ const MusicAddict2 = {
         this.backgroundUpdate(true)
     },
 
-
     // Save progress.
-    saveGame(exit=false) {
+    save(exit=false) {
         if (!this.sd.token) {
             return
         }
@@ -111,14 +115,13 @@ const MusicAddict2 = {
             console.debug('Progress saved.')
 
             if (exit) {
-                this.exitGame()
+                this.exit()
             }
         })
     },
 
-
     // Stop the world from turning and reload life.
-    exitGame() {
+    exit() {
         this.backgroundUpdateStop()
 
         this.uiState('ctrlProgress', 'disabled')
@@ -129,6 +132,158 @@ const MusicAddict2 = {
         setTimeout(() => {
             location.reload()
         }, this.conf.exitDelay);
+    },
+
+    // Progress in the game.
+    progress() {
+        // Decide what happens next.
+        if (!this.ram.nextProgressAction) {
+            this.ram.nextProgressAction = 'digg'
+        }
+
+        if (this.sd.cash == 0) {
+            this.ram.nextProgressAction = 'broke'
+        }
+
+        if (this.sd.records.length > this.conf.recordsMax) {
+            this.ram.nextProgressAction = 'bulkSale'
+        }
+
+        console.log(Date.now(), this.ram.nextProgressAction)
+
+        // Perform action depending on current nextProgressAction
+        // and choose possible choices for the next loop iteration.
+        this.ram.nextProgressActionChoices = []
+
+        // -----------------------
+        // Basic Game Flow
+        //
+        // # digg
+        // # broke
+        // # bulkSale
+        //     discover
+        //         listen
+        //             buy
+        //             skipBuy
+        //     offer
+        //         sell
+        //         skipSell
+        // -----------------------
+        switch (this.ram.nextProgressAction) {
+            // next:
+            //     digg
+            //     discover
+            //     offer
+            case 'digg':
+                this.uiSetEle('actionLog', 'digg')
+
+                this.ram.nextProgressActionChoices = ['digg', 'discover']
+
+                // if (this.sd.records.length > 0) {
+                    this.ram.nextProgressActionChoices.push('offer')
+                // }
+                break
+
+            // next:
+            //     broke
+            //     offer
+            case 'broke':
+                this.uiSetEle('actionLog', 'broke')
+
+                this.ram.nextProgressActionChoices = ['broke', 'offer']
+                break
+
+            // next:
+            //     digg
+            case 'bulkSale':
+                this.uiSetEle('actionLog', 'bulkSale')
+
+                this.ram.nextProgressActionChoices = ['digg']
+                break
+
+            // next:
+            //     listen
+            case 'discover':
+                this.uiSetEle('actionLog', 'discover')
+
+                this.ram.nextProgressActionChoices = ['listen']
+                break
+
+            // next:
+            //     buy
+            //     skipBuy
+            case 'listen':
+                this.uiSetEle('actionLog', 'listen')
+
+                this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
+                break
+
+            // next:
+            //     digg
+            //     offer
+            case 'buy':
+                this.uiSetEle('actionLog', 'buy')
+
+                this.ram.nextProgressActionChoices = ['digg']
+
+                // if (this.sd.records.length > 0) {
+                    this.ram.nextProgressActionChoices.push('offer')
+                // }
+                break
+
+            // next:
+            //     digg
+            //     offer
+            case 'skipBuy':
+                this.uiSetEle('actionLog', 'skipBuy')
+
+                this.ram.nextProgressActionChoices = ['digg']
+
+                // if (this.sd.records.length > 0) {
+                    this.ram.nextProgressActionChoices.push('offer')
+                // }
+                break
+
+            // next:
+            //     sell
+            //     skipSell
+            case 'offer':
+                this.uiSetEle('actionLog', 'offer')
+
+                this.ram.nextProgressActionChoices = ['sell', 'skipSell']
+                break
+
+            // next:
+            //     digg
+            //     offer
+            case 'sell':
+                this.uiSetEle('actionLog', 'sell')
+
+                this.ram.nextProgressActionChoices = ['digg']
+
+                // if (this.sd.records.length > 0) {
+                    this.ram.nextProgressActionChoices.push('offer')
+                // }
+                break
+
+            // next:
+            //     digg
+            //     offer
+            case 'skipSell':
+                this.uiSetEle('actionLog', 'skipSell')
+
+                this.ram.nextProgressActionChoices = ['digg']
+
+                // if (this.sd.records.length > 0) {
+                    this.ram.nextProgressActionChoices.push('offer')
+                // }
+                break
+
+            default:
+                console.error('Unknown nextProgressAction:', this.ram.nextProgressAction)
+        }
+
+        this.ram.nextProgressAction = this.randomArrayItem(this.ram.nextProgressActionChoices)
     },
 
 
@@ -155,7 +310,7 @@ const MusicAddict2 = {
 
             this.sd.token = response.token
 
-            this.startGame()
+            this.start()
         })
     },
 
@@ -186,24 +341,27 @@ const MusicAddict2 = {
 
             this.sd = response.saveData
 
-            this.startGame()
+            this.start()
         })
     },
 
     // Handle ctrlProgress clicks
     ctrlProgressHandler(e) {
-        this.sd.cash = Math.floor(Math.random()*1000) // for testing only
-        this.uiSetEle('actionLog', `cash: ${this.sd.cash}`) // for testing only
+        if (!this.sd.token) {
+            return
+        }
 
         this.uiState('ctrlProgress', 'disabled')
         setTimeout(() => {
             this.uiState('ctrlProgress', 'enabled')
         }, this.conf.clickSpeed)
+
+        this.progress()
     },
 
     // Handle ctrlExit clicks
     ctrlExitHandler(e) {
-        this.saveGame(true)
+        this.save(true)
     },
 
 
@@ -222,11 +380,11 @@ const MusicAddict2 = {
 
         // Auto-save from time to time.
         if (Date.now() - this.ram.lastSavedOn > this.conf.autoSaveInterval) {
-            this.saveGame()
+            this.save()
         }
 
         // Update stuff.
-        this.uiSetEle('actionLog', `backgroundUpdate`)
+        // this.uiSetEle('actionLog', `backgroundUpdate`)
     },
 
     // Stop updating stuff in the background.
@@ -347,4 +505,15 @@ const MusicAddict2 = {
         });
     },
 
-}
+
+
+
+    // ====================================== RANDOMNESS ==========================================
+
+    // Get a random item from an array.
+    randomArrayItem(array) {
+        return array[Math.floor(Math.random() * array.length)]
+    },
+
+
+} // /MusicAddict2
