@@ -132,8 +132,12 @@ class MusicAddictAPI {
                     }
                 }
 
-                $c = array();
-                $v = array();
+                $c = array(
+                    'lastSaved = :lastSaved',
+                );
+                $v = array(
+                    array('lastSaved', time(), SQLITE3_INTEGER),
+                );
                 foreach ($validCols as $colName => $colType) {
                     if ($colName != 'token') {
                         $c[] = sprintf('%1$s = :%1$s', $colName);
