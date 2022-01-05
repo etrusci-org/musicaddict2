@@ -98,19 +98,22 @@ const MusicAddict2 = {
         // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
         this.ram.lastSavedOn = Date.now()
 
-        console.debug('saving your progress...')
-
-        this.apiRequest({action: 'save', token: this.sd.token, saveData: JSON.stringify(this.sd)}, (response) => {
+        this.apiRequest({
+            action: 'save',
+            saveData: JSON.stringify(this.sd),
+        },
+        (response) => {
             if (!response.saved) {
                 console.warn('Error while saving', response._errors)
                 return
             }
 
+            console.debug('Progress saved.')
+
             if (exit) {
                 this.exitGame()
             }
         })
-
     },
 
 
@@ -118,8 +121,8 @@ const MusicAddict2 = {
     exitGame() {
         this.backgroundUpdateStop()
 
-        this.ui.ctrlProgress.disabled = true
-        this.ui.ctrlExit.disabled = true
+        this.uiState('ctrlProgress', 'disabled')
+        this.uiState('ctrlExit', 'disabled')
 
         this.uiSetEle('actionLog', `Bye!`)
 
@@ -141,7 +144,10 @@ const MusicAddict2 = {
         }
 
         // Request new token from api
-        this.apiRequest({action: 'register'}, (response) => {
+        this.apiRequest({
+            action: 'register',
+        },
+        (response) => {
             if (!response.token) {
                 console.error('Got no token from api')
                 return
@@ -161,14 +167,18 @@ const MusicAddict2 = {
         }
 
         // Stop if the token input is empty.
-        let token = this.ui.inputToken.value.trim()
-        if (!token) {
+        let inputToken = this.ui.inputToken.value.trim()
+        if (!inputToken) {
             console.info('You need to enter your Secret Token to continue.')
             return
         }
 
         // Request saveData from api
-        this.apiRequest({action: 'continue', token: token}, (response) => {
+        this.apiRequest({
+            action: 'continue',
+            token: inputToken,
+        },
+        (response) => {
             if (!response.saveData) {
                 console.error('did not get saveData from api')
                 return
@@ -182,21 +192,17 @@ const MusicAddict2 = {
 
     // Handle ctrlProgress clicks
     ctrlProgressHandler(e) {
-        this.uiSetEle('actionLog', `<strong>${e.target.dataset.uikey}</strong>`)
-
         this.sd.cash = Math.floor(Math.random()*1000) // for testing only
         this.uiSetEle('actionLog', `cash: ${this.sd.cash}`) // for testing only
 
-        this.ui.ctrlProgress.disabled = true
+        this.uiState('ctrlProgress', 'disabled')
         setTimeout(() => {
-            this.ui.ctrlProgress.disabled = false
+            this.uiState('ctrlProgress', 'enabled')
         }, this.conf.clickSpeed)
     },
 
     // Handle ctrlExit clicks
     ctrlExitHandler(e) {
-        this.uiSetEle('actionLog', `<strong>${e.target.dataset.uikey}</strong>`)
-
         this.saveGame(true)
     },
 
@@ -283,8 +289,25 @@ const MusicAddict2 = {
     },
 
     // Set UI element state. E.g. e.disabled = true|false
-    // TODO
-    uiState(uikey='', state='') {},
+    uiState(uikey='', state='') {
+        if (!uikey || !this.ui[uikey]) {
+            console.warn('Missing or unknown uikey:', uikey)
+            return
+        }
+
+        switch (state) {
+            case 'enabled':
+                this.ui[uikey].disabled = false
+                break
+
+            case 'disabled':
+                    this.ui[uikey].disabled = true
+                    break
+
+            default:
+                console.warn('Invalid state:', state)
+        }
+    },
 
 
 
