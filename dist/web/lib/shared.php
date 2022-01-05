@@ -1,7 +1,7 @@
 <?php
 // Generate a new token.
 function newToken() {
-    return hash('ripemd160', openssl_random_pseudo_bytes(4096));
+    return hash('ripemd160', bin2hex(openssl_random_pseudo_bytes(4096)));
 }
 
 
@@ -10,6 +10,11 @@ function isValidToken($token) {
     return ctype_alnum($token) && strlen($token) == 40;
 }
 
+
+// Get the ripemd160 hash of data.
+function ripemdHash($data) {
+    return hash('ripemd160', $data);
+}
 
 // Encode data to JSON.
 function jenc($data, $flags=JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) {

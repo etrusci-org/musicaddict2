@@ -72,7 +72,7 @@ class MusicAddictAPI {
                 while (TRUE) {
                     $token = newToken();
                     $r = $this->Database->query($q, array(
-                        array('token', $token, SQLITE3_TEXT),
+                        array('token', ripemdHash($token), SQLITE3_TEXT),
                     ));
                     if (!$r) {
                         $this->response['token'] = $token;
@@ -102,7 +102,7 @@ class MusicAddictAPI {
 
                 $q = sprintf('SELECT %s FROM sd WHERE token = :token;', $validCols);
                 $r = $this->Database->querySingle($q, array(
-                    array('token', $this->query['token'], SQLITE3_TEXT),
+                    array('token', ripemdHash($this->query['token']), SQLITE3_TEXT),
                 ));
 
                 $this->Database->close();
@@ -112,6 +112,7 @@ class MusicAddictAPI {
                     break;
                 }
 
+                $r['token'] = $this->query['token'];
                 $r['records'] = jdec($r['records']);
 
                 $this->response['saveData'] = $r;
@@ -151,7 +152,7 @@ class MusicAddictAPI {
 
                 $q = 'SELECT token FROM sd WHERE token = :token;';
                 $v = array(
-                    array('token', $saveData['token'], SQLITE3_TEXT),
+                    array('token', ripemdHash($saveData['token']), SQLITE3_TEXT),
                 );
                 $r = $this->Database->query($q, $v);
                 if (!$r) {
@@ -171,8 +172,11 @@ class MusicAddictAPI {
                 foreach ($validCols as $colName => $colType) {
                     if ($colName != 'token') {
                         $c[] = sprintf('%1$s = :%1$s', $colName);
+                        $v[] = array($colName, $saveData[$colName], $colType);
                     }
-                    $v[] = array($colName, $saveData[$colName], $colType);
+                    else {
+                        $v[] = array($colName, ripemdHash($saveData[$colName]), $colType);
+                    }
                 }
                 $c = implode(', ', $c);
                 $q = sprintf('UPDATE sd SET %s WHERE token = :token;', $c);
