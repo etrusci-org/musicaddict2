@@ -17,17 +17,23 @@
     <div id="app" data-uikey="app">
 
         <!-- ALWAYS visible -->
+
         <!-- Action GIF -->
         <div data-uikey="actionGif"></div>
-
 
         <!-- BEFORE authentication -->
         <div data-uikey="groupAuth">
             <!-- Controls for authentication -->
-            <p>Register, or enter your secret token to continue.</p>
-            <p><button data-uikey="ctrlRegister">register</button></p>
             <p>
-                <input type="text" data-uikey="inputToken">
+                Enter a Player Name (optional) and Register.<br>
+                Or enter your secret token to continue.
+            </p>
+            <p>
+                <input type="text" data-uikey="inputPlayerName" placeholder="Player Name">
+                <button data-uikey="ctrlRegister">register</button>
+            </p>
+            <p>
+                <input type="text" data-uikey="inputToken" placeholder="Secret Token">
                 <button data-uikey="ctrlContinue">continue</button>
             </p>
         </div>

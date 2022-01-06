@@ -94,7 +94,7 @@ class MusicAddictAPI {
                 $validCols = array_keys(array(
                     'token'      => SQLITE3_TEXT,
                     'playerName' => SQLITE3_TEXT,
-                    'playerHash' => SQLITE3_TEXT,
+                    // 'playerHash' => SQLITE3_TEXT,
                     'cash'       => SQLITE3_INTEGER,
                     'records'    => SQLITE3_TEXT,
                 ));
@@ -136,7 +136,7 @@ class MusicAddictAPI {
                 $validCols = array(
                     'token'      => SQLITE3_TEXT,
                     'playerName' => SQLITE3_TEXT,
-                    'playerHash' => SQLITE3_TEXT,
+                    // 'playerHash' => SQLITE3_TEXT,
                     'cash'       => SQLITE3_INTEGER,
                     'records'    => SQLITE3_TEXT,
                 );

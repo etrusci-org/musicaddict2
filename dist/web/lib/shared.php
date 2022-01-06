@@ -16,6 +16,7 @@ function ripemdHash($data) {
     return hash('ripemd160', $data);
 }
 
+
 // Encode data to JSON.
 function jenc($data, $flags=JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) {
     return json_encode($data, $flags);

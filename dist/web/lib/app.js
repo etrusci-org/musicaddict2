@@ -11,11 +11,9 @@ const MusicAddict2 = {
     sd: {
         token: '',
         playerName: 'Anonymous',
-        playerHash: '294de3557d9d00b3d2d8a1e6aab028cf',
+        // playerHash: '7079c72c21415131774625ba1d64f4b0',
         cash: 7,
-        records: [
-            // { title: 'Record1', format: 'Cassette', price: 10 }
-        ],
+        records: [],
     },
 
     // Static configuration.
@@ -34,7 +32,6 @@ const MusicAddict2 = {
         clickSpeed: 250, // how fast we can click, millisec
         exitDelay: 2_000, // timeout after we clicked exit before the page gets reloaded, millisec
         autoSaveInterval: 30_000, // interval for auto saving, millisec
-
         recordsMax: 100, // how many records the player can keep in their collection, integer
         bulkSaleAmount: 25, // how many records to sell in a bulk sale, integer
     },
@@ -43,10 +40,8 @@ const MusicAddict2 = {
     ram: {
         backgroundUpdateIntervalID: null,
         lastSavedOn: null,
-
         nextProgressAction: null,
         nextProgressActionChoices: null,
-
         randomRecord: null,
         incomingOffer: null,
         bulkSaleID: null,
@@ -80,7 +75,7 @@ const MusicAddict2 = {
         // Hide some UI elements.
         this.uiVis('groupPlay', 'hide') // unhide in ctrlRegisterHandler() + ctrlContinueHandler()
 
-        // Add/update some UI ElementInternals.
+        // Add/update some UI elements.
         this.uiSetEle('actionGif', 'idle')
 
         // Finally un-hide the app.
@@ -109,6 +104,10 @@ const MusicAddict2 = {
 
         // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
         this.ram.lastSavedOn = Date.now()
+
+        if (this.ui.inputPlayerName.value.trim()) {
+            this.sd.playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+        }
 
         this.apiRequest({
             action: 'save',
@@ -390,6 +389,13 @@ const MusicAddict2 = {
 
             this.sd.token = response.token
 
+            if (this.ui.inputPlayerName.value.trim()) {
+                this.sd.playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+            }
+
+            this.uiSetEle('inputToken', this.sd.token)
+            this.uiSetEle('inputPlayerName', this.sd.playerName)
+
             this.start()
         })
     },
@@ -420,6 +426,8 @@ const MusicAddict2 = {
             }
 
             this.sd = response.saveData
+
+            this.uiSetEle('inputPlayerName', this.sd.playerName)
 
             this.start()
         })
@@ -496,6 +504,11 @@ const MusicAddict2 = {
                 while (this.ui[uikey].children.length > this.conf.actionLogMax) {
                     this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
                 }
+                break
+
+            case 'inputPlayerName':
+            case 'inputToken':
+                this.ui[uikey].value = val
                 break
 
             case 'actionGif':
