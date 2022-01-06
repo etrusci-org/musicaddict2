@@ -7,6 +7,9 @@ const MusicAddict2 = {
     // User-Interface elements. Will be populated in main().
     ui: {},
 
+    // Random data. Set in lib/data.js
+    rd: {},
+
     // Save data.
     sd: {
         token: '',
@@ -609,12 +612,82 @@ const MusicAddict2 = {
     // WIP
     randomRecord() {
         return {
-            title: `Record-${this.randomInteger(1, 1_000)}`,
-            artist: `Artist-${this.randomInteger(1, 1_000)}`,
-            format: `Format-${this.randomInteger(1, 1_000)}`,
-            buyPrice: this.randomInteger(1, 10),
+            title: this.randomRecordTitle(),
+            artist: this.randomRecordArtist(),
+            format: this.randomRecordFormat(),
+            buyPrice: this.randomRecordPrice(),
             sellPrice: null,
         }
+    },
+
+    // A random record title.
+    randomRecordArtist() {
+        let c = this.randomInteger(1, 3)
+        let name = []
+
+        while (c > 0) {
+            let word = this.randomArrayItem(this.rd.recordArtistWords)
+            if (name.indexOf(word) == -1) {
+                name.push(word)
+                c--
+            }
+        }
+
+        return name.join(' ')
+    },
+
+    // A random record title.
+    randomRecordTitle() {
+        let c = this.randomInteger(1, 4)
+        let title = []
+
+        while (c > 0) {
+            let word = this.randomArrayItem(this.rd.recordTitleWords)
+            if (title.indexOf(word) == -1) {
+                title.push(word)
+                c--
+            }
+        }
+
+        return title.join(' ')
+    },
+
+    // A random record format.
+    randomRecordFormat() {
+        return this.randomArrayItem(this.rd.recordFormat)
+    },
+
+    // A random record price.
+    randomRecordPrice() {
+        let tier = Math.random()
+
+        // Tier 6
+        if (tier < 0.01 && this.sd.cash > 500) {
+            return this.randomInteger(501, 1000)
+        }
+
+        // Tier 5
+        if (tier < 0.05 && this.sd.cash > 200) {
+            return this.randomInteger(201, 500)
+        }
+
+        // Tier 4
+        if (tier < 0.15 && this.sd.cash > 50) {
+            return this.randomInteger(51, 200)
+        }
+
+        // Tier 3
+        if (tier < 0.40 && this.sd.cash > 20) {
+            return this.randomInteger(21, 50)
+        }
+
+        // Tier 2
+        if (tier < 0.90 && this.sd.cash > 7) {
+            return this.randomInteger(8, 20)
+        }
+
+        // Tier 1
+        return this.randomInteger(1, 7)
     },
 
     // Get a random item from an array.

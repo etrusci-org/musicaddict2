@@ -2,8 +2,7 @@
 
 In no particular order.
 
-
-
+---
 
 ## TO-DO
 
@@ -14,10 +13,31 @@ In no particular order.
 
 ---
 
-
-
-
 ## IDEAS
+
+### Upgrades
+
+This will engage the player. Examples of the raw idea below:
+
+Buy upgrades with cash...
+
+```text
+    [buy] -> Your mom a flower (5$)
+    [buy] -> Faster clicks 1 (100$)
+    [buy] -> Faster clicks 2 (300$)
+    [buy] -> Faster clicks 3 (600$)
+    [buy] -> Auto-clicker  (1000000$)
+```
+
+Get automatically upgrades depending on progress in the game, like clicks, playtime, etc. ...
+
+```text
+    [when cash >= 100] -> Buy your mom a flower
+    [when click count >= 1000] -> Faster clicks 1
+    [when click count >= 10000] -> Faster clicks 2
+    [when click count >= 100000] -> Faster clicks 3
+    [when click count >= 1000000] -> Auto-clicker
+```
 
 ### Trade Ledger
 
