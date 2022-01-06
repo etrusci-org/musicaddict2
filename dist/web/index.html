@@ -14,12 +14,15 @@
     <noscript>Please enable JavaScript.</noscript>
 
     <!-- Main wrapper. Will be initially hidden through CSS and re-enabled in MusicAddict2.main(). -->
-    <div data-uikey="app">
+    <div id="app" data-uikey="app">
+
+        <!-- ALWAYS visible -->
+        <!-- Action GIF -->
+        <div data-uikey="actionGif"></div>
 
 
         <!-- BEFORE authentication -->
         <div data-uikey="groupAuth">
-
             <!-- Controls for authentication -->
             <p>Register, or enter your secret token to continue.</p>
             <p><button data-uikey="ctrlRegister">register</button></p>
@@ -37,7 +40,6 @@
                 cash: <span data-uikey="sdCash">-</span>
                 records: <span data-uikey="sdRecordsCount">-</span>
             </p>
-
             <!-- Controls for playing and exiting -->
             <p>
                 <button data-uikey="ctrlProgress">progress</button>
@@ -46,7 +48,6 @@
 
             <!-- Action log -->
             <div data-uikey="actionLog"></div>
-
         </div>
 
 

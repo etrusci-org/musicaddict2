@@ -80,6 +80,9 @@ const MusicAddict2 = {
         // Hide some UI elements.
         this.uiVis('groupPlay', 'hide') // unhide in ctrlRegisterHandler() + ctrlContinueHandler()
 
+        // Add/update some UI ElementInternals.
+        this.uiSetEle('actionGif', 'idle')
+
         // Finally un-hide the app.
         this.uiVis('app', 'block')
     },
@@ -181,6 +184,7 @@ const MusicAddict2 = {
             //     offer
             case 'digg':
                 this.uiSetEle('actionLog', 'digg')
+                this.uiSetEle('actionGif', 'digg')
 
                 this.ram.nextProgressActionChoices = ['digg', 'discover']
 
@@ -194,6 +198,7 @@ const MusicAddict2 = {
             //     offer
             case 'broke':
                 this.uiSetEle('actionLog', 'broke')
+                this.uiSetEle('actionGif', 'broke')
 
                 this.ram.incomingOffer = Math.random() < 0.5
                 if (this.ram.incomingOffer) {
@@ -206,6 +211,7 @@ const MusicAddict2 = {
             //     offer
             case 'bulkSale':
                 this.uiSetEle('actionLog', 'bulkSale')
+                this.uiSetEle('actionGif', 'sell')
 
                 this.ram.bulkSaleID = null
                 let bulkSaleCounter = 0
@@ -244,6 +250,7 @@ const MusicAddict2 = {
             //     listen
             case 'discover':
                 this.uiSetEle('actionLog', 'discover')
+                this.uiSetEle('actionGif', 'discover')
 
                 this.ram.randomRecord = this.randomRecord()
 
@@ -255,6 +262,7 @@ const MusicAddict2 = {
             //     skipBuy
             case 'listen':
                 this.uiSetEle('actionLog', 'listen')
+                this.uiSetEle('actionGif', 'listen')
 
                 this.ram.nextProgressActionChoices = ['listen']
 
@@ -268,6 +276,7 @@ const MusicAddict2 = {
             //     offer
             case 'buy':
                 this.uiSetEle('actionLog', 'buy')
+                this.uiSetEle('actionGif', 'buy')
 
                 if (this.sd.cash >= this.ram.randomRecord.price) {
                     this.sd.cash -= this.ram.randomRecord.price
@@ -291,6 +300,7 @@ const MusicAddict2 = {
             //     offer
             case 'skipBuy':
                 this.uiSetEle('actionLog', 'skipBuy')
+                this.uiSetEle('actionGif', 'skipBuy')
 
                 this.ram.nextProgressActionChoices = ['digg']
 
@@ -304,6 +314,7 @@ const MusicAddict2 = {
             //     skipSell
             case 'offer':
                 this.uiSetEle('actionLog', 'offer')
+                this.uiSetEle('actionGif', 'offer')
 
                 let k = this.randomArrayKey(this.sd.records)
                 this.ram.randomRecord = { ...this.sd.records[k] }
@@ -318,6 +329,7 @@ const MusicAddict2 = {
             //     offer
             case 'sell':
                 this.uiSetEle('actionLog', 'sell')
+                this.uiSetEle('actionGif', 'sell')
 
                 this.sd.cash += this.ram.randomRecord.sellPrice
                 this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
@@ -337,6 +349,7 @@ const MusicAddict2 = {
             //     offer
             case 'skipSell':
                 this.uiSetEle('actionLog', 'skipSell')
+                this.uiSetEle('actionGif', 'skipSell')
 
                 this.ram.incomingOffer = null
                 this.ram.nextProgressActionChoices = ['digg']
@@ -479,10 +492,14 @@ const MusicAddict2 = {
             case 'actionLog':
                 let p = document.createElement('p')
                 p.innerHTML = `${Date.now()}: ${val}`
-                this.ui.actionLog.prepend(p)
-                while (this.ui.actionLog.children.length > this.conf.actionLogMax) {
-                    this.ui.actionLog.removeChild(this.ui.actionLog.lastElementChild)
+                this.ui[uikey].prepend(p)
+                while (this.ui[uikey].children.length > this.conf.actionLogMax) {
+                    this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
                 }
+                break
+
+            case 'actionGif':
+                this.ui[uikey].style.backgroundImage = `url('res/actiongif/${val}.gif')`
                 break
 
             default:
@@ -544,7 +561,7 @@ const MusicAddict2 = {
 
     // Make an API request.
     apiRequest(query={}, onSuccess=null) {
-        console.debug('api request:', query)
+        // console.debug('api request:', query)
 
         const queryData = new FormData()
         for (const k in query) {
@@ -564,7 +581,7 @@ const MusicAddict2 = {
         })
 
         .then(responseData => {
-            console.debug('api response:', responseData)
+            // console.debug('api response:', responseData)
             if (typeof(onSuccess) == 'function') {
                 onSuccess(responseData)
             }

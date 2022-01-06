@@ -4,7 +4,7 @@ In no particular order.
 
 ## TO-DO
 
-...
+- Unique GIF for progress action bulkSale.
 
 ---
 
