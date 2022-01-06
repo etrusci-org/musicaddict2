@@ -1,3 +1,6 @@
+-- Schema for for SQLite3. Last version tested: 3.37.1.
+-- Create database/load this schema with dev/bin/sqlite3.exe.
+
 BEGIN TRANSACTION;
 
 
