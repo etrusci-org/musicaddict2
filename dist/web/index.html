@@ -16,12 +16,16 @@
     <!-- Main wrapper. Will be initially hidden through CSS and re-enabled in MusicAddict2.main(). -->
     <div id="app" data-uikey="app">
 
-        <!-- ALWAYS visible -->
-
-        <!-- Action GIF -->
+        <!--
+            Action GIF display.
+            Will be set to res/actiongif/idle.gif by default.
+        -->
         <div data-uikey="actionGif"></div>
 
-        <!-- Controls for authentication -->
+        <!--
+            Controls for authentication and playerName input.
+            All except inputPlayerName will be hidden on ctrlRegister and ctrlContinue click.
+        -->
         <p>
             Enter a <strong>Player Name</strong> (optional) and <strong>Register</strong>.<br>
             Or enter your <strong>Secret Token</strong> to continue.
@@ -35,7 +39,7 @@
             <button data-uikey="ctrlContinue">continue</button>
         </p>
 
-        <!-- Hidden until logged-in -->
+        <!-- Hidden until authenticated. -->
 
         <div data-uikey="game">
             <!-- Stats and game info -->
@@ -48,7 +52,6 @@
                 <button data-uikey="ctrlProgress">progress</button>
                 <button data-uikey="ctrlExit">exit</button>
             </p>
-
             <!-- Action log -->
             <div data-uikey="actionLog"></div>
         </div>

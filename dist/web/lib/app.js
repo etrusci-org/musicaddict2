@@ -11,7 +11,6 @@ const MusicAddict2 = {
     sd: {
         token: '',
         playerName: 'Anonymous',
-        // playerHash: '7079c72c21415131774625ba1d64f4b0',
         cash: 7,
         records: [],
     },
@@ -85,9 +84,7 @@ const MusicAddict2 = {
     // Start or continue playing. Mainly used by ctrlRegisterHandler() and ctrlContinueHandler()
     start() {
         // We don't need the auth part anymore now.
-        // Only the fun stuff.
-        // this.uiVis('groupAuth', 'hide')
-        // this.uiVis('groupPlay', 'show')
+        // Only the fun stuff..
         this.uiVis('ctrlRegister', 'hide')
         this.uiVis('ctrlContinue', 'hide')
         this.uiVis('inputToken', 'hide')
@@ -142,7 +139,7 @@ const MusicAddict2 = {
 
         setTimeout(() => {
             location.reload()
-        }, this.conf.exitDelay);
+        }, this.conf.exitDelay)
     },
 
     // Progress in the game.
@@ -578,8 +575,6 @@ const MusicAddict2 = {
 
     // Make an API request.
     apiRequest(query={}, onSuccess=null) {
-        // console.debug('api request:', query)
-
         const queryData = new FormData()
         for (const k in query) {
             queryData.append(k, query[k])
@@ -589,24 +584,20 @@ const MusicAddict2 = {
             method: 'POST',
             body: queryData,
         })
-
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not OK');
+                throw new Error('Network response was not OK')
             }
-            return response.json();
+            return response.json()
         })
-
         .then(responseData => {
-            // console.debug('api response:', responseData)
             if (typeof(onSuccess) == 'function') {
                 onSuccess(responseData)
             }
         })
-
         .catch(error => {
-            console.error('apiRequest Error:', error);
-        });
+            console.error('apiRequest Error:', error)
+        })
     },
 
 
