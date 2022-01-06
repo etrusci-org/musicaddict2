@@ -21,26 +21,23 @@
         <!-- Action GIF -->
         <div data-uikey="actionGif"></div>
 
-        <!-- BEFORE authentication -->
-        <div data-uikey="groupAuth">
-            <!-- Controls for authentication -->
-            <p>
-                Enter a Player Name (optional) and Register.<br>
-                Or enter your secret token to continue.
-            </p>
-            <p>
-                <input type="text" data-uikey="inputPlayerName" placeholder="Player Name">
-                <button data-uikey="ctrlRegister">register</button>
-            </p>
-            <p>
-                <input type="text" data-uikey="inputToken" placeholder="Secret Token">
-                <button data-uikey="ctrlContinue">continue</button>
-            </p>
-        </div>
+        <!-- Controls for authentication -->
+        <p>
+            Enter a <strong>Player Name</strong> (optional) and <strong>Register</strong>.<br>
+            Or enter your <strong>Secret Token</strong> to continue.
+        </p>
+        <p>
+            <input type="text" data-uikey="inputPlayerName" maxlength="30" placeholder="Player Name">
+            <button data-uikey="ctrlRegister">register</button>
+        </p>
+        <p>
+            <input type="text" data-uikey="inputToken" maxlength="100" placeholder="Secret Token">
+            <button data-uikey="ctrlContinue">continue</button>
+        </p>
 
+        <!-- Hidden until logged-in -->
 
-        <!-- AFTER authentication -->
-        <div data-uikey="groupPlay">
+        <div data-uikey="game">
             <!-- Stats and game info -->
             <p>
                 cash: <span data-uikey="sdCash">-</span>

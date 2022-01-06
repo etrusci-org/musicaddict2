@@ -148,6 +148,10 @@ class MusicAddictAPI {
                     return;
                 }
 
+                $saveData['playerName'] = substr(trim($saveData['playerName']), 0, 30);
+                if (empty($saveData['playerName'])) {
+                    $saveData['playerName'] = 'Anonymous';
+                }
                 $saveData['records'] = jenc($saveData['records']);
 
                 $q = 'SELECT token FROM sd WHERE token = :token;';

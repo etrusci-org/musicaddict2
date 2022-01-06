@@ -73,7 +73,7 @@ const MusicAddict2 = {
         })
 
         // Hide some UI elements.
-        this.uiVis('groupPlay', 'hide') // unhide in ctrlRegisterHandler() + ctrlContinueHandler()
+        this.uiVis('game', 'hide') // unhide in start()
 
         // Add/update some UI elements.
         this.uiSetEle('actionGif', 'idle')
@@ -86,8 +86,12 @@ const MusicAddict2 = {
     start() {
         // We don't need the auth part anymore now.
         // Only the fun stuff.
-        this.uiVis('groupAuth', 'hide')
-        this.uiVis('groupPlay', 'show')
+        // this.uiVis('groupAuth', 'hide')
+        // this.uiVis('groupPlay', 'show')
+        this.uiVis('ctrlRegister', 'hide')
+        this.uiVis('ctrlContinue', 'hide')
+        this.uiVis('inputToken', 'hide')
+        this.uiVis('game', 'show')
 
         // We don't want to auto-save right after starting.
         this.ram.lastSavedOn = Date.now()
