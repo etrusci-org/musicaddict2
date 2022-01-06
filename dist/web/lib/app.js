@@ -226,7 +226,7 @@ const MusicAddict2 = {
                     let k = this.randomArrayKey(this.sd.records)
                     this.ram.randomRecord = { ...this.sd.records[k] }
                     this.ram.randomRecord.collectionKey = k
-                    this.ram.randomRecord.sellPrice = this.ram.randomRecord.price + this.randomInteger(1, this.ram.randomRecord.price * 0.5)
+                    this.ram.randomRecord.sellPrice = this.ram.randomRecord.buyPrice + this.randomInteger(1, this.ram.randomRecord.buyPrice * 0.5)
 
                     this.sd.cash += this.ram.randomRecord.sellPrice
                     this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
@@ -281,8 +281,8 @@ const MusicAddict2 = {
                 this.uiSetEle('actionLog', 'buy')
                 this.uiSetEle('actionGif', 'buy')
 
-                if (this.sd.cash >= this.ram.randomRecord.price) {
-                    this.sd.cash -= this.ram.randomRecord.price
+                if (this.sd.cash >= this.ram.randomRecord.buyPrice) {
+                    this.sd.cash -= this.ram.randomRecord.buyPrice
                     this.sd.records.push(this.ram.randomRecord)
 
                     this.uiSetEle('actionLog', `Bought ${JSON.stringify(this.ram.randomRecord)}.`)
@@ -322,7 +322,7 @@ const MusicAddict2 = {
                 let k = this.randomArrayKey(this.sd.records)
                 this.ram.randomRecord = { ...this.sd.records[k] }
                 this.ram.randomRecord.collectionKey = k
-                this.ram.randomRecord.sellPrice = this.ram.randomRecord.price + this.randomInteger(1, this.ram.randomRecord.price * 0.5)
+                this.ram.randomRecord.sellPrice = this.ram.randomRecord.buyPrice + this.randomInteger(1, this.ram.randomRecord.buyPrice * 0.5)
 
                 this.ram.nextProgressActionChoices = ['sell', 'skipSell']
                 break
@@ -621,7 +621,8 @@ const MusicAddict2 = {
             title: `Record-${this.randomInteger(1, 1_000)}`,
             artist: `Artist-${this.randomInteger(1, 1_000)}`,
             format: `Format-${this.randomInteger(1, 1_000)}`,
-            price: this.randomInteger(1, 10),
+            buyPrice: this.randomInteger(1, 10),
+            sellPrice: null,
         }
     },
 
