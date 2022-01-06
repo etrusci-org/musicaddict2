@@ -74,10 +74,20 @@ const MusicAddict2 = {
             }
         })
 
+        // Check if we have a Token in localStorage and enter it for the lazy/forgetful.
+        if (window.localStorage) {
+            let localStorageToken = window.localStorage.getItem('musicaddict2')
+            if (localStorageToken) {
+                localStorageToken = atob(localStorageToken)
+                this.uiSetEle('inputToken', localStorageToken)
+            }
+        }
+
         // Hide some UI elements.
         this.uiVis('game', 'hide') // unhide in start()
 
         // Add/update some UI elements.
+        this.uiSetEle('inputPlayerName', '')
         this.uiSetEle('actionGif', 'idle')
 
         // Finally un-hide the app.
@@ -121,6 +131,11 @@ const MusicAddict2 = {
             if (!response.saved) {
                 console.warn('Error while saving', response._errors)
                 return
+            }
+
+            // Remember Token in localStorage.
+            if (window.localStorage) {
+                window.localStorage.setItem('musicaddict2', btoa(this.sd.token))
             }
 
             console.debug('Progress saved.')
@@ -392,6 +407,10 @@ const MusicAddict2 = {
             }
 
             this.sd.token = response.token
+
+            if (window.localStorage) {
+                window.localStorage.removeItem('musicaddict2')
+            }
 
             if (this.ui.inputPlayerName.value.trim()) {
                 this.sd.playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
