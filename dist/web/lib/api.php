@@ -84,7 +84,7 @@ class MusicAddictAPI {
                 break;
 
             case 'continue':
-                if (!isset($this->query['token']) || !array_key_exists('token', $this->query) || empty(trim($this->query['token']))) {
+                if (!isset($this->query['token']) || !array_key_exists('token', $this->query) || !isValidToken($this->query['token'])) {
                     $this->response['_errors'][] = 'missing query token.';
                     break;
                 }
@@ -127,6 +127,11 @@ class MusicAddictAPI {
 
                 if (!$saveData) {
                     $this->response['_errors'][] = 'invalid query saveData.';
+                    break;
+                }
+
+                if (!isset($saveData['token']) || !array_key_exists('token', $saveData) || !isValidToken($saveData['token'])) {
+                    $this->response['_errors'][] = 'missing query token.';
                     break;
                 }
 
