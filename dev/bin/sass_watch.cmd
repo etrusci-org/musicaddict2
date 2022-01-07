@@ -13,4 +13,4 @@ sass ^
     --style expanded ^
     --charset ^
     --source-map ^
-    %inputDir%:.%outputDir%
+    %inputDir%:%outputDir%
