@@ -140,8 +140,6 @@ const MusicAddict2 = {
                 window.localStorage.setItem('musicaddict2', btoa(this.sd.token))
             }
 
-            console.debug('Progress saved.')
-
             if (exit) {
                 this.exit()
             }
@@ -176,8 +174,6 @@ const MusicAddict2 = {
         if (this.sd.records.length > this.conf.recordsMax) {
             this.ram.nextProgressAction = 'bulkSale'
         }
-
-        console.log(Date.now(), this.ram.nextProgressAction)
 
         // Perform action depending on current nextProgressAction
         // and choose possible choices for the next loop iteration.

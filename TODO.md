@@ -6,7 +6,7 @@ In no particular order.
 
 ## TO-DO
 
-- Sanitize relevant inputs. E.g. inputPlayerName.
+- Add event handler function names to conf or we can only have one event per element.
 - Random generators.
 - Better random data.
 - Chances and timeouts for progress() actions.
