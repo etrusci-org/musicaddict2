@@ -147,6 +147,7 @@ class MusicAddictAPI {
                 }
 
                 $saveData['playerName'] = substr(trim($saveData['playerName']), 0, 30);
+                $saveData['playerName'] = preg_replace('/[^A-Za-z0-9_-]/', '', $saveData['playerName']);
                 if (empty($saveData['playerName'])) {
                     $saveData['playerName'] = 'Anonymous';
                 }

@@ -119,8 +119,10 @@ const MusicAddict2 = {
         // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
         this.ram.lastSavedOn = Date.now()
 
-        if (this.ui.inputPlayerName.value.trim()) {
-            this.sd.playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+        let playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+        playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
+        if (playerName) {
+            this.sd.playerName = playerName
         }
 
         this.apiRequest({
@@ -412,8 +414,11 @@ const MusicAddict2 = {
                 window.localStorage.removeItem('musicaddict2')
             }
 
-            if (this.ui.inputPlayerName.value.trim()) {
-                this.sd.playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+            let playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+            playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
+            if (playerName) {
+                this.sd.playerName = playerName
+                this.uiSetEle('inputPlayerName', playerName)
             }
 
             this.uiSetEle('inputToken', this.sd.token)
