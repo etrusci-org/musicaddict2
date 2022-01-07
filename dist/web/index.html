@@ -27,11 +27,11 @@
             All except inputPlayerName will be hidden on ctrlRegister and ctrlContinue click.
         -->
         <p>
-            Enter a <strong>Player Name</strong> (optional) and <strong>Register</strong>.<br>
-            Or enter your <strong>Secret Token</strong> to continue.
+            Enter a <strong>Player Name</strong> (optional) and <strong>Register</strong> to start a new game.<br>
+            Or enter your <strong>Secret Token</strong> to <strong>Continue</strong>.
         </p>
         <p>
-            <input type="text" data-uikey="inputPlayerName" maxlength="30" placeholder="Player Name">
+            <input type="text" data-uikey="inputPlayerName" pattern="[A-Za-z0-9_-]{1,30}" placeholder="Player Name">
             <button data-uikey="ctrlRegister">register</button>
         </p>
         <p>

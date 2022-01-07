@@ -15,4 +15,8 @@ body {
   background-size: cover;
 }
 
+input:invalid {
+  color: red;
+}
+
 /*# sourceMappingURL=app.css.map */
