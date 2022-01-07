@@ -6,6 +6,7 @@ In no particular order.
 
 ## TO-DO
 
+- Better variable/method names.
 - Random generators.
 - Better random data.
 - Chances for progress() actions.
