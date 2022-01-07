@@ -35,6 +35,8 @@ const MusicAddict2 = {
         recordsMax: 20, // how many records the player can keep in their collection, integer
         bulkSaleAmount: 5, // how many records to sell in a bulk sale, integer
         listenDuration: { min: 5_000, max: 10_000 }, // min and max listen duration, millisec
+        discoverChance: 0.35,
+        offerChance: 0.25,
     },
 
     // Temporary stuff the app needs to work.
@@ -211,9 +213,11 @@ const MusicAddict2 = {
 
                 this.ram.nextProgressActionChoices = ['digg']
 
-                this.ram.nextProgressActionChoices.push('discover')
+                if (this.lucky(this.conf.discoverChance)) {
+                    this.ram.nextProgressActionChoices.push('discover')
+                }
 
-                if (this.sd.records.length > 0) {
+                if (this.lucky(this.conf.offerChance) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
@@ -734,9 +738,39 @@ const MusicAddict2 = {
 
     // ====================================== DATE/TIME ===========================================
 
+    // Check if time's up.
     timesUp(pastTime=0, interval=0) {
         return Date.now() - pastTime > interval
     },
+
+    // // Make seconds human readable.
+    // secToDHMS(sec, milli=true) {
+    //     if (milli) {
+    //         sec = sec / 1000 | 0
+    //     }
+
+    //     let d = Math.floor(sec / (3600 * 24))
+    //     let h = Math.floor(sec % (3600 * 24) / 3600)
+    //     let m = Math.floor(sec % 3600 / 60)
+    //     let s = Math.floor(sec % 60)
+
+    //     if (d > 0) return `${d}d${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
+    //     if (h > 0) return `${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
+    //     if (m > 0) return `${this.padNum(m)}m${this.padNum(s)}s`
+    //     return `${this.padNum(s)}s`
+    // },
+
+
+
+
+    // // ======================================== MISC ==============================================
+
+    // // Pad single digit numbers with a 0.
+    // padNum(num) {
+    //     return (num < 10 && num >= 0) ? `0${num}` : num
+    // }
+
+
 
 
 } // /MusicAddict2
