@@ -34,6 +34,9 @@ const MusicAddict2 = {
         autoSaveInterval: 30_000, // interval for auto saving, millisec
         recordsMax: 100, // how many records the player can keep in their collection, integer
         bulkSaleAmount: 25, // how many records to sell in a bulk sale, integer
+
+        discoverInterval: 5_000, // how much time to pass until there is a chance to discover a record, millisec
+        offerInterval: 10_000, // how much time to pass until there is a chance to get an offer to sell a record, millisec
     },
 
     // Temporary stuff the app needs to work.
@@ -45,6 +48,9 @@ const MusicAddict2 = {
         randomRecord: null,
         incomingOffer: null,
         bulkSaleID: null,
+
+        lastDiscoverOn: null,
+        lastOfferOn: null,
     },
 
 
@@ -98,7 +104,7 @@ const MusicAddict2 = {
         this.uiVis('app', 'block')
     },
 
-    // Start or continue playing. Mainly used by ctrlRegisterHandler() and ctrlContinueHandler()
+    // Start or continue playing. Primarily used by ctrlRegisterHandleClick() and ctrlContinueHandler().
     start() {
         // We don't need the auth part anymore now.
         // Only the fun stuff..
@@ -179,6 +185,14 @@ const MusicAddict2 = {
             this.ram.nextProgressAction = 'bulkSale'
         }
 
+        if (!this.ram.lastDiscoverOn) {
+            this.ram.lastDiscoverOn = Date.now()
+        }
+
+        if (!this.ram.lastOfferOn) {
+            this.ram.lastOfferOn = Date.now()
+        }
+
         // Perform action depending on current nextProgressAction
         // and choose possible choices for the next loop iteration.
         this.ram.nextProgressActionChoices = []
@@ -206,15 +220,18 @@ const MusicAddict2 = {
                 this.uiSetEle('actionLog', 'digg')
                 this.uiSetEle('actionGif', 'digg')
 
-                this.ram.nextProgressActionChoices = ['digg', 'discover']
+                this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.sd.records.length > 0) {
+                if (this.timesUp(this.ram.lastDiscoverOn, this.conf.discoverInterval)) {
+                    this.ram.nextProgressActionChoices.push('discover')
+                }
+
+                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
 
             // next:
-            //     broke
             //     offer
             case 'broke':
                 this.uiSetEle('actionLog', 'broke')
@@ -261,9 +278,13 @@ const MusicAddict2 = {
 
                         this.uiSetEle('actionLog', `Done selling ${bulkSaleCounter} records.`)
                     }
-                }, 250)
+                }, 1_000)
 
-                this.ram.nextProgressActionChoices = ['digg', 'offer']
+                this.ram.nextProgressActionChoices = ['digg']
+
+                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
+                    this.ram.nextProgressActionChoices.push('offer')
+                }
                 break
 
             // next:
@@ -271,6 +292,8 @@ const MusicAddict2 = {
             case 'discover':
                 this.uiSetEle('actionLog', 'discover')
                 this.uiSetEle('actionGif', 'discover')
+
+                this.ram.lastDiscoverOn = Date.now()
 
                 this.ram.randomRecord = this.randomRecord()
 
@@ -305,12 +328,12 @@ const MusicAddict2 = {
                     this.uiSetEle('actionLog', `Bought ${JSON.stringify(this.ram.randomRecord)}.`)
                 }
                 else {
-                    this.uiSetEle('actionLog', `You want it, but have not enough cash.`)
+                    this.uiSetEle('actionLog', `You want ${JSON.stringify(this.ram.randomRecord)}, but have not enough cash.`)
                 }
 
                 this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.sd.records.length > 0) {
+                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
@@ -324,7 +347,7 @@ const MusicAddict2 = {
 
                 this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.sd.records.length > 0) {
+                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
@@ -335,6 +358,8 @@ const MusicAddict2 = {
             case 'offer':
                 this.uiSetEle('actionLog', 'offer')
                 this.uiSetEle('actionGif', 'offer')
+
+                this.ram.lastOfferOn = Date.now()
 
                 let k = this.randomArrayKey(this.sd.records)
                 this.ram.randomRecord = { ...this.sd.records[k] }
@@ -359,7 +384,7 @@ const MusicAddict2 = {
                 this.ram.incomingOffer = null
                 this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.sd.records.length > 0) {
+                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
@@ -374,7 +399,7 @@ const MusicAddict2 = {
                 this.ram.incomingOffer = null
                 this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.sd.records.length > 0) {
+                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
@@ -729,6 +754,15 @@ const MusicAddict2 = {
         min = Math.ceil(min)
         max = Math.floor(max)
         return Math.floor(Math.random() * (max - min + 1) + min)
+    },
+
+
+
+
+    // ====================================== DATE/TIME ===========================================
+
+    timesUp(pastTime=0, interval=0) {
+        return Date.now() - pastTime > interval
     },
 
 

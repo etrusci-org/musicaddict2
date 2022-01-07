@@ -6,7 +6,7 @@ In no particular order.
 
 ## TO-DO
 
-- Add event handler function names to conf or we can only have one event per element.
+- Rename database table colum lastSaved to lastSavedOn.
 - Random generators.
 - Better random data.
 - Chances and timeouts for progress() actions.
