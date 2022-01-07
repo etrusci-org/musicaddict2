@@ -6,7 +6,6 @@ In no particular order.
 
 ## TO-DO
 
-- Rename database table colum lastSaved to lastSavedOn.
 - Random generators.
 - Better random data.
 - Chances and timeouts for progress() actions.

@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS sd (
 
     -- The following columns are not part of MusicAddict2.sd object
     -- and will not be returned when loading progress.
-    created    INTEGER  DEFAULT (strftime('%s','now')),
-    lastSaved  INTEGER  DEFAULT (strftime('%s','now'))
+    created     INTEGER  DEFAULT (strftime('%s','now')),
+    lastSavedOn INTEGER  DEFAULT NULL
 );
 
 
