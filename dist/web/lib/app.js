@@ -27,16 +27,14 @@ const MusicAddict2 = {
             { uikey: 'ctrlProgress', type: 'click', handler: 'ctrlProgressHandleClick' },
             { uikey: 'ctrlExit', type: 'click', handler: 'ctrlExitHandleClick' },
         ],
-        actionLogMax: 100, // how many lines to keep in the actionlog
+        actionLogMax: 500, // how many lines to keep in the actionlog
         backgroundUpdateInterval: 500, // do stuff every N, millisec
-        clickSpeed: 250, // how fast we can click, millisec
+        clickSpeed: 1_000, // how fast we can click, millisec
         exitDelay: 2_000, // timeout after we clicked exit before the page gets reloaded, millisec
-        autoSaveInterval: 30_000, // interval for auto saving, millisec
-        recordsMax: 100, // how many records the player can keep in their collection, integer
-        bulkSaleAmount: 25, // how many records to sell in a bulk sale, integer
-
-        discoverInterval: 5_000, // how much time to pass until there is a chance to discover a record, millisec
-        offerInterval: 10_000, // how much time to pass until there is a chance to get an offer to sell a record, millisec
+        autoSaveInterval: 60_000, // interval for auto saving, millisec
+        recordsMax: 20, // how many records the player can keep in their collection, integer
+        bulkSaleAmount: 5, // how many records to sell in a bulk sale, integer
+        listenDuration: { min: 5_000, max: 10_000 }, // min and max listen duration, millisec
     },
 
     // Temporary stuff the app needs to work.
@@ -48,9 +46,8 @@ const MusicAddict2 = {
         randomRecord: null,
         incomingOffer: null,
         bulkSaleID: null,
-
-        lastDiscoverOn: null,
-        lastOfferOn: null,
+        listenDuration: null,
+        lastListenOn: null,
     },
 
 
@@ -185,14 +182,6 @@ const MusicAddict2 = {
             this.ram.nextProgressAction = 'bulkSale'
         }
 
-        if (!this.ram.lastDiscoverOn) {
-            this.ram.lastDiscoverOn = Date.now()
-        }
-
-        if (!this.ram.lastOfferOn) {
-            this.ram.lastOfferOn = Date.now()
-        }
-
         // Perform action depending on current nextProgressAction
         // and choose possible choices for the next loop iteration.
         this.ram.nextProgressActionChoices = []
@@ -222,11 +211,9 @@ const MusicAddict2 = {
 
                 this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.timesUp(this.ram.lastDiscoverOn, this.conf.discoverInterval)) {
-                    this.ram.nextProgressActionChoices.push('discover')
-                }
+                this.ram.nextProgressActionChoices.push('discover')
 
-                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
+                if (this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
@@ -238,6 +225,7 @@ const MusicAddict2 = {
                 this.uiSetEle('actionGif', 'broke')
 
                 this.ram.incomingOffer = Math.random() < 0.5
+
                 if (this.ram.incomingOffer) {
                     this.ram.nextProgressActionChoices = ['offer']
                 }
@@ -245,16 +233,15 @@ const MusicAddict2 = {
 
             // next:
             //     digg
-            //     offer
             case 'bulkSale':
                 this.uiSetEle('actionLog', 'bulkSale')
                 this.uiSetEle('actionGif', 'sell')
 
-                this.ram.bulkSaleID = null
-                let bulkSaleCounter = 0
-
                 this.uiState('ctrlProgress', 'disabled')
                 this.uiState('ctrlExit', 'disabled')
+
+                this.ram.bulkSaleID = null
+                let bulkSaleCounter = 0
 
                 this.ram.bulkSaleID = setInterval(() => {
                     let k = this.randomArrayKey(this.sd.records)
@@ -281,10 +268,6 @@ const MusicAddict2 = {
                 }, 1_000)
 
                 this.ram.nextProgressActionChoices = ['digg']
-
-                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
-                    this.ram.nextProgressActionChoices.push('offer')
-                }
                 break
 
             // next:
@@ -292,8 +275,6 @@ const MusicAddict2 = {
             case 'discover':
                 this.uiSetEle('actionLog', 'discover')
                 this.uiSetEle('actionGif', 'discover')
-
-                this.ram.lastDiscoverOn = Date.now()
 
                 this.ram.randomRecord = this.randomRecord()
 
@@ -309,14 +290,20 @@ const MusicAddict2 = {
 
                 this.ram.nextProgressActionChoices = ['listen']
 
-                // if enough time passed {
+                if (!this.ram.lastListenOn) {
+                    this.ram.lastListenOn = Date.now()
+                    this.ram.listenDuration = this.randomInteger(this.conf.listenDuration.min, this.conf.listenDuration.max)
+                }
+
+                if (this.timesUp(this.ram.lastListenOn, this.ram.listenDuration)) {
                     this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
-                // }
+                    this.ram.lastListenOn = null
+                    this.ram.listenDuration = null
+                }
                 break
 
             // next:
             //     digg
-            //     offer
             case 'buy':
                 this.uiSetEle('actionLog', 'buy')
                 this.uiSetEle('actionGif', 'buy')
@@ -332,10 +319,6 @@ const MusicAddict2 = {
                 }
 
                 this.ram.nextProgressActionChoices = ['digg']
-
-                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
-                    this.ram.nextProgressActionChoices.push('offer')
-                }
                 break
 
             // next:
@@ -346,10 +329,6 @@ const MusicAddict2 = {
                 this.uiSetEle('actionGif', 'skipBuy')
 
                 this.ram.nextProgressActionChoices = ['digg']
-
-                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
-                    this.ram.nextProgressActionChoices.push('offer')
-                }
                 break
 
             // next:
@@ -358,8 +337,6 @@ const MusicAddict2 = {
             case 'offer':
                 this.uiSetEle('actionLog', 'offer')
                 this.uiSetEle('actionGif', 'offer')
-
-                this.ram.lastOfferOn = Date.now()
 
                 let k = this.randomArrayKey(this.sd.records)
                 this.ram.randomRecord = { ...this.sd.records[k] }
@@ -371,7 +348,6 @@ const MusicAddict2 = {
 
             // next:
             //     digg
-            //     offer
             case 'sell':
                 this.uiSetEle('actionLog', 'sell')
                 this.uiSetEle('actionGif', 'sell')
@@ -382,26 +358,19 @@ const MusicAddict2 = {
                 this.uiSetEle('actionLog', `Sold ${JSON.stringify(this.ram.randomRecord)}.`)
 
                 this.ram.incomingOffer = null
-                this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
-                    this.ram.nextProgressActionChoices.push('offer')
-                }
+                this.ram.nextProgressActionChoices = ['digg']
                 break
 
             // next:
             //     digg
-            //     offer
             case 'skipSell':
                 this.uiSetEle('actionLog', 'skipSell')
                 this.uiSetEle('actionGif', 'skipSell')
 
                 this.ram.incomingOffer = null
-                this.ram.nextProgressActionChoices = ['digg']
 
-                if (this.timesUp(this.ram.lastOfferOn, this.conf.offerInterval) && this.sd.records.length > 0) {
-                    this.ram.nextProgressActionChoices.push('offer')
-                }
+                this.ram.nextProgressActionChoices = ['digg']
                 break
 
             default:

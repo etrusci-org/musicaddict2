@@ -8,7 +8,7 @@ In no particular order.
 
 - Random generators.
 - Better random data.
-- Chances and timeouts for progress() actions.
+- Chances for progress() actions.
 - Cleanup or replace console.log's to display useful data and ditch debug stuff.
 - Unique GIF for progress action bulkSale.
 
