@@ -380,7 +380,11 @@ const MusicAddict2 = {
         this.ram.nextProgressAction = this.randomArrayItem(this.ram.nextProgressActionChoices)
     },
 
-
+    // Be lucky, or not.
+    lucky(chance=0.0) {
+        chance = Math.max(0, chance)
+        return Math.random() < chance
+    },
 
 
     // ==================================== EVENT HANDLERS ========================================
