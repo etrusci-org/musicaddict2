@@ -50,6 +50,7 @@ const MusicAddict2 = {
         bulkSaleID: null,
         listenDuration: null,
         lastListenOn: null,
+        startedSessionOn: null,
     },
 
 
@@ -111,6 +112,8 @@ const MusicAddict2 = {
         this.uiVis('ctrlContinue', 'hide')
         this.uiVis('inputToken', 'hide')
         this.uiVis('game', 'show')
+
+        this.ram.startedSessionOn = Date.now()
 
         // We don't want to auto-save right after starting.
         this.ram.lastSavedOn = Date.now()
@@ -384,11 +387,7 @@ const MusicAddict2 = {
         this.ram.nextProgressAction = this.randomArrayItem(this.ram.nextProgressActionChoices)
     },
 
-    // Be lucky, or not.
-    lucky(chance=0.0) {
-        chance = Math.max(0, chance)
-        return Math.random() < chance
-    },
+
 
 
     // ==================================== EVENT HANDLERS ========================================
@@ -529,7 +528,7 @@ const MusicAddict2 = {
         switch (uikey) {
             case 'actionLog':
                 let p = document.createElement('p')
-                p.innerHTML = `${Date.now()}: ${val}`
+                p.innerHTML = `${this.secToDHMS(Date.now() - this.ram.startedSessionOn)}: ${val}`
                 this.ui[uikey].prepend(p)
                 while (this.ui[uikey].children.length > this.conf.actionLogMax) {
                     this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
@@ -633,6 +632,12 @@ const MusicAddict2 = {
 
 
     // ====================================== RANDOMNESS ==========================================
+
+    // Be lucky, or not.
+    lucky(chance=0.0) {
+        chance = Math.max(0, chance)
+        return Math.random() < chance
+    },
 
     // A complete random record.
     // WIP
@@ -743,32 +748,32 @@ const MusicAddict2 = {
         return Date.now() - pastTime > interval
     },
 
-    // // Make seconds human readable.
-    // secToDHMS(sec, milli=true) {
-    //     if (milli) {
-    //         sec = sec / 1000 | 0
-    //     }
+    // Make seconds human readable.
+    secToDHMS(sec, milli=true) {
+        if (milli) {
+            sec = sec / 1000 | 0
+        }
 
-    //     let d = Math.floor(sec / (3600 * 24))
-    //     let h = Math.floor(sec % (3600 * 24) / 3600)
-    //     let m = Math.floor(sec % 3600 / 60)
-    //     let s = Math.floor(sec % 60)
+        let d = Math.floor(sec / (3600 * 24))
+        let h = Math.floor(sec % (3600 * 24) / 3600)
+        let m = Math.floor(sec % 3600 / 60)
+        let s = Math.floor(sec % 60)
 
-    //     if (d > 0) return `${d}d${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
-    //     if (h > 0) return `${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
-    //     if (m > 0) return `${this.padNum(m)}m${this.padNum(s)}s`
-    //     return `${this.padNum(s)}s`
-    // },
-
-
+        if (d > 0) return `${d}d${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
+        if (h > 0) return `${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
+        if (m > 0) return `${this.padNum(m)}m${this.padNum(s)}s`
+        return `${this.padNum(s)}s`
+    },
 
 
-    // // ======================================== MISC ==============================================
 
-    // // Pad single digit numbers with a 0.
-    // padNum(num) {
-    //     return (num < 10 && num >= 0) ? `0${num}` : num
-    // }
+
+    // ======================================== MISC ==============================================
+
+    // Pad single digit numbers with a 0.
+    padNum(num) {
+        return (num < 10 && num >= 0) ? `0${num}` : num
+    }
 
 
 
