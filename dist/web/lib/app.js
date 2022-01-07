@@ -22,12 +22,10 @@ const MusicAddict2 = {
     conf: {
         apiPath: './api.php', // abs or rel path to dist/api.php
         eventHandler: [
-            // handler functions will be prefixed with the uikey and suffixed with 'Handler'.
-            // E.g.: { uikey: 'example', type: 'click' } -> looks for exampleHandler function.
-            { uikey: 'ctrlRegister', type: 'click' },
-            { uikey: 'ctrlContinue', type: 'click' },
-            { uikey: 'ctrlProgress', type: 'click' },
-            { uikey: 'ctrlExit',     type: 'click' },
+            { uikey: 'ctrlRegister', type: 'click', handler: 'ctrlRegisterHandleClick' },
+            { uikey: 'ctrlContinue', type: 'click', handler: 'ctrlContinueHandleClick' },
+            { uikey: 'ctrlProgress', type: 'click', handler: 'ctrlProgressHandleClick' },
+            { uikey: 'ctrlExit', type: 'click', handler: 'ctrlExitHandleClick' },
         ],
         actionLogMax: 100, // how many lines to keep in the actionlog
         backgroundUpdateInterval: 500, // do stuff every N, millisec
@@ -66,11 +64,17 @@ const MusicAddict2 = {
 
         // Register event handlers.
         this.conf.eventHandler.forEach((v) => {
-            if (typeof(this[`${v.uikey}Handler`]) != 'function') {
-                console.warn('main()', 'Event handler is configured but function does not exist:', `${v.uikey}Handler()`)
+            // if (typeof(this[`${v.uikey}Handler`]) != 'function') {
+            //     console.warn('main()', 'Event handler is configured but function does not exist:', `${v.uikey}Handler()`)
+            // }
+            // else {
+            //     this.ui[v.uikey].addEventListener(v.type, e => this[`${v.uikey}Handler`](e))
+            // }
+            if (typeof(this[v.handler]) != 'function') {
+                console.warn('main()', 'Event handler is configured but function does not exist:', `${v.handler}()`)
             }
             else {
-                this.ui[v.uikey].addEventListener(v.type, e => this[`${v.uikey}Handler`](e))
+                this.ui[v.uikey].addEventListener(v.type, e => this[v.handler](e))
             }
         })
 
@@ -388,7 +392,7 @@ const MusicAddict2 = {
     // ==================================== EVENT HANDLERS ========================================
 
     // Handle ctrlRegister clicks
-    ctrlRegisterHandler(e) {
+    ctrlRegisterHandleClick(e) {
         // Stop if we already have a token.
         if (this.sd.token) {
             return
@@ -425,7 +429,7 @@ const MusicAddict2 = {
     },
 
     // Handle ctrlContinue clicks
-    ctrlContinueHandler(e) {
+    ctrlContinueHandleClick(e) {
         // Stop if we already have a token.
         if (this.sd.token) {
             return
@@ -458,7 +462,7 @@ const MusicAddict2 = {
     },
 
     // Handle ctrlProgress clicks
-    ctrlProgressHandler(e) {
+    ctrlProgressHandleClick(e) {
         if (!this.sd.token) {
             return
         }
@@ -474,7 +478,7 @@ const MusicAddict2 = {
     },
 
     // Handle ctrlExit clicks
-    ctrlExitHandler(e) {
+    ctrlExitHandleClick(e) {
         this.save(true)
     },
 
