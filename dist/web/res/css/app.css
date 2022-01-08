@@ -71,6 +71,10 @@ button:hover {
   color: #a85eda;
   background-color: #24172e;
 }
+button:disabled {
+  color: #9d92a5;
+  background-color: #29252c;
+}
 
 .money {
   color: #83ce74;

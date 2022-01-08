@@ -20,6 +20,11 @@ button {
         color: #a85eda;
         background-color: #24172e;
     }
+
+    &:disabled {
+        color: #9d92a5;
+        background-color: #29252c;
+    }
 }
 
 .money {
