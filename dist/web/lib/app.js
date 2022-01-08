@@ -218,7 +218,7 @@ const MusicAddict2 = {
             //     discover
             //     offer
             case 'digg':
-                this.uiSetEle('actionLog', 'digg')
+                this.uiSetEle('actionLog', `Digging for cool records.`)
                 this.uiSetEle('actionGif', 'digg')
 
                 this.ram.nextProgressActionChoices = ['digg']
@@ -235,7 +235,7 @@ const MusicAddict2 = {
             // next:
             //     offer
             case 'broke':
-                this.uiSetEle('actionLog', 'broke')
+                this.uiSetEle('actionLog', `You used up all your cash.`)
                 this.uiSetEle('actionGif', 'broke')
 
                 this.ram.incomingOffer = Math.random() < 0.5
@@ -248,7 +248,7 @@ const MusicAddict2 = {
             // next:
             //     digg
             case 'bulkSale':
-                this.uiSetEle('actionLog', 'bulkSale')
+                this.uiSetEle('actionLog', `You can not store more records and decide to sell some in bulk.`)
                 this.uiSetEle('actionGif', 'sell')
 
                 this.uiState('ctrlProgress', 'disabled')
@@ -287,10 +287,11 @@ const MusicAddict2 = {
             // next:
             //     listen
             case 'discover':
-                this.uiSetEle('actionLog', 'discover')
                 this.uiSetEle('actionGif', 'discover')
 
                 this.ram.randomRecord = this.randomRecord()
+
+                this.uiSetEle('actionLog', `Discovered ${JSON.stringify(this.ram.randomRecord)}.`)
 
                 this.ram.nextProgressActionChoices = ['listen']
                 break
@@ -299,7 +300,7 @@ const MusicAddict2 = {
             //     buy
             //     skipBuy
             case 'listen':
-                this.uiSetEle('actionLog', 'listen')
+                this.uiSetEle('actionLog', `Listening.`)
                 this.uiSetEle('actionGif', 'listen')
 
                 this.ram.nextProgressActionChoices = ['listen']
@@ -319,7 +320,6 @@ const MusicAddict2 = {
             // next:
             //     digg
             case 'buy':
-                this.uiSetEle('actionLog', 'buy')
                 this.uiSetEle('actionGif', 'buy')
 
                 if (this.sd.cash >= this.ram.randomRecord.buyPrice) {
@@ -339,7 +339,7 @@ const MusicAddict2 = {
             //     digg
             //     offer
             case 'skipBuy':
-                this.uiSetEle('actionLog', 'skipBuy')
+                this.uiSetEle('actionLog', `Nah, you don't like this one that much.`)
                 this.uiSetEle('actionGif', 'skipBuy')
 
                 this.ram.nextProgressActionChoices = ['digg']
@@ -349,7 +349,6 @@ const MusicAddict2 = {
             //     sell
             //     skipSell
             case 'offer':
-                this.uiSetEle('actionLog', 'offer')
                 this.uiSetEle('actionGif', 'offer')
 
                 let k = this.randomArrayKey(this.sd.records)
@@ -357,13 +356,14 @@ const MusicAddict2 = {
                 this.ram.randomRecord.collectionKey = k
                 this.ram.randomRecord.sellPrice = this.ram.randomRecord.buyPrice + this.randomInteger(1, this.ram.randomRecord.buyPrice * 0.5)
 
+                this.uiSetEle('actionLog', `Some one want's to buy ${JSON.stringify(this.ram.randomRecord)} from your collection.`)
+
                 this.ram.nextProgressActionChoices = ['sell', 'skipSell']
                 break
 
             // next:
             //     digg
             case 'sell':
-                this.uiSetEle('actionLog', 'sell')
                 this.uiSetEle('actionGif', 'sell')
 
                 this.sd.cash += this.ram.randomRecord.sellPrice
@@ -379,8 +379,8 @@ const MusicAddict2 = {
             // next:
             //     digg
             case 'skipSell':
-                this.uiSetEle('actionLog', 'skipSell')
                 this.uiSetEle('actionGif', 'skipSell')
+                this.uiSetEle('actionLog', `Nah, you keep this one for now.`)
 
                 this.ram.incomingOffer = null
 
