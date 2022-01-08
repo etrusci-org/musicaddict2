@@ -34,11 +34,12 @@ const MusicAddict2 = {
         autoSaveInterval: 60_000, // interval for auto saving, millisec
         recordsMax: 500, // how many records the player can keep in their collection, integer
         bulkSaleAmount: 50, // how many records to sell in a bulk sale, integer
-        listenDuration: { min: 5_000, max: 10_000 }, // min and max listen duration, millisec
-        discoverChance: 0.35,
-        offerChance: 0.25,
+        listenDuration: { min: 5_000, max: 20_000 }, // min and max listen duration, millisec
+        discoverChance: 0.20, // chance to discover an interesting record, float, 0.0-1.0
+        offerChance: 0.10,  // chance to get asked to sell record, float, 0.0-1.0
     },
 
+    // Static texts.
     txt: {
         introStory: `<p>You're broke and lonely. After many sleepless nights in your nearly empty 1-room flat,
         you decide to spend your last <span class="money">7</span> to buy music. "At least my funeral
@@ -62,7 +63,7 @@ const MusicAddict2 = {
 
 
 
-    // ========================================= CORE =============================================
+    /* ========================================= CORE ========================================== */
 
     // Init crucial stuff.
     main() {
@@ -396,7 +397,7 @@ const MusicAddict2 = {
 
 
 
-    // ==================================== EVENT HANDLERS ========================================
+    /* ==================================== EVENT HANDLERS ===================================== */
 
     // Handle ctrlRegister clicks
     ctrlRegisterHandleClick(e) {
@@ -492,7 +493,7 @@ const MusicAddict2 = {
 
 
 
-    // ================================== BACKGROUND UPDATE =======================================
+    /* ================================== BACKGROUND UPDATE ==================================== */
 
     // Update stuff in the background.
     backgroundUpdate(startWorker=false) {
@@ -522,7 +523,7 @@ const MusicAddict2 = {
 
 
 
-    // ========================================= UI ===============================================
+    /* ========================================= UI ============================================ */
 
     // Set UI element values
     uiSetEle(uikey='', val='') {
@@ -605,7 +606,7 @@ const MusicAddict2 = {
 
 
 
-    // ========================================= API ==============================================
+    /* ========================================= API =========================================== */
 
     // Make an API request.
     apiRequest(query={}, onSuccess=null) {
@@ -637,7 +638,7 @@ const MusicAddict2 = {
 
 
 
-    // ====================================== RANDOMNESS ==========================================
+    /* ====================================== RANDOMNESS ======================================= */
 
     // Be lucky, or not.
     lucky(chance=0.0) {
@@ -752,7 +753,7 @@ const MusicAddict2 = {
 
 
 
-    // ====================================== DATE/TIME ===========================================
+    /* ====================================== DATE/TIME ======================================== */
 
     // Check if time's up.
     timesUp(pastTime=0, interval=0) {
@@ -779,7 +780,7 @@ const MusicAddict2 = {
 
 
 
-    // ======================================== MISC ==============================================
+    /* ======================================== MISC =========================================== */
 
     // Pad single digit numbers with a 0.
     padNum(num) {
