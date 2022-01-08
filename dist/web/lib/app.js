@@ -32,8 +32,8 @@ const MusicAddict2 = {
         clickSpeed: 1_000, // how fast we can click, millisec
         exitDelay: 2_000, // timeout after we clicked exit before the page gets reloaded, millisec
         autoSaveInterval: 60_000, // interval for auto saving, millisec
-        recordsMax: 20, // how many records the player can keep in their collection, integer
-        bulkSaleAmount: 5, // how many records to sell in a bulk sale, integer
+        recordsMax: 500, // how many records the player can keep in their collection, integer
+        bulkSaleAmount: 50, // how many records to sell in a bulk sale, integer
         listenDuration: { min: 5_000, max: 10_000 }, // min and max listen duration, millisec
         discoverChance: 0.35,
         offerChance: 0.25,
@@ -55,7 +55,7 @@ const MusicAddict2 = {
         incomingOffer: null,
         bulkSaleID: null,
         listenDuration: null,
-        lastListenOn: null,
+        startedListeningOn: null,
         startedSessionOn: null,
     },
 
@@ -305,14 +305,14 @@ const MusicAddict2 = {
 
                 this.ram.nextProgressActionChoices = ['listen']
 
-                if (!this.ram.lastListenOn) {
-                    this.ram.lastListenOn = Date.now()
+                if (!this.ram.startedListeningOn) {
+                    this.ram.startedListeningOn = Date.now()
                     this.ram.listenDuration = this.randomInteger(this.conf.listenDuration.min, this.conf.listenDuration.max)
                 }
 
-                if (this.timesUp(this.ram.lastListenOn, this.ram.listenDuration)) {
+                if (this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
                     this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
-                    this.ram.lastListenOn = null
+                    this.ram.startedListeningOn = null
                     this.ram.listenDuration = null
                 }
                 break
