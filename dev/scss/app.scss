@@ -1,26 +1,25 @@
-// Quick "it's too bright"-theme.
-body {
-    background: black;
-    color: gray;
-}
+@import 'font';
+@import 'reset';
+@import 'layout';
+@import 'color';
 
 
 // Initially hide the app.
 // Will be set to 'block' in MusicAddict2.main() if data-uikey="app" is also set.
 #app { display: none; }
 
-
-.ui {
-    // Just set the dimensions here.
-    // Initial background-image will be set in MusicAddict2.main().
-    .actionGif {
-        width: 120px;
-        height: 90px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
+// Just set the dimensions here.
+// Initial background-image will be set in MusicAddict2.main().
+.actionGif {
+    width: 120px;
+    height: 90px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
-
-input:invalid { color: red; }
+.money {
+    &:after {
+        content: '◈';
+    }
+}

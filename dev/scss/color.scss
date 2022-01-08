@@ -1,0 +1,27 @@
+body {
+    color: #c5abd6;
+    background-color: #0f0913;
+}
+
+input {
+    color: #a85eda;
+    background-color: #19141d;
+
+    &:invalid {
+        color: #d33d18;
+    }
+}
+
+button {
+    color: #c5abd6;
+    background-color: #28202e;
+
+    &:hover {
+        color: #a85eda;
+        background-color: #24172e;
+    }
+}
+
+.money {
+    color: #83ce74;
+}

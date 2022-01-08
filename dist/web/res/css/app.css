@@ -1,13 +1,86 @@
+@charset "UTF-8";
+@font-face {
+  font-family: "Share Tech";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""), url("../font/share-tech-v12-latin-regular.woff2") format("woff2"), url("../font/share-tech-v12-latin-regular.woff") format("woff");
+}
+html,
+body,
+h1,
+h2,
+div,
+p,
+input,
+button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body,
+input,
+button {
+  font-family: "Share Tech", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
 body {
-  background: black;
-  color: gray;
+  padding: 15px;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+input {
+  padding: 3px 5px;
+  border-bottom: 1px dotted;
+}
+
+button {
+  font-weight: 700;
+  padding: 3px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button.ctrlProgress {
+  font-size: 36px;
+}
+
+body {
+  color: #c5abd6;
+  background-color: #0f0913;
+}
+
+input {
+  color: #a85eda;
+  background-color: #19141d;
+}
+input:invalid {
+  color: #d33d18;
+}
+
+button {
+  color: #c5abd6;
+  background-color: #28202e;
+}
+button:hover {
+  color: #a85eda;
+  background-color: #24172e;
+}
+
+.money {
+  color: #83ce74;
 }
 
 #app {
   display: none;
 }
 
-.ui .actionGif {
+.actionGif {
   width: 120px;
   height: 90px;
   background-position: center;
@@ -15,8 +88,8 @@ body {
   background-size: cover;
 }
 
-input:invalid {
-  color: red;
+.money:after {
+  content: "◈";
 }
 
 /*# sourceMappingURL=app.css.map */

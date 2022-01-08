@@ -39,6 +39,12 @@ const MusicAddict2 = {
         offerChance: 0.25,
     },
 
+    txt: {
+        introStory: `<p>You're broke and lonely. After many sleepless nights in your nearly empty 1-room flat,
+        you decide to spend your last <span class="money">7</span> to buy music. "At least my funeral
+        will have a good soundtrack", you think.</p>`,
+    },
+
     // Temporary stuff the app needs to work.
     ram: {
         backgroundUpdateIntervalID: null,
@@ -70,17 +76,16 @@ const MusicAddict2 = {
 
         // Register event handlers.
         this.conf.eventHandler.forEach((v) => {
-            // if (typeof(this[`${v.uikey}Handler`]) != 'function') {
-            //     console.warn('main()', 'Event handler is configured but function does not exist:', `${v.uikey}Handler()`)
-            // }
-            // else {
-            //     this.ui[v.uikey].addEventListener(v.type, e => this[`${v.uikey}Handler`](e))
-            // }
             if (typeof(this[v.handler]) != 'function') {
                 console.warn('main()', 'Event handler is configured but function does not exist:', `${v.handler}()`)
             }
             else {
-                this.ui[v.uikey].addEventListener(v.type, e => this[v.handler](e))
+                if (!this.ui[v.uikey]) {
+                    console.warn('main()', 'Event handler is configured but HTML element does not exist:', `${v.uikey}`)
+                }
+                else {
+                    this.ui[v.uikey].addEventListener(v.type, e => this[v.handler](e))
+                }
             }
         })
 
@@ -97,6 +102,7 @@ const MusicAddict2 = {
         this.uiVis('game', 'hide') // unhide in start()
 
         // Add/update some UI elements.
+        this.uiSetEle('introStory', this.txt.introStory)
         this.uiSetEle('inputPlayerName', '')
         this.uiSetEle('actionGif', 'idle')
 
@@ -111,6 +117,7 @@ const MusicAddict2 = {
         this.uiVis('ctrlRegister', 'hide')
         this.uiVis('ctrlContinue', 'hide')
         this.uiVis('inputToken', 'hide')
+        this.uiVis('home', 'hide')
         this.uiVis('game', 'show')
 
         this.ram.startedSessionOn = Date.now()

@@ -1,7 +1,7 @@
 @ECHO OFF
 
-SET inputDir=./dev/scss/
-SET outputDir=./dist/web/res/css/
+SET input=./dev/scss/app.scss
+SET output=./dist/web/res/css/app.css
 
 :: Usage:
 ::
@@ -10,7 +10,8 @@ SET outputDir=./dist/web/res/css/
 
 sass ^
     --watch ^
+    --update ^
     --style expanded ^
     --charset ^
     --source-map ^
-    %inputDir%:%outputDir%
+    %input%:%output%

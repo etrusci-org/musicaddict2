@@ -10,58 +10,44 @@
     <title>Music Addict 2</title>
 </head>
 <body>
-
     <noscript>Please enable JavaScript.</noscript>
 
     <!-- Main wrapper. Will be initially hidden through CSS and re-enabled in MusicAddict2.main(). -->
     <div id="app" data-uikey="app">
+        <p data-uikey="actionGif"></p>
 
-        <!--
-            Action GIF display.
-            Will be set to res/actiongif/idle.gif by default.
-        -->
-        <div data-uikey="actionGif"></div>
+        <div data-uikey="home">
+            <div data-uikey="introStory"></div>
+        </div>
 
-        <!--
-            Controls for authentication and playerName input.
-            All except inputPlayerName will be hidden on ctrlRegister and ctrlContinue click.
-        -->
-        <p>
-            Enter a <strong>Player Name</strong> (optional) and <strong>Register</strong> to start a new game.<br>
-            Or enter your <strong>Secret Token</strong> to <strong>Continue</strong>.
-        </p>
-        <p>
-            <input type="text" data-uikey="inputPlayerName" pattern="[A-Za-z0-9_-]{1,30}" placeholder="Player Name">
-            <button data-uikey="ctrlRegister">register</button>
-        </p>
-        <p>
-            <input type="password" data-uikey="inputToken" maxlength="100" placeholder="Secret Token">
-            <button data-uikey="ctrlContinue">continue</button>
-        </p>
-
-        <!-- Hidden until authenticated. -->
+        <div data-uikey="auth">
+            <p>
+                <input type="text" data-uikey="inputPlayerName" pattern="[A-Za-z0-9_-]{1,30}" title="Allowed characters: A-Z a-z 0-9 _ -" placeholder="Player Name">
+                <button data-uikey="ctrlRegister">register</button>
+            </p>
+            <p>
+                <input type="password" data-uikey="inputToken" maxlength="100" placeholder="Secret Token">
+                <button data-uikey="ctrlContinue">continue</button>
+            </p>
+        </div>
 
         <div data-uikey="game">
-            <!-- Stats and game info -->
             <p>
                 cash: <span data-uikey="sdCash">-</span>
                 records: <span data-uikey="sdRecordsCount">-</span>
             </p>
-            <!-- Controls for playing and exiting -->
+
             <p>
                 <button data-uikey="ctrlProgress">progress</button>
                 <button data-uikey="ctrlExit">exit</button>
             </p>
-            <!-- Action log -->
+
             <div data-uikey="actionLog"></div>
         </div>
-
-
     </div><!--/app-->
 
     <script src="./lib/app.js"></script>
     <script src="./lib/data.js"></script>
     <script src="./lib/main.js"></script>
-
 </body>
 </html>
