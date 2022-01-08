@@ -201,9 +201,9 @@ const MusicAddict2 = {
         // -----------------------
         // Basic Game Flow
         //
-        // # digg
         // # broke
         // # bulkSale
+        // # digg
         //     discover
         //         listen
         //             buy
@@ -215,8 +215,8 @@ const MusicAddict2 = {
         switch (this.ram.nextProgressAction) {
             // next:
             //     digg
-            //     discover
-            //     offer
+            //     ?discover
+            //     ?offer
             case 'digg':
                 this.uiSetEle('actionLog', `Digging for cool records.`)
                 this.uiSetEle('actionGif', 'digg')
@@ -233,12 +233,12 @@ const MusicAddict2 = {
                 break
 
             // next:
-            //     offer
+            //     ?offer
             case 'broke':
                 this.uiSetEle('actionLog', `You used up all your cash.`)
                 this.uiSetEle('actionGif', 'broke')
 
-                this.ram.incomingOffer = Math.random() < 0.5
+                this.ram.incomingOffer = this.lucky(this.conf.offerChance)
 
                 if (this.ram.incomingOffer) {
                     this.ram.nextProgressActionChoices = ['offer']
@@ -261,7 +261,7 @@ const MusicAddict2 = {
                     let k = this.randomArrayKey(this.sd.records)
                     this.ram.randomRecord = { ...this.sd.records[k] }
                     this.ram.randomRecord.collectionKey = k
-                    this.ram.randomRecord.sellPrice = this.ram.randomRecord.buyPrice + this.randomInteger(1, this.ram.randomRecord.buyPrice * 0.5)
+                    this.ram.randomRecord.sellPrice = this.randomRecordSellPrice(this.ram.randomRecord.buyPrice)
 
                     this.sd.cash += this.ram.randomRecord.sellPrice
                     this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
@@ -270,7 +270,7 @@ const MusicAddict2 = {
 
                     this.uiSetEle('actionLog', `Sold ${JSON.stringify(this.ram.randomRecord)}.`)
 
-                    if (bulkSaleCounter == this.conf.bulkSaleAmount) {
+                    if (bulkSaleCounter >= this.conf.bulkSaleAmount) {
                         clearInterval(this.ram.bulkSaleID)
                         this.ram.bulkSaleID = null
 
@@ -297,8 +297,8 @@ const MusicAddict2 = {
                 break
 
             // next:
-            //     buy
-            //     skipBuy
+            //     ?buy
+            //     ?skipBuy
             case 'listen':
                 this.uiSetEle('actionLog', `Listening.`)
                 this.uiSetEle('actionGif', 'listen')
@@ -337,7 +337,6 @@ const MusicAddict2 = {
 
             // next:
             //     digg
-            //     offer
             case 'skipBuy':
                 this.uiSetEle('actionLog', `Nah, you don't like this one that much.`)
                 this.uiSetEle('actionGif', 'skipBuy')
@@ -354,9 +353,9 @@ const MusicAddict2 = {
                 let k = this.randomArrayKey(this.sd.records)
                 this.ram.randomRecord = { ...this.sd.records[k] }
                 this.ram.randomRecord.collectionKey = k
-                this.ram.randomRecord.sellPrice = this.ram.randomRecord.buyPrice + this.randomInteger(1, this.ram.randomRecord.buyPrice * 0.5)
+                this.ram.randomRecord.sellPrice = this.randomRecordSellPrice(this.ram.randomRecord.buyPrice)
 
-                this.uiSetEle('actionLog', `Some one want's to buy ${JSON.stringify(this.ram.randomRecord)} from your collection.`)
+                this.uiSetEle('actionLog', `Someone wants to buy ${JSON.stringify(this.ram.randomRecord)} from your collection.`)
 
                 this.ram.nextProgressActionChoices = ['sell', 'skipSell']
                 break
@@ -654,7 +653,7 @@ const MusicAddict2 = {
             artist: this.randomRecordArtist(),
             format: this.randomRecordFormat(),
             buyPrice: this.randomRecordPrice(),
-            sellPrice: null,
+            sellPrice: null, // will be decided in action offer, not when buying.
         }
     },
 
@@ -726,6 +725,11 @@ const MusicAddict2 = {
 
         // Tier 1
         return this.randomInteger(1, 7)
+    },
+
+    // A random record sellPrice based on its buyPrice.
+    randomRecordSellPrice(buyPrice=0) {
+        return buyPrice + this.randomInteger(1, Math.max(2, buyPrice * 0.5))
     },
 
     // Get a random item from an array.
