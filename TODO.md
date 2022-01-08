@@ -6,6 +6,7 @@ In no particular order.
 
 ## TO-DO
 
+- Trading stats. Both session and total. Stored in sd.
 - Better variable/method names.
 - Random generators.
 - Better random data.
