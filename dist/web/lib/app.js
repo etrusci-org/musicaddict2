@@ -39,13 +39,6 @@ const MusicAddict2 = {
         offerChance: 0.10,  // chance to get asked to sell record, float, 0.0-1.0
     },
 
-    // Static texts.
-    txt: {
-        introStory: `<p>You're broke and lonely. After many sleepless nights in your nearly empty 1-room flat,
-        you decide to spend your last <span class="money">7</span> to buy music. "At least my funeral
-        will have a good soundtrack", you think.</p>`,
-    },
-
     // Temporary stuff the app needs to work.
     ram: {
         backgroundUpdateIntervalID: null,
@@ -103,7 +96,6 @@ const MusicAddict2 = {
         this.uiVis('game', 'hide') // unhide in start()
 
         // Add/update some UI elements.
-        this.uiSetEle('introStory', this.txt.introStory)
         this.uiSetEle('inputPlayerName', '')
         this.uiSetEle('actionGif', 'idle')
 
