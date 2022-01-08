@@ -37,11 +37,13 @@ const MusicAddict2 = {
         listenDuration: { min: 5_000, max: 20_000 }, // min and max listen duration, millisec
         discoverChance: 0.20, // chance to discover an interesting record, float, 0.0-1.0
         offerChance: 0.10,  // chance to get asked to sell record, float, 0.0-1.0
+        maxIdleDuration: 600_000, // maximum duration we can idle before getting kicked out of the game, millisec
     },
 
     // Temporary stuff the app needs to work.
     ram: {
         backgroundUpdateIntervalID: null,
+        lastCtrlProgressClickOn: null,
         lastSavedOn: null,
         nextProgressAction: null,
         nextProgressActionChoices: null,
@@ -117,6 +119,9 @@ const MusicAddict2 = {
 
         // We don't want to auto-save right after starting.
         this.ram.lastSavedOn = Date.now()
+
+        // We don't want to auto-exit right after starting.
+        this.ram.lastCtrlProgressClickOn = Date.now()
 
         // Start background update.
         this.backgroundUpdate(true)
@@ -467,6 +472,8 @@ const MusicAddict2 = {
             return
         }
 
+        this.ram.lastCtrlProgressClickOn = Date.now()
+
         this.uiState('ctrlProgress', 'disabled')
         setTimeout(() => {
             if (!this.ram.bulkSaleID) {
@@ -497,8 +504,14 @@ const MusicAddict2 = {
         }
 
         // Auto-save from time to time.
-        if (Date.now() - this.ram.lastSavedOn > this.conf.autoSaveInterval) {
+        if (this.timesUp(this.ram.lastSavedOn, this.conf.autoSaveInterval)) {
             this.save()
+        }
+
+        // Auto-exit if idling for too long.
+        if (this.timesUp(this.ram.lastCtrlProgressClickOn, this.conf.maxIdleDuration)) {
+            this.uiSetEle('actionLog', `Idle detection kicked in.`)
+            this.save(true)
         }
 
         // Update stuff.
