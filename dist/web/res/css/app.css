@@ -22,32 +22,50 @@ body,
 input,
 button {
   font-family: "Share Tech", sans-serif;
-  font-size: 12px;
-  font-weight: 400;
   letter-spacing: 1px;
 }
 
 body {
+  font-size: 12px;
+  font-weight: normal;
   padding: 15px;
+}
+
+h1,
+h2 {
+  font-size: 12px;
 }
 
 p {
   margin-bottom: 10px;
 }
 
-input {
+input,
+button {
+  font-size: 13px;
   padding: 7px;
+}
+
+input {
   border-bottom: 1px dotted;
 }
 
 button {
-  font-weight: 700;
-  padding: 7px;
+  font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
 }
 button.ctrlProgress {
   font-size: 36px;
+}
+
+.actionGif {
+  border: 2px solid;
+  margin-bottom: 10px;
+}
+
+.important {
+  font-size: 13px;
 }
 
 body {
@@ -76,6 +94,10 @@ button:disabled {
   background-color: #29252c;
 }
 
+.actionGif {
+  border-color: #28202e;
+}
+
 .money {
   color: #83ce74;
 }
@@ -88,6 +110,10 @@ button:disabled {
 }
 .record .format {
   color: #9d92a5;
+}
+
+.important {
+  color: #fff;
 }
 
 .sys {

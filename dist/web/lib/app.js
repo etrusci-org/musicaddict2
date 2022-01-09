@@ -12,7 +12,8 @@ const MusicAddict2 = {
 
     // Save data.
     sd: {
-        token: '',
+        token: null,
+        firstPlayedOn: null,
         playerName: 'Anonymous',
         cash: 7,
         records: [],
@@ -114,6 +115,10 @@ const MusicAddict2 = {
         this.uiVis('inputToken', 'hide')
         this.uiVis('home', 'hide')
         this.uiVis('game', 'show')
+
+        if (!this.sd.firstPlayedOn) {
+            this.sd.firstPlayedOn = Date.now()
+        }
 
         this.ram.startedSessionOn = Date.now()
 
@@ -774,8 +779,10 @@ const MusicAddict2 = {
     // Make seconds human readable.
     secToDHMS(sec, milli=true) {
         if (milli) {
-            sec = sec / 1000 | 0
+            sec = sec / 1000
         }
+
+        sec = Math.max(0, sec)
 
         let d = Math.floor(sec / (3600 * 24))
         let h = Math.floor(sec % (3600 * 24) / 3600)

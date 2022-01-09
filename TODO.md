@@ -6,6 +6,7 @@ In no particular order.
 
 ## TO-DO
 
+- Only save firstPlayedOn once to db.
 - Add profit to bulksale end msg.
 - Trading stats. Both session and total. Stored in sd.
 - Better variable/method names.

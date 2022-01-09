@@ -92,10 +92,11 @@ class MusicAddictAPI {
                 $this->Database->open();
 
                 $validCols = array_keys(array(
-                    'token'      => SQLITE3_TEXT,
-                    'playerName' => SQLITE3_TEXT,
-                    'cash'       => SQLITE3_INTEGER,
-                    'records'    => SQLITE3_TEXT,
+                    'token'         => SQLITE3_TEXT,
+                    'firstPlayedOn' => SQLITE3_INTEGER,
+                    'playerName'    => SQLITE3_TEXT,
+                    'cash'          => SQLITE3_INTEGER,
+                    'records'       => SQLITE3_TEXT,
                 ));
                 $validCols = implode(', ', $validCols);
 
@@ -138,10 +139,11 @@ class MusicAddictAPI {
                 $this->Database->open(TRUE);
 
                 $validCols = array(
-                    'token'      => SQLITE3_TEXT,
-                    'playerName' => SQLITE3_TEXT,
-                    'cash'       => SQLITE3_INTEGER,
-                    'records'    => SQLITE3_TEXT,
+                    'token'         => SQLITE3_TEXT,
+                    'firstPlayedOn' => SQLITE3_INTEGER,
+                    'playerName'    => SQLITE3_TEXT,
+                    'cash'          => SQLITE3_INTEGER,
+                    'records'       => SQLITE3_TEXT,
                 );
                 // unset($saveData['playerName']); // sim error
 
