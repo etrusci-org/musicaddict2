@@ -40,9 +40,24 @@ button {
     }
 }
 
+// Initially hide the app. Will be set to 'block' in .main() if data-uikey="app" is also set.
+#app { display: none; }
+
+// Just set the dimensions and other stuff here. Initial background-image will be set in .main().
 .actionGif {
+    width: 120px;
+    height: 90px;
     border: 2px solid;
     margin-bottom: 10px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.money {
+    &:after {
+        content: '◈';
+    }
 }
 
 .important {

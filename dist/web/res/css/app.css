@@ -59,9 +59,22 @@ button.ctrlProgress {
   font-size: 36px;
 }
 
+#app {
+  display: none;
+}
+
 .actionGif {
+  width: 120px;
+  height: 90px;
   border: 2px solid;
   margin-bottom: 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.money:after {
+  content: "◈";
 }
 
 .important {
@@ -116,24 +129,12 @@ button:disabled {
   color: #fff;
 }
 
+.warning {
+  color: #d36b51;
+}
+
 .sys {
   color: #a85eda;
-}
-
-#app {
-  display: none;
-}
-
-.actionGif {
-  width: 120px;
-  height: 90px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.money:after {
-  content: "◈";
 }
 
 /*# sourceMappingURL=app.css.map */

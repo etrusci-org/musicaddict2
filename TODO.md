@@ -6,6 +6,7 @@ In no particular order.
 
 ## TO-DO
 
+- Set element focus to inputPlayerName or ctrlContinue depending on if there is a token in localStorage.
 - Only save firstPlayedOn once to db.
 - Add profit to bulksale end msg.
 - Trading stats. Both session and total. Stored in sd.

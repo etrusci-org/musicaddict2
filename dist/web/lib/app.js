@@ -526,7 +526,7 @@ const MusicAddict2 = {
         }
 
         // Update stuff.
-        this.uiSetEle('sdCash', `<span class="cur">${this.sd.cash}</span>`)
+        this.uiSetEle('sdCash', `${this.moneyString(this.sd.cash)}`)
         this.uiSetEle('sdRecordsCount', `${this.sd.records.length}`)
     },
 
@@ -807,12 +807,21 @@ const MusicAddict2 = {
 
     // Nice formatted record string.
     recordString(record={}) {
-        return `<span class="record"><span class="title">${record.title}</span> by <span class="artist">${record.artist}</span> <span class="format">[${record.format}]</span></span>`
+        return `
+        <span class="record">
+            <span class="title">${record.title}</span>
+            by <span class="artist">${record.artist}</span>
+            <span class="format">[${record.format}]</span>
+        </span>`
     },
 
-    // Nice formatted money string
+    // Nice formatted money string.
     moneyString(moneyAmount=0) {
-        return `<span class="money">${moneyAmount}</span>`
+        let warningClass = ``
+        if (moneyAmount <= 0) {
+            warningClass = ' warning'
+        }
+        return `<span class="money${warningClass}">${moneyAmount}</span>`
     },
 
 } // /MusicAddict2
