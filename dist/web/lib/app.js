@@ -36,7 +36,7 @@ const MusicAddict2 = {
         bulkSaleAmount: 50, // how many records to sell in a bulk sale, integer
         listenDuration: { min: 5_000, max: 20_000 }, // min and max listen duration, millisec
         discoverChance: 0.20, // chance to discover an interesting record, float, 0.0-1.0
-        offerChance: 0.10,  // chance to get asked to sell record, float, 0.0-1.0
+        offerChance: 0.125,  // chance to get asked to sell record, float, 0.0-1.0
         maxIdleDuration: 600_000, // maximum duration we can idle before getting kicked out of the game, millisec
     },
 
@@ -216,8 +216,9 @@ const MusicAddict2 = {
             //     ?discover
             //     ?offer
             case 'digg':
-                this.uiSetEle('actionLog', `Digging for cool records.`)
                 this.uiSetEle('actionGif', 'digg')
+
+                this.uiSetEle('actionLog', `Digging for cool records.`)
 
                 this.ram.nextProgressActionChoices = ['digg']
 
@@ -233,8 +234,9 @@ const MusicAddict2 = {
             // next:
             //     ?offer
             case 'broke':
-                this.uiSetEle('actionLog', `You used up all your cash.`)
                 this.uiSetEle('actionGif', 'broke')
+
+                this.uiSetEle('actionLog', `You're broke.`)
 
                 this.ram.incomingOffer = this.lucky(this.conf.offerChance)
 
@@ -246,8 +248,9 @@ const MusicAddict2 = {
             // next:
             //     digg
             case 'bulkSale':
-                this.uiSetEle('actionLog', `You can not store more records and decide to sell some in bulk.`)
                 this.uiSetEle('actionGif', 'sell')
+
+                this.uiSetEle('actionLog', `You can not store more records and decide to sell some in bulk.`)
 
                 this.uiState('ctrlProgress', 'disabled')
                 this.uiState('ctrlExit', 'disabled')
@@ -266,7 +269,7 @@ const MusicAddict2 = {
 
                     bulkSaleCounter += 1
 
-                    this.uiSetEle('actionLog', `Sold ${JSON.stringify(this.ram.randomRecord)}.`)
+                    this.uiSetEle('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
 
                     if (bulkSaleCounter >= this.conf.bulkSaleAmount) {
                         clearInterval(this.ram.bulkSaleID)
@@ -289,7 +292,7 @@ const MusicAddict2 = {
 
                 this.ram.randomRecord = this.randomRecord()
 
-                this.uiSetEle('actionLog', `Discovered ${JSON.stringify(this.ram.randomRecord)}.`)
+                this.uiSetEle('actionLog', `Discovered ${this.recordString(this.ram.randomRecord)}.`)
 
                 this.ram.nextProgressActionChoices = ['listen']
                 break
@@ -298,8 +301,9 @@ const MusicAddict2 = {
             //     ?buy
             //     ?skipBuy
             case 'listen':
-                this.uiSetEle('actionLog', `Listening.`)
                 this.uiSetEle('actionGif', 'listen')
+
+                this.uiSetEle('actionLog', `Listening.`)
 
                 this.ram.nextProgressActionChoices = ['listen']
 
@@ -324,10 +328,10 @@ const MusicAddict2 = {
                     this.sd.cash -= this.ram.randomRecord.buyPrice
                     this.sd.records.push(this.ram.randomRecord)
 
-                    this.uiSetEle('actionLog', `Bought ${JSON.stringify(this.ram.randomRecord)}.`)
+                    this.uiSetEle('actionLog', `Bought ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)}.`)
                 }
                 else {
-                    this.uiSetEle('actionLog', `You want ${JSON.stringify(this.ram.randomRecord)}, but have not enough cash.`)
+                    this.uiSetEle('actionLog', `You want it, but don't have enough cash to buy ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)}.`)
                 }
 
                 this.ram.nextProgressActionChoices = ['digg']
@@ -336,8 +340,9 @@ const MusicAddict2 = {
             // next:
             //     digg
             case 'skipBuy':
-                this.uiSetEle('actionLog', `Nah, you don't like this one that much.`)
                 this.uiSetEle('actionGif', 'skipBuy')
+
+                this.uiSetEle('actionLog', `Nah, you don't like this one that much.`)
 
                 this.ram.nextProgressActionChoices = ['digg']
                 break
@@ -353,7 +358,7 @@ const MusicAddict2 = {
                 this.ram.randomRecord.collectionKey = k
                 this.ram.randomRecord.sellPrice = this.randomRecordSellPrice(this.ram.randomRecord.buyPrice)
 
-                this.uiSetEle('actionLog', `Someone wants to buy ${JSON.stringify(this.ram.randomRecord)} from your collection.`)
+                this.uiSetEle('actionLog', `Someone wants to buy ${this.recordString(this.ram.randomRecord)} from your collection.`)
 
                 this.ram.nextProgressActionChoices = ['sell', 'skipSell']
                 break
@@ -366,7 +371,7 @@ const MusicAddict2 = {
                 this.sd.cash += this.ram.randomRecord.sellPrice
                 this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
 
-                this.uiSetEle('actionLog', `Sold ${JSON.stringify(this.ram.randomRecord)}.`)
+                this.uiSetEle('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
 
                 this.ram.incomingOffer = null
 
@@ -377,6 +382,7 @@ const MusicAddict2 = {
             //     digg
             case 'skipSell':
                 this.uiSetEle('actionGif', 'skipSell')
+
                 this.uiSetEle('actionLog', `Nah, you keep this one for now.`)
 
                 this.ram.incomingOffer = null
@@ -540,7 +546,7 @@ const MusicAddict2 = {
         switch (uikey) {
             case 'actionLog':
                 let p = document.createElement('p')
-                p.innerHTML = `${this.secToDHMS(Date.now() - this.ram.startedSessionOn)}: ${val}`
+                p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.ram.startedSessionOn)} &middot;</span> ${val}`
                 this.ui[uikey].prepend(p)
                 while (this.ui[uikey].children.length > this.conf.actionLogMax) {
                     this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
@@ -790,9 +796,16 @@ const MusicAddict2 = {
     // Pad single digit numbers with a 0.
     padNum(num) {
         return (num < 10 && num >= 0) ? `0${num}` : num
-    }
+    },
 
+    // Nice formatted record string.
+    recordString(record={}) {
+        return `<span class="record"><span class="title">${record.title}</span> by <span class="artist">${record.artist}</span> <span class="format">[${record.format}]</span></span>`
+    },
 
-
+    // Nice formatted money string
+    moneyString(moneyAmount=0) {
+        return `<span class="money">${moneyAmount}</span>`
+    },
 
 } // /MusicAddict2

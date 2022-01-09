@@ -36,13 +36,13 @@ p {
 }
 
 input {
-  padding: 3px 5px;
+  padding: 7px;
   border-bottom: 1px dotted;
 }
 
 button {
   font-weight: 700;
-  padding: 3px 5px;
+  padding: 7px;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -60,7 +60,7 @@ input {
   background-color: #19141d;
 }
 input:invalid {
-  color: #d33d18;
+  color: #d36b51;
 }
 
 button {
@@ -72,12 +72,26 @@ button:hover {
   background-color: #24172e;
 }
 button:disabled {
-  color: #9d92a5;
+  color: #4e4653;
   background-color: #29252c;
 }
 
 .money {
   color: #83ce74;
+}
+
+.record .title {
+  color: #74cece;
+}
+.record .artist {
+  color: #64a2cc;
+}
+.record .format {
+  color: #9d92a5;
+}
+
+.sys {
+  color: #a85eda;
 }
 
 #app {
