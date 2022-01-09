@@ -1,16 +1,55 @@
 // @ts-check
 'use strict'
 
-
+/**
+ * All the magic.
+ * @namespace MusicAddict2
+ * @prop {object} ui  User-Interface HTML elements collected in main(). To mark an element for collection, add data-uikey to it like so: <span data-uikey="foo">
+ * @prop {object} rd  Random data from app.rd.js. Mainly to use with the random* methods.
+ * @prop {object} sd  Save data to be stored to the database.
+ * @prop {object} conf  Static configuration.
+ * @prop {object} ram  Temporary vars and objects.
+ */
 const MusicAddict2 = {
+    /**
+     * A float or integer representing milliseconds.
+     * @typedef {number} secMilli
+     */
 
-    // User-Interface elements. Will be populated in main().
+    /**
+     * A float or integer representing an unixtime value in milliseconds.
+     * @typedef {number} unixtimeMilli
+     */
+
+    /**
+     * A float representing a chance value between 0.0 and 1.0. The higher the number the higher the chance to be lucky.
+     * @typedef {number} luckyChance
+     */
+
+    /**
+     * Collected User-Interface HTML elements.
+     * @prop {object} ui
+     * @example
+     * // Mark element for collection with the key "foo".
+     * <span data-uikey="foo">access me tru ui.foo then</span>
+     */
     ui: {},
 
-    // Random data. Set in lib/data.js
+    /**
+     * Random data from app.rd.js. Mainly to use with the random* methods.
+     * @prop {object} rd
+     */
     rd: {},
 
-    // Save data.
+    /**
+     * Save data to be stored to the database.
+     * @prop {object} sd
+     * @prop {string} sd.token=null  Secret token.
+     * @prop {unixtimeMilli} sd.firstPlayedOn=null  First play time.
+     * @prop {string} sd.playerName='Anonymous'  Player name.
+     * @prop {integer} sd.cash=7  Cash holdings.
+     * @prop {array} sd.records=[]]  Record collection.
+     */
     sd: {
         token: null,
         firstPlayedOn: null,
@@ -19,29 +58,61 @@ const MusicAddict2 = {
         records: [],
     },
 
-    // Static configuration.
+    /**
+     * Static configuration.
+     * @prop {object} conf
+     * @prop {string} conf.apiPath='./api.php'  Absolute or relative path to dist/web/api.php.
+     * @prop {object} conf.eventHandler={...}  Event handler configuration.
+     * @prop {integer} conf.actionLogMax=500  How many lines to keep in the action log.
+     * @prop {secMilli} conf.backgroundUpdateInterval=500  Background updater interval delay.
+     * @prop {secMilli} conf.clickSpeed=1_000  Timeout after a ctrlProgress click.
+     * @prop {secMilli} conf.exitDelay=2_000  Delay click before exiting after ctrlExit.
+     * @prop {secMilli} conf.autoSaveInterval=60_000  How often to save automagically.
+     * @prop {integer} conf.recordsMax=500  How many records the player can keep in the collection before a bulk sale gets triggered.
+     * @prop {integer} conf.bulkSaleAmount=50  How many records to sell in a bulk sale.
+     * @prop {object} conf.listenDuration={...}  Range for randomly choosing the listening duration from.
+     * @prop {secMilli} conf.listenDuration.min=5_000  Minimum listening duration
+     * @prop {secMilli} conf.listenDuration.max=20_000  Maximum listening duration
+     * @prop {chance} conf.discoverChance=0.20  Chance a interesting record can be discovered, chance can be between 0.0 and 1.0.
+     * @prop {chance} conf.offerChance=0.125  Chance get a opportunity to sell a record, chance can be between 0.0 and 1.0.
+     * @prop {secMilli} conf.maxIdleDuration=600_000  Maximum time can pass without clicking before getting kicked out of the game.
+     */
     conf: {
-        apiPath: './api.php', // abs or rel path to dist/api.php
+        apiPath: './api.php',
         eventHandler: [
             { uikey: 'ctrlRegister', type: 'click', handler: 'ctrlRegisterHandleClick' },
             { uikey: 'ctrlContinue', type: 'click', handler: 'ctrlContinueHandleClick' },
             { uikey: 'ctrlProgress', type: 'click', handler: 'ctrlProgressHandleClick' },
             { uikey: 'ctrlExit', type: 'click', handler: 'ctrlExitHandleClick' },
         ],
-        actionLogMax: 500, // how many lines to keep in the actionlog
-        backgroundUpdateInterval: 500, // do stuff every N, millisec
-        clickSpeed: 1_000, // how fast we can click, millisec
-        exitDelay: 2_000, // timeout after we clicked exit before the page gets reloaded, millisec
-        autoSaveInterval: 60_000, // interval for auto saving, millisec
-        recordsMax: 500, // how many records the player can keep in their collection, integer
-        bulkSaleAmount: 50, // how many records to sell in a bulk sale, integer
-        listenDuration: { min: 5_000, max: 20_000 }, // min and max listen duration, millisec
-        discoverChance: 0.20, // chance to discover an interesting record, float, 0.0-1.0
-        offerChance: 0.125,  // chance to get asked to sell record, float, 0.0-1.0
-        maxIdleDuration: 600_000, // maximum duration we can idle before getting kicked out of the game, millisec
+        actionLogMax: 500,
+        backgroundUpdateInterval: 500,
+        clickSpeed: 1_000,
+        exitDelay: 2_000,
+        autoSaveInterval: 60_000,
+        recordsMax: 500,
+        bulkSaleAmount: 50,
+        listenDuration: { min: 5_000, max: 20_000 },
+        discoverChance: 0.20,
+        offerChance: 0.125,
+        maxIdleDuration: 600_000,
     },
 
-    // Temporary stuff the app needs to work.
+    /**
+     * Temporary vars and objects.
+     * @prop {object} ram
+     * @prop {integer} ram.backgroundUpdateIntervalID=null  ID of backgroundUpdate()'s setInterval loop.
+     * @prop {unixtimeMilli} ram.lastCtrlProgressClickOn=null  When the ui.ctrlProgress element was last clicked.
+     * @prop {unixtimeMilli} ram.lastSavedOn=null  When the last save occured.
+     * @prop {string} ram.nextProgressAction=null  What the next progress() action will be.
+     * @prop {array} ram.nextProgressActionChoices=null  What the choices are for the next progress() action.
+     * @prop {object} ram.randomRecord=null  The current record for either the buy or sell progress() action.
+     * @prop {boolean} ram.incomingOffer=null  True if there is an incoming offer.
+     * @prop {integer} ram.bulkSaleID=null  ID of the bulkSale progress() action's setInterval loop.
+     * @prop {secMilli} ram.listenDuration=null  For how to to listen to a record.
+     * @prop {unixtimeMilli} ram.startedListeningOn=null  When the player has started listening to a record.
+     * @prop {unixtimeMilli} ram.startedSessionOn=null  When the current game session was started.
+     */
     ram: {
         backgroundUpdateIntervalID: null,
         lastCtrlProgressClickOn: null,
@@ -61,9 +132,11 @@ const MusicAddict2 = {
 
     /* ========================================= CORE ========================================== */
 
-    // Init crucial stuff.
+    /**
+     * Init crucial stuff.
+     */
     main() {
-        // Collect UI elements.
+        // Collect marked UI elements.
         document.querySelectorAll('[data-uikey]').forEach(ele => {
             // @ts-ignore
             this.ui[ele.dataset.uikey] = ele
@@ -86,7 +159,7 @@ const MusicAddict2 = {
             }
         })
 
-        // Check if we have a Token in localStorage and enter it for the lazy/forgetful.
+        // Check if we have a token in localStorage and enter it into inputToken for the lazy.
         if (window.localStorage) {
             let localStorageToken = window.localStorage.getItem('musicaddict2')
             if (localStorageToken) {
@@ -95,10 +168,10 @@ const MusicAddict2 = {
             }
         }
 
-        // Hide some UI elements.
+        // Initially hide some UI elements.
         this.uiVis('game', 'hide') // unhide in start()
 
-        // Add/update some UI elements.
+        // Update some UI elements.
         this.uiSetEle('inputPlayerName', '')
         this.uiSetEle('actionGif', 'idle')
 
@@ -106,34 +179,41 @@ const MusicAddict2 = {
         this.uiVis('app', 'block')
     },
 
-    // Start or continue playing. Primarily used by ctrlRegisterHandleClick() and ctrlContinueHandler().
+    /**
+     * Start or continue playing. Primarily used by ctrlRegisterHandleClick() and ctrlContinueHandler().
+     */
     start() {
-        // We don't need the auth part anymore now.
-        // Only the fun stuff..
+        // Set display of elements.
         this.uiVis('ctrlRegister', 'hide')
         this.uiVis('ctrlContinue', 'hide')
         this.uiVis('inputToken', 'hide')
         this.uiVis('home', 'hide')
         this.uiVis('game', 'show')
 
+        // If this is the first time, remember it forever.
         if (!this.sd.firstPlayedOn) {
             this.sd.firstPlayedOn = Date.now()
         }
 
+        // Remember when the current session has started.
         this.ram.startedSessionOn = Date.now()
 
-        // We don't want to auto-save right after starting.
+        // Don't auto-save right after starting.
         this.ram.lastSavedOn = Date.now()
 
-        // We don't want to auto-exit right after starting.
+        // Don't auto-exit right after starting.
         this.ram.lastCtrlProgressClickOn = Date.now()
 
         // Start background update.
         this.backgroundUpdate(true)
     },
 
-    // Save progress.
+    /**
+     * Save progress.
+     * @param {boolean} [exit=false]  If true, trigger exit() after saving.
+     */
     save(exit=false) {
+        // No token no save.
         if (!this.sd.token) {
             return
         }
@@ -141,12 +221,14 @@ const MusicAddict2 = {
         // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
         this.ram.lastSavedOn = Date.now()
 
+        // Sanitize and remember player name input.
         let playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
         playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
         if (playerName) {
             this.sd.playerName = playerName
         }
 
+        // Save progress data to the database.
         this.apiRequest({
             action: 'save',
             saveData: JSON.stringify(this.sd),
@@ -157,7 +239,7 @@ const MusicAddict2 = {
                 return
             }
 
-            // Remember Token in localStorage.
+            // Remember Token in localStorage for easy continuing next time.
             if (window.localStorage) {
                 window.localStorage.setItem('musicaddict2', btoa(this.sd.token))
             }
@@ -168,21 +250,27 @@ const MusicAddict2 = {
         })
     },
 
-    // Stop the world from turning and reload life.
+    /**
+     * Stop the world from turning and reload life.
+     */
     exit() {
+        // Stop the background update worker
         this.backgroundUpdateStop()
 
+        // Update ui elements
         this.uiState('ctrlProgress', 'disabled')
         this.uiState('ctrlExit', 'disabled')
+        this.uiSetEle('actionLog', `Bye ${this.sd.playerName}, see you soon!`)
 
-        this.uiSetEle('actionLog', `Bye!`)
-
+        // Wait a bit before exiting.
         setTimeout(() => {
             location.reload()
         }, this.conf.exitDelay)
     },
 
-    // Progress in the game.
+    /**
+     * Progress in the game.
+     */
     progress() {
         // Decide what happens next.
         if (!this.ram.nextProgressAction) {
@@ -389,8 +477,10 @@ const MusicAddict2 = {
 
     /* ==================================== EVENT HANDLERS ===================================== */
 
-    // Handle ctrlRegister clicks
-    ctrlRegisterHandleClick(e) {
+    /**
+     * Handle ctrlRegister clicks.
+     */
+    ctrlRegisterHandleClick(/* e */) {
         // Stop if we already have a token.
         if (this.sd.token) {
             return
@@ -426,8 +516,10 @@ const MusicAddict2 = {
         })
     },
 
-    // Handle ctrlContinue clicks
-    ctrlContinueHandleClick(e) {
+    /**
+     * Handle ctrlContinue clicks.
+     */
+    ctrlContinueHandleClick(/* e */) {
         // Stop if we already have a token.
         if (this.sd.token) {
             return
@@ -459,8 +551,10 @@ const MusicAddict2 = {
         })
     },
 
-    // Handle ctrlProgress clicks
-    ctrlProgressHandleClick(e) {
+    /**
+     * Handle ctrlProgress clicks.
+     */
+    ctrlProgressHandleClick(/* e */) {
         if (!this.sd.token) {
             return
         }
@@ -477,8 +571,10 @@ const MusicAddict2 = {
         this.progress()
     },
 
-    // Handle ctrlExit clicks
-    ctrlExitHandleClick(e) {
+    /**
+     * Handle ctrlExit clicks.
+     */
+    ctrlExitHandleClick(/* e */) {
         this.save(true)
     },
 
@@ -487,7 +583,10 @@ const MusicAddict2 = {
 
     /* ================================== BACKGROUND UPDATE ==================================== */
 
-    // Update stuff in the background.
+    /**
+     * Update stuff in the background.
+     * @param {boolean} [startWorker=false]  If true, start worker interval.
+     */
     backgroundUpdate(startWorker=false) {
         // Start loop if startWorker=true and backgroundUpdateIntervalID is not already set.
         if (startWorker && !this.ram.backgroundUpdateIntervalID) {
@@ -512,7 +611,9 @@ const MusicAddict2 = {
         this.uiSetEle('sdRecordsCount', `${this.sd.records.length}`)
     },
 
-    // Stop updating stuff in the background.
+    /**
+     * Stop updating stuff in the background.
+     */
     backgroundUpdateStop() {
         clearInterval(this.ram.backgroundUpdateIntervalID)
         this.ram.backgroundUpdateIntervalID = null
@@ -523,8 +624,13 @@ const MusicAddict2 = {
 
     /* ========================================= UI ============================================ */
 
-    // Set UI element values
-    uiSetEle(uikey='', val='') {
+    /**
+     * Set UI element values.
+     * @todo Rename to uiSetVal.
+     * @param {string} uikey  Key of the element stored inside ui. By default innerHTML will be set to val. For the following some extra transformation will be applied: actionLog, inputPlayerName, inputToken, actionGif.
+     * @param {string} [val='']  Value to update the element with.
+     */
+    uiSetEle(uikey, val='') {
         if (!uikey || !this.ui[uikey]) {
             console.warn('Missing or unknown uikey:', uikey)
             return
@@ -554,8 +660,13 @@ const MusicAddict2 = {
         }
     },
 
-    // Set UI element visibility.
-    uiVis(uikey='', vis='') {
+    /**
+     * Set UI element display.
+     * @todo Rename to uiSetDisplay.
+     * @param {string} uikey  Key of the element stored inside ui.
+     * @param {string} [vis='']  Can be either hide, show, or any value accepted by CSS's display property.
+     */
+    uiVis(uikey, vis='') {
         if (!uikey || !this.ui[uikey]) {
             console.warn('Missing or unknown uikey:', uikey)
             return
@@ -580,8 +691,14 @@ const MusicAddict2 = {
         }
     },
 
-    // Set UI element state. E.g. e.disabled = true|false
-    uiState(uikey='', state='') {
+    /**
+     * Set UI element state.
+     * @todo Rename to uiSetState.
+     * @todo Test toggle.
+     * @param {string} uikey  Key of the element stored inside ui.
+     * @param {string} [state='toggle']  Can be either set to enabled, disabled or toggle.
+     */
+    uiState(uikey, state='toggle') {
         if (!uikey || !this.ui[uikey]) {
             console.warn('Missing or unknown uikey:', uikey)
             return
@@ -596,6 +713,15 @@ const MusicAddict2 = {
                     this.ui[uikey].disabled = true
                     break
 
+            case 'toggle':
+                if (!this.ui[uikey].disabled) {
+                    this.ui[uikey].disabled = true
+                }
+                else{
+                    this.ui[uikey].disabled = false
+                }
+                break
+
             default:
                 console.warn('Invalid state:', state)
         }
@@ -606,13 +732,16 @@ const MusicAddict2 = {
 
     /* ========================================= API =========================================== */
 
-    // Make an API request.
-    apiRequest(query={}, onSuccess=null) {
+    /**
+     * Make an API request.
+     * @param {object} query  The query to send to the API.
+     * @param {function} [onSuccess=null]  A function to run on success. That function will get the response data passed over.
+     */
+    apiRequest(query, onSuccess=null) {
         const queryData = new FormData()
         for (const k in query) {
             queryData.append(k, query[k])
         }
-
         fetch(this.conf.apiPath, {
             method: 'POST',
             body: queryData,
@@ -638,14 +767,20 @@ const MusicAddict2 = {
 
     /* ====================================== RANDOMNESS ======================================= */
 
-    // Be lucky, or not.
-    lucky(chance=0.0) {
+    /**
+     * Be lucky, or not.
+     * @param {luckyChance} chance  The chance to be lucky.
+     * @returns {boolean}  True if lucky.
+     */
+    lucky(chance) {
         chance = Math.max(0, chance)
         return Math.random() < chance
     },
 
-    // A complete random record.
-    // WIP
+    /**
+     * A complete random record.
+     * @returns {object}  A complete random record with the attributes: title, artist, format, buyPrice, sellPrice.
+     */
     randomRecord() {
         return {
             title: this.randomRecordTitle(),
@@ -656,7 +791,11 @@ const MusicAddict2 = {
         }
     },
 
-    // A random record title.
+    /**
+     * A random record artist.
+     * @todo Rename to randomArtistName.
+     * @returns {string}  A random artist name.
+     */
     randomRecordArtist() {
         let c = this.randomInteger(1, 3)
         let name = []
@@ -672,7 +811,10 @@ const MusicAddict2 = {
         return name.join(' ')
     },
 
-    // A random record title.
+    /**
+     * A random record title.
+     * @returns {string}  A random record title.
+     */
     randomRecordTitle() {
         let c = this.randomInteger(1, 4)
         let title = []
@@ -688,12 +830,19 @@ const MusicAddict2 = {
         return title.join(' ')
     },
 
-    // A random record format.
+    /**
+     * A random record format.
+     * @returns {string}  A random record format.
+     */
     randomRecordFormat() {
         return this.randomArrayItem(this.rd.recordFormat)
     },
 
-    // A random record price.
+    /**
+     * A random record buy price.
+     * @todo Rename to randomBuyPrice.
+     * @returns {number}  A random buy price.
+     */
     randomRecordPrice() {
         let tier = Math.random()
 
@@ -726,26 +875,44 @@ const MusicAddict2 = {
         return this.randomInteger(1, 7)
     },
 
-    // A random record sellPrice based on its buyPrice.
-    randomRecordSellPrice(buyPrice=0) {
+    /**
+     * A random sellPrice based on buyPrice.
+     * @todo Rename to randomSellPrice.
+     * @param {number} buyPrice  The record's buy price to use as base for the highly scientific calculation.
+     * @returns {number}  A random sellPrice.
+     */
+    randomRecordSellPrice(buyPrice) {
         return buyPrice + this.randomInteger(1, Math.max(2, buyPrice * 0.5))
     },
 
-    // Get a random item from an array.
+    /**
+     * Get a random item from an array.
+     * @param {array} array  Input array with items to choose from.
+     * @returns {any}  Nobody knows.
+     */
     randomArrayItem(array) {
         return array[Math.floor(Math.random() * array.length)]
     },
 
-    // Get a numeric random array key.
+    /**
+     * Get a numeric random array key.
+     * @param {array} array  Input array to choose they keys from.
+     * @returns {number}  Random key.
+     */
     randomArrayKey(array) {
         return Math.floor(Math.random() * array.length)
     },
 
-    // Get a random integer between and min and max (inclusive).
-    randomInteger(min, max) {
-        min = Math.ceil(min)
-        max = Math.floor(max)
-        return Math.floor(Math.random() * (max - min + 1) + min)
+    /**
+     * Get a random integer between and minNum and maxNum (inclusive).
+     * @param {number} minNum  Smallest number to include in the range.
+     * @param {number} maxNum  Largest number to include in the range.
+     * @return {number} - Random integer between and inclusive minNum and maxNum.
+     */
+    randomInteger(minNum, maxNum) {
+        minNum = Math.ceil(minNum)
+        maxNum = Math.floor(maxNum)
+        return Math.floor(Math.random() * (maxNum - minNum + 1) + minNum)
     },
 
 
@@ -753,12 +920,22 @@ const MusicAddict2 = {
 
     /* ====================================== DATE/TIME ======================================== */
 
-    // Check if time's up.
-    timesUp(pastTime=0, interval=0) {
+    /**
+     * Check if time's up.
+     * @param {unixtimeMilli} pastTime  Past time to use as a base for the check.
+     * @param {secMilli} interval  Interval duration to use for the check.
+     * @returns {boolean}  True if Date.now() - pastTime > interval.
+     */
+    timesUp(pastTime, interval) {
         return Date.now() - pastTime > interval
     },
 
-    // Make seconds human readable.
+    /**
+     * Convert seconds to a human readable duration string.
+     * @param {number} sec  Seconds to convert.
+     * @param {boolean} [milli=true]  If true, indicates that milliseconds are used as input.
+     * @returns {string}  A string in the format NdNNhNNmNNs.
+     */
     secToDHMS(sec, milli=true) {
         if (milli) {
             sec = sec / 1000
@@ -782,13 +959,21 @@ const MusicAddict2 = {
 
     /* ============================== TEXT/NUMBER TRASNFORM ==================================== */
 
-    // Pad single digit numbers with a 0.
+    /**
+     * Pad numbers < 10 with a 0.
+     * @param {number} num  The number to be padded.
+     * @returns {string}  A padded or the original number.
+     */
     padNum(num) {
-        return (num < 10 && num >= 0) ? `0${num}` : num
+        return (num < 10 && num >= 0) ? `0${num}` : `${num}`
     },
 
-    // Nice formatted record string.
-    recordString(record={}) {
+    /**
+     * Nice formatted record string.
+     * @param {object} record  A record object.
+     * @returns {string}  Formatted HTML.
+     */
+    recordString(record) {
         return `
         <span class="record">
             <span class="title">${record.title}</span>
@@ -797,12 +982,13 @@ const MusicAddict2 = {
         </span>`
     },
 
-    // Nice formatted money string.
-    moneyString(moneyAmount=0) {
-        let warningClass = ``
-        if (moneyAmount <= 0) {
-            warningClass = ' warning'
-        }
+    /**
+     * Nice formatted money string.
+     * @param {number} moneyAmount  Amount of money.
+     * @returns {string}  Formatted HTML.
+     */
+    moneyString(moneyAmount) {
+        let warningClass = (moneyAmount <= 0) ? ` warning` : ``
         return `<span class="money${warningClass}">${moneyAmount}</span>`
     },
 

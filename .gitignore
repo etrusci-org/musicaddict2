@@ -2,4 +2,6 @@
 
 0000/
 
-dist/data/*
+dev/jsdoc/
+
+dist/data/
