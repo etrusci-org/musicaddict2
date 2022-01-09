@@ -274,7 +274,7 @@ const MusicAddict2 = {
 
                     bulkSaleCounter += 1
 
-                    this.uiSetEle('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
+                    this.uiSetEle('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
 
                     if (bulkSaleCounter >= this.conf.bulkSaleAmount) {
                         clearInterval(this.ram.bulkSaleID)
@@ -376,7 +376,7 @@ const MusicAddict2 = {
                 this.sd.cash += this.ram.randomRecord.sellPrice
                 this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
 
-                this.uiSetEle('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
+                this.uiSetEle('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
 
                 this.ram.incomingOffer = null
 
