@@ -80,6 +80,7 @@ const MusicAddict2 = {
      * @prop {luckyChance} conf.offerChance=0.125  Chance get a opportunity to sell a record.
      * @prop {secMilli} conf.maxIdleDuration=600_000  Maximum time can pass without clicking before getting kicked out of the game.
      * @prop {object} conf.buyPriceRanges={...}  Buy price configuration.
+     * @prop {float} conf.sellPriceRangeMultiplikator=0.5  Used to calculate the maximum possible sellPrice of a record: buyPrice * sellPriceRangeMultiplikator.
      */
     conf: {
         apiPath: './api.php',
@@ -109,6 +110,7 @@ const MusicAddict2 = {
             'Tier2': { rollMax: 0.7000, minCash: 7, range: [8, 20] },
             'Tier1': { rollMax: 1.0000, minCash: 0, range: [1, 7] },
         },
+        sellPriceRangeMultiplikator: 0.5,
     },
 
     /**
@@ -967,7 +969,7 @@ const MusicAddict2 = {
      * @returns {number}  A random sellPrice.
      */
     randomSellPrice(buyPrice) {
-        return buyPrice + this.randomInteger(1, Math.max(2, buyPrice * 0.5))
+        return buyPrice + this.randomInteger(1, Math.max(2, buyPrice * this.conf.sellPriceRangeMultiplikator))
     },
 
     /**
