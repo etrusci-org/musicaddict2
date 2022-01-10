@@ -419,9 +419,6 @@ const MusicAddict2 = {
                 // Update action GIF.
                 this.uiSetVal('actionGif', 'listen')
 
-                // Add action log message.
-                this.uiSetVal('actionLog', `Listening.`)
-
                 // Set next action to digg by default.
                 this.ram.nextProgressActionChoices = ['listen']
 
@@ -431,11 +428,20 @@ const MusicAddict2 = {
                     this.ram.listenDuration = this.randomInteger(this.conf.listenDuration.min, this.conf.listenDuration.max)
                 }
 
-                // If listening duration is over, add buy and skipBuy to next action choices.
-                if (this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
+                // If listening duration is not over.
+                if (!this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
+                    // Add action log message.
+                    this.uiSetVal('actionLog', `Listening.`)
+                }
+                // If listening duration is over.
+                else {
+                    // Add buy and skipBuy to next action choices.
                     this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
                     this.ram.startedListeningOn = null
                     this.ram.listenDuration = null
+
+                    // Add action log message.
+                    this.uiSetVal('actionLog', `Done listening.`)
                 }
                 break
 
@@ -448,11 +454,11 @@ const MusicAddict2 = {
                     this.sd.cash -= this.ram.randomRecord.buyPrice
                     this.sd.records.push(this.ram.randomRecord)
 
-                    this.uiSetVal('actionLog', `Bought ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)}.`)
+                    this.uiSetVal('actionLog', `Bought ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice, true)}.`)
                 }
                 // Be sad if not enough cash.
                 else {
-                    this.uiSetVal('actionLog', `You want ${this.recordString(this.ram.randomRecord)}, but don't have enough cash to buy it for ${this.moneyString(this.ram.randomRecord.buyPrice)} (need ${this.moneyString(this.ram.randomRecord.buyPrice - this.sd.cash)} more).`)
+                    this.uiSetVal('actionLog', `You want ${this.recordString(this.ram.randomRecord)}, but don't have enough cash to buy it for ${this.moneyString(this.ram.randomRecord.buyPrice)} (need ${this.moneyString(this.ram.randomRecord.buyPrice - this.sd.cash, true)} more).`)
                 }
 
                 // Set next action choice to digg.
@@ -1071,10 +1077,11 @@ const MusicAddict2 = {
     /**
      * Nice formatted money string.
      * @param {number} moneyAmount  Amount of money.
+     * @param {boolean} addWarning  If true, add CSS .warning class also to numbers > 0.
      * @returns {string}  Formatted HTML.
      */
-    moneyString(moneyAmount) {
-        let warningClass = (moneyAmount <= 0) ? ` warning` : ``
+    moneyString(moneyAmount, addWarning=false) {
+        let warningClass = (moneyAmount <= 0 || addWarning) ? ` warning` : ``
         return `<span class="money${warningClass}">${moneyAmount}</span>`
     },
 

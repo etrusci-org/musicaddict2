@@ -6,11 +6,11 @@ In no particular order.
 
 ## TO-DO
 
+- Code doc lib/api.php.
 - Dynamically inject data.js after ctrlRegister or ctrlContinue.
 - Set element focus to inputPlayerName or ctrlContinue depending on if there is a token in localStorage.
 - Only save firstPlayedOn once to db.
 - Add profit to bulksale end msg.
-- Trading stats. Both session and total. Stored in sd.
 - Better variable/method names.
 - Random generators.
 - Better random data.
@@ -50,3 +50,8 @@ Because why not.
     {"tradeTime": 1234456000, "playerHash": "abcdef", "orderType": "buy",  "cashAmount": 7,  "recordArtist": "Artist1", "recordTitle": "Record2", "recordFormat": "Cassette" },
     {"tradeTime": 1234456010, "playerHash": "abcdef", "orderType": "sell", "cashAmount": 11, "recordArtist": "Artist1", "recordTitle": "Record2", "recordFormat": "Cassette" },
     {"tradeTime": 1234456020, "playerHash": "fedcab", "orderType": "buy",  "cashAmount": 11, "recordArtist": "Artist1", "recordTitle": "Record2", "recordFormat": "Cassette" }
+
+
+### Trading Stats Graph
+
+Show recent trades as a little graph.
