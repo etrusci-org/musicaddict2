@@ -6,8 +6,7 @@ In no particular order.
 
 ## TO-DO
 
-- Code doc, continue with progress().
-- Dynamically inject app.rd.js after ctrlRegister or ctrlContinue.
+- Dynamically inject data.js after ctrlRegister or ctrlContinue.
 - Set element focus to inputPlayerName or ctrlContinue depending on if there is a token in localStorage.
 - Only save firstPlayedOn once to db.
 - Add profit to bulksale end msg.

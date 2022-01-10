@@ -4,25 +4,25 @@
 /**
  * All the magic.
  * @namespace MusicAddict2
- * @prop {object} ui  User-Interface HTML elements collected in main(). To mark an element for collection, add data-uikey to it like so: <span data-uikey="foo">
- * @prop {object} rd  Random data from app.rd.js. Mainly to use with the random* methods.
+ * @prop {object} ui  User-Interface HTML elements collected in main().
+ * @prop {object} rd  Random data from data.js. Mainly to use with the random* methods.
  * @prop {object} sd  Save data to be stored to the database.
  * @prop {object} conf  Static configuration.
  * @prop {object} ram  Temporary vars and objects.
  */
 const MusicAddict2 = {
     /**
-     * A float or integer representing milliseconds.
+     * A float or integer number representing milliseconds.
      * @typedef {number} secMilli
      */
 
     /**
-     * A float or integer representing an unixtime value in milliseconds.
-     * @typedef {number} unixtimeMilli
+     * A float or integer number representing an unixtime value in milliseconds.
+     * @typedef {number} unixMilli
      */
 
     /**
-     * A float representing a chance value between 0.0 and 1.0. The higher the number the higher the chance to be lucky.
+     * A float number representing a chance value between 0.0 and 1.0. The higher the number the higher the chance to be lucky.
      * @typedef {number} luckyChance
      */
 
@@ -31,12 +31,15 @@ const MusicAddict2 = {
      * @prop {object} ui
      * @example
      * // Mark element for collection with the key "foo".
-     * <span data-uikey="foo">access me tru ui.foo then</span>
+     * <span data-uikey="foo">hello world</span>
+     * @example
+     * // The CSS classes .ui and .foo will be added automagically.
+     * <span class="ui foo" data-uikey="foo">hello world</span>
      */
     ui: {},
 
     /**
-     * Random data from app.rd.js. Mainly to use with the random* methods.
+     * Random data from data.js. Mainly to use with the random* methods.
      * @prop {object} rd
      */
     rd: {},
@@ -45,7 +48,7 @@ const MusicAddict2 = {
      * Save data to be stored to the database.
      * @prop {object} sd
      * @prop {string} sd.token=null  Secret token.
-     * @prop {unixtimeMilli} sd.firstPlayedOn=null  First play time.
+     * @prop {unixMilli} sd.firstPlayedOn=null  First play time.
      * @prop {string} sd.playerName='Anonymous'  Player name.
      * @prop {integer} sd.cash=7  Cash holdings.
      * @prop {array} sd.records=[]]  Record collection.
@@ -66,15 +69,15 @@ const MusicAddict2 = {
      * @prop {integer} conf.actionLogMax=500  How many lines to keep in the action log.
      * @prop {secMilli} conf.backgroundUpdateInterval=500  Background updater interval delay.
      * @prop {secMilli} conf.clickSpeed=1_000  Timeout after a ctrlProgress click.
-     * @prop {secMilli} conf.exitDelay=2_000  Delay click before exiting after ctrlExit.
+     * @prop {secMilli} conf.exitDelay=2_000  Delay before exiting after ctrlExit.
      * @prop {secMilli} conf.autoSaveInterval=60_000  How often to save automagically.
      * @prop {integer} conf.recordsMax=500  How many records the player can keep in the collection before a bulk sale gets triggered.
      * @prop {integer} conf.bulkSaleAmount=50  How many records to sell in a bulk sale.
      * @prop {object} conf.listenDuration={...}  Range for randomly choosing the listening duration from.
      * @prop {secMilli} conf.listenDuration.min=5_000  Minimum listening duration
      * @prop {secMilli} conf.listenDuration.max=20_000  Maximum listening duration
-     * @prop {chance} conf.discoverChance=0.20  Chance a interesting record can be discovered, chance can be between 0.0 and 1.0.
-     * @prop {chance} conf.offerChance=0.125  Chance get a opportunity to sell a record, chance can be between 0.0 and 1.0.
+     * @prop {luckyChance} conf.discoverChance=0.20  Chance a interesting record can be discovered.
+     * @prop {luckyChance} conf.offerChance=0.125  Chance get a opportunity to sell a record.
      * @prop {secMilli} conf.maxIdleDuration=600_000  Maximum time can pass without clicking before getting kicked out of the game.
      */
     conf: {
@@ -102,16 +105,16 @@ const MusicAddict2 = {
      * Temporary vars and objects.
      * @prop {object} ram
      * @prop {integer} ram.backgroundUpdateIntervalID=null  ID of backgroundUpdate()'s setInterval loop.
-     * @prop {unixtimeMilli} ram.lastCtrlProgressClickOn=null  When the ui.ctrlProgress element was last clicked.
-     * @prop {unixtimeMilli} ram.lastSavedOn=null  When the last save occured.
+     * @prop {unixMilli} ram.lastCtrlProgressClickOn=null  When the ui.ctrlProgress element was last clicked.
+     * @prop {unixMilli} ram.lastSavedOn=null  When the last save occured.
      * @prop {string} ram.nextProgressAction=null  What the next progress() action will be.
      * @prop {array} ram.nextProgressActionChoices=null  What the choices are for the next progress() action.
      * @prop {object} ram.randomRecord=null  The current record for either the buy or sell progress() action.
      * @prop {boolean} ram.incomingOffer=null  True if there is an incoming offer.
      * @prop {integer} ram.bulkSaleID=null  ID of the bulkSale progress() action's setInterval loop.
      * @prop {secMilli} ram.listenDuration=null  For how to to listen to a record.
-     * @prop {unixtimeMilli} ram.startedListeningOn=null  When the player has started listening to a record.
-     * @prop {unixtimeMilli} ram.startedSessionOn=null  When the current game session was started.
+     * @prop {unixMilli} ram.startedListeningOn=null  When the player has started listening to a record.
+     * @prop {unixMilli} ram.startedSessionOn=null  When the current game session was started.
      */
     ram: {
         backgroundUpdateIntervalID: null,
@@ -164,19 +167,19 @@ const MusicAddict2 = {
             let localStorageToken = window.localStorage.getItem('musicaddict2')
             if (localStorageToken) {
                 localStorageToken = atob(localStorageToken)
-                this.uiSetEle('inputToken', localStorageToken)
+                this.uiSetVal('inputToken', localStorageToken)
             }
         }
 
         // Initially hide some UI elements.
-        this.uiVis('game', 'hide') // unhide in start()
+        this.uiSetDisplay('game', 'hide') // unhide in start()
 
         // Update some UI elements.
-        this.uiSetEle('inputPlayerName', '')
-        this.uiSetEle('actionGif', 'idle')
+        this.uiSetVal('inputPlayerName', '')
+        this.uiSetVal('actionGif', 'idle')
 
         // Finally un-hide the app.
-        this.uiVis('app', 'block')
+        this.uiSetDisplay('app', 'block')
     },
 
     /**
@@ -184,15 +187,23 @@ const MusicAddict2 = {
      */
     start() {
         // Set display of elements.
-        this.uiVis('ctrlRegister', 'hide')
-        this.uiVis('ctrlContinue', 'hide')
-        this.uiVis('inputToken', 'hide')
-        this.uiVis('home', 'hide')
-        this.uiVis('game', 'show')
+        this.uiSetDisplay('ctrlRegister', 'hide')
+        this.uiSetDisplay('ctrlContinue', 'hide')
+        this.uiSetDisplay('inputToken', 'hide')
+        this.uiSetDisplay('home', 'hide')
+        this.uiSetDisplay('game', 'show')
 
-        // If this is the first time, remember it forever.
+        // If this is the first progress, remember it forever.
         if (!this.sd.firstPlayedOn) {
             this.sd.firstPlayedOn = Date.now()
+            this.uiSetVal('actionLog', `
+                Welcome ${this.sd.playerName}!
+                Remember your secret token. You'll need it to continue later:
+                ${this.sd.token}
+            `)
+        }
+        else {
+            this.uiSetVal('actionLog', `Welcome back ${this.sd.playerName}!`)
         }
 
         // Remember when the current session has started.
@@ -258,9 +269,9 @@ const MusicAddict2 = {
         this.backgroundUpdateStop()
 
         // Update ui elements
-        this.uiState('ctrlProgress', 'disabled')
-        this.uiState('ctrlExit', 'disabled')
-        this.uiSetEle('actionLog', `Bye ${this.sd.playerName}, see you soon!`)
+        this.uiSetState('ctrlProgress', 'disabled')
+        this.uiSetState('ctrlExit', 'disabled')
+        this.uiSetVal('actionLog', `Bye ${this.sd.playerName}, see you soon!`)
 
         // Wait a bit before exiting.
         setTimeout(() => {
@@ -272,132 +283,155 @@ const MusicAddict2 = {
      * Progress in the game.
      */
     progress() {
-        // Decide what happens next.
+        // Fall back to digg by default.
         if (!this.ram.nextProgressAction) {
             this.ram.nextProgressAction = 'digg'
         }
 
+        // Trigger broke if the player has no cash and there is no incoming offer.
         if (this.sd.cash == 0 && !this.ram.incomingOffer) {
             this.ram.nextProgressAction = 'broke'
         }
 
+        // Trigger bulkSale if too many records in collection.
         if (this.sd.records.length > this.conf.recordsMax) {
             this.ram.nextProgressAction = 'bulkSale'
         }
 
-        // Perform action depending on current nextProgressAction
-        // and choose possible choices for the next loop iteration.
+        // Run action and choose possible choices for the next loop iteration.
         this.ram.nextProgressActionChoices = []
 
-        // -----------------------
-        // Basic Game Flow
-        //
-        // # broke
-        //     ?offer
-        // # bulkSale
-        //     digg
-        // # digg
-        //     ?discover
-        //         listen
-        //             ?buy
-        //                 digg
-        //             ?skipBuy
-        //                 digg
-        //     ?offer
-        //         ?sell
-        //             digg
-        //         ?skipSell
-        //             digg
-        // -----------------------
         switch (this.ram.nextProgressAction) {
+            // --------------------------------------
+            // ! = Triggered on special conditions.
+            // ? = Based on chance.
+            // Default entry action is digg.
+            //
+            // !broke
+            //   ?offer
+            // !bulkSale
+            //   digg
+            // digg
+            //   ?discover
+            //     listen
+            //       ?buy
+            //         digg
+            //         ?skipBuy
+            //           digg
+            //   ?offer
+            //     ?sell
+            //       digg
+            //     ?skipSell
+            //       digg
+            // --------------------------------------
             case 'digg':
-                this.uiSetEle('actionGif', 'digg')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'digg')
 
-                this.uiSetEle('actionLog', `Digging for cool records.`)
+                // Add action log message.
+                this.uiSetVal('actionLog', `Digging for cool records.`)
 
+                // Set next action to digg by default.
                 this.ram.nextProgressActionChoices = ['digg']
 
+                // If lucky, add discover to next action choices.
                 if (this.lucky(this.conf.discoverChance)) {
                     this.ram.nextProgressActionChoices.push('discover')
                 }
 
+                // If lucky, add offer to next action choices.
                 if (this.lucky(this.conf.offerChance) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
                 break
 
             case 'broke':
-                this.uiSetEle('actionGif', 'broke')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'broke')
 
-                this.uiSetEle('actionLog', `You're broke.`)
+                // Add action log message.
+                this.uiSetVal('actionLog', `You're broke.`)
 
+                // If lucky, add offer to next action choices.
                 this.ram.incomingOffer = this.lucky(this.conf.offerChance)
-
                 if (this.ram.incomingOffer) {
                     this.ram.nextProgressActionChoices = ['offer']
                 }
                 break
 
             case 'bulkSale':
-                this.uiSetEle('actionGif', 'sell')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'sell')
 
-                this.uiSetEle('actionLog', `You can not store more records and decide to sell some in bulk.`)
+                // Add action log Message.
+                this.uiSetVal('actionLog', `You can not store more records and decide to sell some in bulk.`)
 
-                this.uiState('ctrlProgress', 'disabled')
-                this.uiState('ctrlExit', 'disabled')
+                // Disable controls so we don't mess up data.
+                this.uiSetState('ctrlProgress', 'disabled')
+                this.uiSetState('ctrlExit', 'disabled')
 
+                // Sell records in bulk one by one.
                 this.ram.bulkSaleID = null
                 let bulkSaleCounter = 0
-
                 this.ram.bulkSaleID = setInterval(() => {
                     let k = this.randomArrayKey(this.sd.records)
                     this.ram.randomRecord = { ...this.sd.records[k] }
                     this.ram.randomRecord.collectionKey = k
-                    this.ram.randomRecord.sellPrice = this.randomRecordSellPrice(this.ram.randomRecord.buyPrice)
+                    this.ram.randomRecord.sellPrice = this.randomSellPrice(this.ram.randomRecord.buyPrice)
 
                     this.sd.cash += this.ram.randomRecord.sellPrice
                     this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
 
                     bulkSaleCounter += 1
 
-                    this.uiSetEle('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
+                    this.uiSetVal('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
 
                     if (bulkSaleCounter >= this.conf.bulkSaleAmount) {
                         clearInterval(this.ram.bulkSaleID)
                         this.ram.bulkSaleID = null
 
-                        this.uiState('ctrlProgress', 'enabled')
-                        this.uiState('ctrlExit', 'enabled')
+                        this.uiSetState('ctrlProgress', 'enabled')
+                        this.uiSetState('ctrlExit', 'enabled')
 
-                        this.uiSetEle('actionLog', `Done selling ${bulkSaleCounter} records.`)
+                        this.uiSetVal('actionLog', `Done selling ${bulkSaleCounter} records.`)
                     }
                 }, 1_000)
 
+                // Set next action choices.
                 this.ram.nextProgressActionChoices = ['digg']
                 break
 
             case 'discover':
-                this.uiSetEle('actionGif', 'discover')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'discover')
 
+                // Set a new random record.
                 this.ram.randomRecord = this.randomRecord()
 
-                this.uiSetEle('actionLog', `Discovered ${this.recordString(this.ram.randomRecord)}.`)
+                // Add action log message.
+                this.uiSetVal('actionLog', `Discovered ${this.recordString(this.ram.randomRecord)}.`)
 
+                // Set next action choices.
                 this.ram.nextProgressActionChoices = ['listen']
                 break
 
             case 'listen':
-                this.uiSetEle('actionGif', 'listen')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'listen')
 
-                this.uiSetEle('actionLog', `Listening.`)
+                // Add action log message.
+                this.uiSetVal('actionLog', `Listening.`)
 
+                // Set next action to digg by default.
                 this.ram.nextProgressActionChoices = ['listen']
 
+                // Start tracking listening time if not doing so already and set the listening duration.
                 if (!this.ram.startedListeningOn) {
                     this.ram.startedListeningOn = Date.now()
                     this.ram.listenDuration = this.randomInteger(this.conf.listenDuration.min, this.conf.listenDuration.max)
                 }
 
+                // If listening duration is over, add buy and skipBuy to next action choices.
                 if (this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
                     this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
                     this.ram.startedListeningOn = null
@@ -406,62 +440,80 @@ const MusicAddict2 = {
                 break
 
             case 'buy':
-                this.uiSetEle('actionGif', 'buy')
-
+                // Buy if enough cash.
                 if (this.sd.cash >= this.ram.randomRecord.buyPrice) {
+                    // Update action GIF.
+                    this.uiSetVal('actionGif', 'buy')
+
                     this.sd.cash -= this.ram.randomRecord.buyPrice
                     this.sd.records.push(this.ram.randomRecord)
 
-                    this.uiSetEle('actionLog', `Bought ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)}.`)
+                    this.uiSetVal('actionLog', `Bought ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice)}.`)
                 }
+                // Be sad if not enough cash.
                 else {
-                    this.uiSetEle('actionLog', `You want ${this.recordString(this.ram.randomRecord)}, but don't have enough cash to buy it for ${this.moneyString(this.ram.randomRecord.buyPrice)} (need ${this.moneyString(this.ram.randomRecord.buyPrice - this.sd.cash)} more).`)
+                    this.uiSetVal('actionLog', `You want ${this.recordString(this.ram.randomRecord)}, but don't have enough cash to buy it for ${this.moneyString(this.ram.randomRecord.buyPrice)} (need ${this.moneyString(this.ram.randomRecord.buyPrice - this.sd.cash)} more).`)
                 }
 
+                // Set next action choice to digg.
                 this.ram.nextProgressActionChoices = ['digg']
                 break
 
             case 'skipBuy':
-                this.uiSetEle('actionGif', 'skipBuy')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'skipBuy')
 
-                this.uiSetEle('actionLog', `Nah, you don't like ${this.recordString(this.ram.randomRecord)} that much.`)
+                // Add action log message.
+                this.uiSetVal('actionLog', `Nah, you don't like ${this.recordString(this.ram.randomRecord)} that much.`)
 
+                // Set next action choice to digg.
                 this.ram.nextProgressActionChoices = ['digg']
                 break
 
             case 'offer':
-                this.uiSetEle('actionGif', 'offer')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'offer')
 
+                // Select a random record from the player's collection.
                 let k = this.randomArrayKey(this.sd.records)
                 this.ram.randomRecord = { ...this.sd.records[k] }
                 this.ram.randomRecord.collectionKey = k
-                this.ram.randomRecord.sellPrice = this.randomRecordSellPrice(this.ram.randomRecord.buyPrice)
+                this.ram.randomRecord.sellPrice = this.randomSellPrice(this.ram.randomRecord.buyPrice)
 
-                this.uiSetEle('actionLog', `Someone wants to buy ${this.recordString(this.ram.randomRecord)} from your collection.`)
+                // Add action log message.
+                this.uiSetVal('actionLog', `Someone wants to buy ${this.recordString(this.ram.randomRecord)} from your collection.`)
 
+                // Set next action choices to sell and skipSell.
                 this.ram.nextProgressActionChoices = ['sell', 'skipSell']
                 break
 
             case 'sell':
-                this.uiSetEle('actionGif', 'sell')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'sell')
 
+                // Sell the record and reset the incomingOffer boolean that was maybe set in the broke action.
                 this.sd.cash += this.ram.randomRecord.sellPrice
                 this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
-
-                this.uiSetEle('actionLog', `Sold it for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
-
                 this.ram.incomingOffer = null
 
+                // Add action log message.
+                this.uiSetVal('actionLog', `Sold it for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
+
+                // Set next action choice to digg.
                 this.ram.nextProgressActionChoices = ['digg']
                 break
 
             case 'skipSell':
-                this.uiSetEle('actionGif', 'skipSell')
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'skipSell')
 
-                this.uiSetEle('actionLog', `Nah, you keep this one for now.`)
+                // Add action log message.
+                this.uiSetVal('actionLog', `Nah, you keep this one for now.`)
 
+                // Reset the incomingOffer boolean that was maybe set in the broke action.
                 this.ram.incomingOffer = null
 
+                // Set next action choice to digg.
                 this.ram.nextProgressActionChoices = ['digg']
                 break
 
@@ -469,6 +521,7 @@ const MusicAddict2 = {
                 console.error('Unknown nextProgressAction:', this.ram.nextProgressAction)
         }
 
+        // Select a random choice for what happens next.
         this.ram.nextProgressAction = this.randomArrayItem(this.ram.nextProgressActionChoices)
     },
 
@@ -496,22 +549,29 @@ const MusicAddict2 = {
                 return
             }
 
+            // Store new token the db returned.
             this.sd.token = response.token
 
+            // Reset localStorage token.
             if (window.localStorage) {
                 window.localStorage.removeItem('musicaddict2')
             }
 
+            // Set player name from input or leave it to the default.
             let playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
             playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
             if (playerName) {
                 this.sd.playerName = playerName
-                this.uiSetEle('inputPlayerName', playerName)
+                this.uiSetVal('inputPlayerName', playerName)
             }
 
-            this.uiSetEle('inputToken', this.sd.token)
-            this.uiSetEle('inputPlayerName', this.sd.playerName)
+            // Set token input value for easy re-login after exit.
+            this.uiSetVal('inputToken', this.sd.token)
 
+            // Set player name input value.
+            this.uiSetVal('inputPlayerName', this.sd.playerName)
+
+            // Start the game.
             this.start()
         })
     },
@@ -532,7 +592,7 @@ const MusicAddict2 = {
             return
         }
 
-        // Request saveData from api
+        // Request save data from api.
         this.apiRequest({
             action: 'continue',
             token: inputToken,
@@ -543,10 +603,13 @@ const MusicAddict2 = {
                 return
             }
 
+            // Store token the db returned not what the user has entered.
             this.sd = response.saveData
 
-            this.uiSetEle('inputPlayerName', this.sd.playerName)
+            // Set player name input value.
+            this.uiSetVal('inputPlayerName', this.sd.playerName)
 
+            // Start the game.
             this.start()
         })
     },
@@ -555,19 +618,23 @@ const MusicAddict2 = {
      * Handle ctrlProgress clicks.
      */
     ctrlProgressHandleClick(/* e */) {
+        // Stop if we don't have a token.
         if (!this.sd.token) {
             return
         }
 
+        // Remember when this method was last run for later use.
         this.ram.lastCtrlProgressClickOn = Date.now()
 
-        this.uiState('ctrlProgress', 'disabled')
+        // Disable progress button for a short while.
+        this.uiSetState('ctrlProgress', 'disabled')
         setTimeout(() => {
             if (!this.ram.bulkSaleID) {
-                this.uiState('ctrlProgress', 'enabled')
+                this.uiSetState('ctrlProgress', 'enabled')
             }
         }, this.conf.clickSpeed)
 
+        // Trigger a progress action.
         this.progress()
     },
 
@@ -575,6 +642,7 @@ const MusicAddict2 = {
      * Handle ctrlExit clicks.
      */
     ctrlExitHandleClick(/* e */) {
+        // Save and exit.
         this.save(true)
     },
 
@@ -588,7 +656,7 @@ const MusicAddict2 = {
      * @param {boolean} [startWorker=false]  If true, start worker interval.
      */
     backgroundUpdate(startWorker=false) {
-        // Start loop if startWorker=true and backgroundUpdateIntervalID is not already set.
+        // Start worker loop if startWorker=true and there is no background worker already running.
         if (startWorker && !this.ram.backgroundUpdateIntervalID) {
             this.ram.backgroundUpdateIntervalID = setInterval(() => {
                 this.backgroundUpdate()
@@ -602,20 +670,23 @@ const MusicAddict2 = {
 
         // Auto-exit if idling for too long.
         if (this.timesUp(this.ram.lastCtrlProgressClickOn, this.conf.maxIdleDuration)) {
-            this.uiSetEle('actionLog', `Idle detection kicked in.`)
+            this.uiSetVal('actionLog', `Idle detection kicked in.`)
             this.save(true)
         }
 
-        // Update stuff.
-        this.uiSetEle('sdCash', `${this.moneyString(this.sd.cash)}`)
-        this.uiSetEle('sdRecordsCount', `${this.sd.records.length}`)
+        // Update UI elements.
+        this.uiSetVal('sdCash', `${this.moneyString(this.sd.cash)}`)
+        this.uiSetVal('sdRecordsCount', `${this.sd.records.length}`)
     },
 
     /**
      * Stop updating stuff in the background.
      */
     backgroundUpdateStop() {
+        // Clear the update worker.
         clearInterval(this.ram.backgroundUpdateIntervalID)
+
+        // Reset the worker's interval ID.
         this.ram.backgroundUpdateIntervalID = null
     },
 
@@ -626,11 +697,11 @@ const MusicAddict2 = {
 
     /**
      * Set UI element values.
-     * @todo Rename to uiSetVal.
      * @param {string} uikey  Key of the element stored inside ui. By default innerHTML will be set to val. For the following some extra transformation will be applied: actionLog, inputPlayerName, inputToken, actionGif.
      * @param {string} [val='']  Value to update the element with.
      */
-    uiSetEle(uikey, val='') {
+    uiSetVal(uikey, val='') {
+        // Stop if no uikey.
         if (!uikey || !this.ui[uikey]) {
             console.warn('Missing or unknown uikey:', uikey)
             return
@@ -638,9 +709,12 @@ const MusicAddict2 = {
 
         switch (uikey) {
             case 'actionLog':
+                // Prepend a <p> element.
                 let p = document.createElement('p')
-                p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.ram.startedSessionOn)} &middot;</span> ${val}`
+                // p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.ram.startedSessionOn)} &middot;</span> ${val}`
+                p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} &middot;</span> ${val}`
                 this.ui[uikey].prepend(p)
+                // Remove excess lines.
                 while (this.ui[uikey].children.length > this.conf.actionLogMax) {
                     this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
                 }
@@ -648,10 +722,12 @@ const MusicAddict2 = {
 
             case 'inputPlayerName':
             case 'inputToken':
+                // Set <input> values.
                 this.ui[uikey].value = val
                 break
 
             case 'actionGif':
+                // Set CSS property background-image.
                 this.ui[uikey].style.backgroundImage = `url('res/actiongif/${val}.gif')`
                 break
 
@@ -662,16 +738,17 @@ const MusicAddict2 = {
 
     /**
      * Set UI element display.
-     * @todo Rename to uiSetDisplay.
      * @param {string} uikey  Key of the element stored inside ui.
-     * @param {string} [vis='']  Can be either hide, show, or any value accepted by CSS's display property.
+     * @param {string} vis  Can be either hide, show, or any value accepted by CSS's display property.
      */
-    uiVis(uikey, vis='') {
+    uiSetDisplay(uikey, vis) {
+        // Stop if no uikey.
         if (!uikey || !this.ui[uikey]) {
             console.warn('Missing or unknown uikey:', uikey)
             return
         }
 
+        // Stop if no vis.
         if (!vis) {
             console.warn('Missing vis value')
             return
@@ -679,26 +756,28 @@ const MusicAddict2 = {
 
         switch (vis) {
             case 'hide':
+                // Hide element.
                 this.ui[uikey].style.display = 'none'
                 break
 
             case 'show':
+                // Show element.
                 this.ui[uikey].style.display = ''
                 break
 
             default:
+                // Set display to whatever vis is.
                 this.ui[uikey].style.display = vis
         }
     },
 
     /**
      * Set UI element state.
-     * @todo Rename to uiSetState.
-     * @todo Test toggle.
      * @param {string} uikey  Key of the element stored inside ui.
      * @param {string} [state='toggle']  Can be either set to enabled, disabled or toggle.
      */
-    uiState(uikey, state='toggle') {
+    uiSetState(uikey, state='toggle') {
+        // Stop if no uikey.
         if (!uikey || !this.ui[uikey]) {
             console.warn('Missing or unknown uikey:', uikey)
             return
@@ -706,14 +785,17 @@ const MusicAddict2 = {
 
         switch (state) {
             case 'enabled':
+                // Enable button.
                 this.ui[uikey].disabled = false
                 break
 
             case 'disabled':
-                    this.ui[uikey].disabled = true
-                    break
+                // Disable button.
+                this.ui[uikey].disabled = true
+                break
 
             case 'toggle':
+                // Toggle button state.
                 if (!this.ui[uikey].disabled) {
                     this.ui[uikey].disabled = true
                 }
@@ -723,6 +805,7 @@ const MusicAddict2 = {
                 break
 
             default:
+                // Do nothing if state unknown.
                 console.warn('Invalid state:', state)
         }
     },
@@ -738,25 +821,31 @@ const MusicAddict2 = {
      * @param {function} [onSuccess=null]  A function to run on success. That function will get the response data passed over.
      */
     apiRequest(query, onSuccess=null) {
+        // Prepare query data.
         const queryData = new FormData()
         for (const k in query) {
             queryData.append(k, query[k])
         }
+
+        // Send request to api.
         fetch(this.conf.apiPath, {
             method: 'POST',
             body: queryData,
         })
+        // Process the response.
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not OK')
             }
             return response.json()
         })
+        // Pass the response to the onSuccess handler function.
         .then(responseData => {
             if (typeof(onSuccess) == 'function') {
                 onSuccess(responseData)
             }
         })
+        // Sad times.
         .catch(error => {
             console.error('apiRequest Error:', error)
         })
@@ -784,19 +873,18 @@ const MusicAddict2 = {
     randomRecord() {
         return {
             title: this.randomRecordTitle(),
-            artist: this.randomRecordArtist(),
+            artist: this.randomArtistName(),
             format: this.randomRecordFormat(),
-            buyPrice: this.randomRecordPrice(),
+            buyPrice: this.randomBuyPrice(),
             sellPrice: null, // will be decided in action offer, not when buying.
         }
     },
 
     /**
      * A random record artist.
-     * @todo Rename to randomArtistName.
      * @returns {string}  A random artist name.
      */
-    randomRecordArtist() {
+    randomArtistName() {
         let c = this.randomInteger(1, 3)
         let name = []
 
@@ -840,10 +928,9 @@ const MusicAddict2 = {
 
     /**
      * A random record buy price.
-     * @todo Rename to randomBuyPrice.
      * @returns {number}  A random buy price.
      */
-    randomRecordPrice() {
+    randomBuyPrice() {
         let tier = Math.random()
 
         // Tier 6
@@ -877,11 +964,10 @@ const MusicAddict2 = {
 
     /**
      * A random sellPrice based on buyPrice.
-     * @todo Rename to randomSellPrice.
      * @param {number} buyPrice  The record's buy price to use as base for the highly scientific calculation.
      * @returns {number}  A random sellPrice.
      */
-    randomRecordSellPrice(buyPrice) {
+    randomSellPrice(buyPrice) {
         return buyPrice + this.randomInteger(1, Math.max(2, buyPrice * 0.5))
     },
 
@@ -922,7 +1008,7 @@ const MusicAddict2 = {
 
     /**
      * Check if time's up.
-     * @param {unixtimeMilli} pastTime  Past time to use as a base for the check.
+     * @param {unixMilli} pastTime  Past time to use as a base for the check.
      * @param {secMilli} interval  Interval duration to use for the check.
      * @returns {boolean}  True if Date.now() - pastTime > interval.
      */
