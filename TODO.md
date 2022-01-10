@@ -7,7 +7,6 @@ In no particular order.
 ## TO-DO
 
 - Code doc lib/api.php.
-- Dynamically inject data.js after ctrlRegister or ctrlContinue.
 - Set element focus to inputPlayerName or ctrlContinue depending on if there is a token in localStorage.
 - Only save firstPlayedOn once to db.
 - Add profit to bulksale end msg.

@@ -577,6 +577,9 @@ const MusicAddict2 = {
             // Set player name input value.
             this.uiSetVal('inputPlayerName', this.sd.playerName)
 
+            // Load additional data.
+            this.injectScript('./lib/data.js')
+
             // Start the game.
             this.start()
         })
@@ -614,6 +617,9 @@ const MusicAddict2 = {
 
             // Set player name input value.
             this.uiSetVal('inputPlayerName', this.sd.playerName)
+
+            // Load additional data.
+            this.injectScript('./lib/data.js')
 
             // Start the game.
             this.start()
@@ -1084,5 +1090,21 @@ const MusicAddict2 = {
         let warningClass = (moneyAmount <= 0 || addWarning) ? ` warning` : ``
         return `<span class="money${warningClass}">${moneyAmount}</span>`
     },
+
+
+
+
+    /* ====================================== MISC ==================================== */
+
+    /**
+     * Append a <script> element to document.body.
+     * @param {string} scriptPath  The path to the script file.
+     */
+     injectScript(scriptPath) {
+        let ele = document.createElement('script')
+        ele.src = scriptPath
+        document.body.append(ele)
+    },
+
 
 } // /MusicAddict2
