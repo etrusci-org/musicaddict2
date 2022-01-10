@@ -79,6 +79,7 @@ const MusicAddict2 = {
      * @prop {luckyChance} conf.discoverChance=0.20  Chance a interesting record can be discovered.
      * @prop {luckyChance} conf.offerChance=0.125  Chance get a opportunity to sell a record.
      * @prop {secMilli} conf.maxIdleDuration=600_000  Maximum time can pass without clicking before getting kicked out of the game.
+     * @prop {object} conf.buyPriceRanges={...}  Buy price configuration.
      */
     conf: {
         apiPath: './api.php',
@@ -99,6 +100,15 @@ const MusicAddict2 = {
         discoverChance: 0.20,
         offerChance: 0.125,
         maxIdleDuration: 600_000,
+        buyPriceRanges: {
+            'Legendary': { rollMax: 0.0001, minCash: 100_000, range: [100_000, 1_000_000] },
+            'Tier6': { rollMax: 0.0025, minCash: 500, range: [501, 1_000] },
+            'Tier5': { rollMax: 0.0050, minCash: 200, range: [201, 500] },
+            'Tier4': { rollMax: 0.0500, minCash: 50, range: [51, 200] },
+            'Tier3': { rollMax: 0.0700, minCash: 20, range: [21, 50] },
+            'Tier2': { rollMax: 0.7000, minCash: 7, range: [8, 20] },
+            'Tier1': { rollMax: 1.0000, minCash: 0, range: [1, 7] },
+        },
     },
 
     /**
@@ -943,35 +953,12 @@ const MusicAddict2 = {
      * @returns {number}  A random buy price.
      */
     randomBuyPrice() {
-        let tier = Math.random()
-
-        // Tier 6
-        if (tier < 0.01 && this.sd.cash > 500) {
-            return this.randomInteger(501, 1000)
+        for (const k in this.conf.buyPriceRanges) {
+            let roll = Math.random()
+            if (this.sd.cash > this.conf.buyPriceRanges[k].minCash && roll < this.conf.buyPriceRanges[k].rollMax) {
+                return this.randomInteger(this.conf.buyPriceRanges[k].range[0], this.conf.buyPriceRanges[k].range[1])
+            }
         }
-
-        // Tier 5
-        if (tier < 0.05 && this.sd.cash > 200) {
-            return this.randomInteger(201, 500)
-        }
-
-        // Tier 4
-        if (tier < 0.15 && this.sd.cash > 50) {
-            return this.randomInteger(51, 200)
-        }
-
-        // Tier 3
-        if (tier < 0.40 && this.sd.cash > 20) {
-            return this.randomInteger(21, 50)
-        }
-
-        // Tier 2
-        if (tier < 0.90 && this.sd.cash > 7) {
-            return this.randomInteger(8, 20)
-        }
-
-        // Tier 1
-        return this.randomInteger(1, 7)
     },
 
     /**
