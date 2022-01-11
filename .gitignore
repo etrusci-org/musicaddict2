@@ -4,4 +4,7 @@
 
 dev/jsdoc/
 
+dev/phpdoc/
+.phpdoc
+
 dist/data/
