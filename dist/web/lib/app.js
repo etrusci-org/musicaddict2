@@ -29,12 +29,6 @@ const MusicAddict2 = {
     /**
      * Collected User-Interface HTML elements.
      * @prop {object} ui
-     * @example
-     * // Mark element for collection with the key "foo".
-     * <span data-uikey="foo">hello world</span>
-     * @example
-     * // The CSS classes .ui and .foo will be added automagically.
-     * <span class="ui foo" data-uikey="foo">hello world</span>
      */
     ui: {},
 
@@ -151,28 +145,14 @@ const MusicAddict2 = {
      * Init crucial stuff.
      */
     main() {
-        // Collect marked UI elements.
-        document.querySelectorAll('[data-uikey]').forEach(ele => {
-            // @ts-ignore
-            this.ui[ele.dataset.uikey] = ele
-            // @ts-ignore
-            ele.classList.add('ui', ele.dataset.uikey)
-        })
+        // Collect marked ui elements.
+        this.uiCollectElements()
+
+        // // Load template.
+        // this.injectTemplate('intro')
 
         // Register event handlers.
-        this.conf.eventHandler.forEach((v) => {
-            if (typeof(this[v.handler]) != 'function') {
-                console.warn('main()', 'Event handler is configured but function does not exist:', `${v.handler}()`)
-            }
-            else {
-                if (!this.ui[v.uikey]) {
-                    console.warn('main()', 'Event handler is configured but HTML element does not exist:', `${v.uikey}`)
-                }
-                else {
-                    this.ui[v.uikey].addEventListener(v.type, e => this[v.handler](e))
-                }
-            }
-        })
+        this.registerEventHandlers()
 
         // Check if we have a token in localStorage and enter it into inputToken for the lazy.
         if (window.localStorage) {
@@ -184,7 +164,9 @@ const MusicAddict2 = {
         }
 
         // Initially hide some UI elements.
-        this.uiSetDisplay('game', 'hide') // unhide in start()
+        this.uiSetDisplay('gameCtrl', 'hide') // unhide in start()
+        this.uiSetDisplay('gameStats', 'hide') // unhide in start()
+        this.uiSetDisplay('gameOutput', 'hide') // unhide in start()
 
         // Update some UI elements.
         this.uiSetVal('inputPlayerName', '')
@@ -208,19 +190,32 @@ const MusicAddict2 = {
         this.ram.lastCtrlProgressClickOn = Date.now()
 
         // Set display of elements.
-        this.uiSetDisplay('ctrlRegister', 'hide')
-        this.uiSetDisplay('ctrlContinue', 'hide')
-        this.uiSetDisplay('inputToken', 'hide')
-        this.uiSetDisplay('home', 'hide')
-        this.uiSetDisplay('game', 'show')
+        // this.uiSetDisplay('ctrlRegister', 'hide')
+        // this.uiSetDisplay('ctrlContinue', 'hide')
+        // this.uiSetDisplay('inputToken', 'hide')
+        // this.uiSetDisplay('home', 'hide')
+        // this.uiSetDisplay('game', 'show')
+        // this.injectTemplate('game')
+        this.uiSetDisplay('story', 'hide')
+        this.uiSetDisplay('auth', 'hide')
+        this.uiSetDisplay('gameCtrl', 'show')
+        this.uiSetDisplay('gameStats', 'show')
+        this.uiSetDisplay('gameOutput', 'show')
 
         // If this is the first session, remember it and tell the user to remember the token.
         if (!this.sd.firstPlayedOn) {
             this.sd.firstPlayedOn = Date.now()
             this.uiSetVal('actionLog', `
-                Welcome ${this.sd.playerName}!<br>
-                Remember your secret token. You'll need it to continue later:<br>
-                ${this.sd.token}`
+                <span class="sys">
+                    Welcome ${this.sd.playerName}!<br>
+                    <br>
+                    This is your secret token:<br>
+                    <br>
+                    ${this.sd.token}<br>
+                    <br>
+                    Store it somewhere safe and don't share it.
+                    You will need this to continue the game when you come back.
+                </span>`
             )
         }
         else {
@@ -553,6 +548,25 @@ const MusicAddict2 = {
     /* ==================================== EVENT HANDLERS ===================================== */
 
     /**
+     * Register event handlers.
+     */
+    registerEventHandlers() {
+        this.conf.eventHandler.forEach((v) => {
+            if (typeof(this[v.handler]) != 'function') {
+                // console.warn('main()', 'Event handler is configured but function does not exist:', `${v.handler}()`)
+            }
+            else {
+                if (!this.ui[v.uikey]) {
+                    // console.warn('main()', 'Event handler is configured but HTML element does not exist:', `${v.uikey}`)
+                }
+                else {
+                    this.ui[v.uikey].addEventListener(v.type, e => this[v.handler](e))
+                }
+            }
+        })
+    },
+
+    /**
      * Handle ctrlRegister clicks.
      */
     ctrlRegisterHandleClick(/* e */) {
@@ -670,8 +684,10 @@ const MusicAddict2 = {
      * Handle ctrlExit clicks.
      */
     ctrlExitHandleClick(/* e */) {
-        // Save and exit.
-        this.save(true)
+        if (confirm('Exit the game?')) {
+            // Save and exit.
+            this.save(true)
+        }
     },
 
 
@@ -835,6 +851,24 @@ const MusicAddict2 = {
                 // Do nothing if state unknown.
                 console.warn('Invalid state:', state)
         }
+    },
+
+    /**
+     * Collect marked ui elements.
+     * @example
+     * // Mark element for collection with the key "foo".
+     * <span data-uikey="foo">hello world</span>
+     * @example
+     * // The CSS classes .ui and .foo will be added automagically.
+     * <span class="ui foo" data-uikey="foo">hello world</span>
+     */
+    uiCollectElements() {
+        document.querySelectorAll('[data-uikey]').forEach(ele => {
+            // @ts-ignore
+            this.ui[ele.dataset.uikey] = ele
+            // @ts-ignore
+            ele.classList.add('ui', ele.dataset.uikey)
+        })
     },
 
 
@@ -1097,6 +1131,40 @@ const MusicAddict2 = {
         ele.src = scriptPath
         document.body.append(ele)
     },
+
+    // /**
+    //  * Inject the contents of a template file into the page.
+    //  * @param {string} tplFilename  Filename without extension.
+    //  * @param {string} [uikey='app']  Destination element (must not be collected before, just marked).
+    //  */
+    // injectTemplate(tplFilename, uikey='app') {
+    //     let tplFile = `./tpl/${tplFilename}.html`
+
+    //     // Fetch template file.
+    //     fetch(tplFile, {})
+
+    //     // Process the response.
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not OK')
+    //         }
+    //         return response.text()
+    //     })
+
+    //     // Inject the HTML into the page.
+    //     .then(responseData => {
+    //         document.querySelector(`[data-uikey=${uikey}]`).innerHTML = responseData
+    //         // Re-collect elements to catch possible new ones.
+    //         this.uiCollectElements()
+    //         // Re-register event handlers to catch possible new ones.
+    //         this.registerEventHandlers()
+    //     })
+
+    //     // Sad times.
+    //     .catch(error => {
+    //         console.error('fetchTemplate Error:', error)
+    //     })
+    // },
 
 
 } // /MusicAddict2

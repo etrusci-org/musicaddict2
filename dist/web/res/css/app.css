@@ -1,10 +1,4 @@
 @charset "UTF-8";
-@font-face {
-  font-family: "Share Tech";
-  font-style: normal;
-  font-weight: 400;
-  src: local(""), url("../font/share-tech-v12-latin-regular.woff2") format("woff2"), url("../font/share-tech-v12-latin-regular.woff") format("woff");
-}
 html,
 body,
 h1,
@@ -18,6 +12,12 @@ button {
   border: 0;
 }
 
+@font-face {
+  font-family: "Share Tech";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""), url("../font/share-tech-v12-latin-regular.woff2") format("woff2"), url("../font/share-tech-v12-latin-regular.woff") format("woff");
+}
 body,
 input,
 button {
@@ -27,47 +27,107 @@ button {
 
 body {
   font-size: 12px;
-  font-weight: normal;
-  padding: 15px;
-}
-
-h1,
-h2 {
-  font-size: 12px;
-}
-
-p {
-  margin-bottom: 10px;
 }
 
 input,
 button {
-  font-size: 13px;
-  padding: 7px;
+  font-size: 14px;
 }
-
-input {
-  border-bottom: 1px dotted;
+input.ctrlProgress,
+button.ctrlProgress {
+  font-size: 26px;
 }
 
 button {
   font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
 }
-button.ctrlProgress {
-  font-size: 36px;
+
+h1,
+h2 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+label {
+  font-weight: bold;
+}
+
+main .story {
+  font-size: 18px;
+  font-style: italic;
 }
 
 #app {
   display: none;
+  min-width: 320px;
+  max-width: 960px;
+  margin: auto;
+}
+
+body {
+  padding: 10px;
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+input,
+button {
+  padding: 3px;
+}
+
+input {
+  width: 150px;
+  border-bottom: 1px dashed;
+}
+
+button {
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+main {
+  display: block;
+  margin-bottom: 50px;
+}
+main .sidebar {
+  text-align: center;
+  margin-bottom: 10px;
+}
+main .sidebar h1 {
+  margin-bottom: 5px;
+}
+main .sidebar div {
+  margin-bottom: 10px;
+}
+main .sidebar div.gameStats {
+  text-align: center;
+}
+main .sidebar div.gameStats div {
+  display: inline-block;
+}
+main .content {
+  text-align: center;
+}
+main .content .story {
+  margin-bottom: 60px;
+}
+main .content .actionLog {
+  text-align: left;
+}
+main .content .actionLog p {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted;
 }
 
 .actionGif {
-  width: 120px;
-  height: 90px;
-  border: 2px solid;
-  margin-bottom: 10px;
+  display: inline-block;
+  margin-bottom: 15px;
+  width: 160px;
+  height: 120px;
+  border: 1px solid;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -77,64 +137,153 @@ button.ctrlProgress {
   content: "◈";
 }
 
-.important {
-  font-size: 13px;
+@media (min-width: 500px) {
+  main {
+    display: grid;
+    grid-template-columns: minmax(80px, 200px) auto;
+  }
+  main .sidebar {
+    margin-right: 20px;
+    text-align: center;
+  }
+  main .sidebar input,
+main .sidebar button {
+    display: block;
+    margin-bottom: 5px;
+    width: 100%;
+  }
+  main .sidebar div.gameStats div {
+    display: block;
+  }
+  main .content {
+    margin-top: 18px;
+    text-align: left;
+  }
+
+  .actionGif {
+    width: 100%;
+    height: 120px;
+  }
+}
+body {
+  color: #838E99;
+  background-color: #212529;
 }
 
-body {
-  color: #c5abd6;
-  background-color: #0f0913;
+h1,
+h2 {
+  color: #4FC6AB;
 }
 
 input {
-  color: #a85eda;
-  background-color: #19141d;
-}
-input:invalid {
-  color: #d36b51;
+  color: #838E99;
+  background-color: transparent;
+  border-color: #4FC6AB;
 }
 
 button {
-  color: #c5abd6;
-  background-color: #28202e;
+  color: #838E99;
+  background-color: #30353A;
 }
 button:hover {
-  color: #a85eda;
-  background-color: #24172e;
+  color: #4FC6AB;
+  background-color: #535B61;
 }
 button:disabled {
-  color: #4e4653;
-  background-color: #29252c;
+  color: #535B61;
+  background-color: #30353A;
 }
 
 .actionGif {
-  border-color: #28202e;
+  border-color: #535B61;
 }
 
 .money {
-  color: #83ce74;
+  color: #C99A1C;
 }
 
 .record .title {
-  color: #74cece;
+  color: #6D7FBE;
 }
 .record .artist {
-  color: #64a2cc;
+  color: #4F69C6;
 }
 .record .format {
-  color: #9d92a5;
-}
-
-.important {
-  color: #fff;
-}
-
-.warning {
-  color: #d36b51;
+  color: #896DD0;
 }
 
 .sys {
-  color: #a85eda;
+  color: #B6C1CB;
 }
+
+.warning {
+  color: #ca483e;
+}
+
+/* theme test: purpleish
+
+body {
+    color: #c5abd6;
+    background-color: #0f0913;
+}
+
+input {
+    color: #a85eda;
+    background-color: #19141d;
+
+    &:invalid {
+        color: #d36b51;
+    }
+}
+
+button {
+    color: #c5abd6;
+    background-color: #28202e;
+
+    &:hover {
+        color: #a85eda;
+        background-color: #24172e;
+    }
+
+    &:disabled {
+        color: #4e4653;
+        background-color: #29252c;
+    }
+}
+
+.actionGif {
+    border-color: #28202e;
+}
+
+.money {
+    color: #83ce74;
+}
+
+.record {
+    .title {
+        color: #74cece;
+    }
+
+    .artist {
+        color: #64a2cc;
+    }
+
+    .format {
+        color: #9d92a5;
+    }
+}
+
+.important {
+    color: #fff;
+}
+
+.warning {
+    color: #d36b51;
+}
+
+.sys {
+    color: #a85eda;
+}
+*/
 
 /*# sourceMappingURL=app.css.map */

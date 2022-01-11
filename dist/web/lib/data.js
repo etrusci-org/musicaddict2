@@ -123,6 +123,7 @@ MusicAddict2.rd.recordTitleWords = [
 
 
 // Words from which artist names are built.
+// TODO: rename to artistNameWords
 // WIP
 MusicAddict2.rd.recordArtistWords = [
     // from discogs

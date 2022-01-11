@@ -1,4 +1,73 @@
-// theme: purpleish
+// DEFAULT THEME -----------------------------------
+
+
+
+
+
+body {
+    color: $color-regentgray;
+    background-color: $color-shark;
+}
+
+h1,
+h2 {
+    color: $color-puertorico;
+}
+
+input {
+    color: $color-regentgray;
+    background-color: transparent;
+    border-color: $color-puertorico;
+}
+
+button {
+    color: $color-regentgray;
+    background-color: $color-outerspace;
+
+    &:hover {
+        color: $color-puertorico;
+        background-color: $color-abbey;
+    }
+
+    &:disabled {
+        color: $color-abbey;
+        background-color: $color-outerspace;
+    }
+}
+
+.actionGif {
+    border-color: $color-abbey;
+}
+
+.money {
+    color: $color-geebung;
+}
+
+.record {
+    .title {
+        color: $color-shipcove;
+    }
+
+    .artist {
+        color: $color-indigo;
+    }
+
+    .format {
+        color: $color-truev;
+    }
+}
+
+.sys {
+    color: $color-heater;
+}
+
+.warning {
+    color: $color-mojo;
+}
+
+
+
+/* theme test: purpleish
 
 body {
     color: #c5abd6;
@@ -62,3 +131,4 @@ button {
 .sys {
     color: #a85eda;
 }
+*/

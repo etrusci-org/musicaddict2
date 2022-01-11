@@ -6,6 +6,8 @@ In no particular order.
 
 ## TO-DO
 
+- actionGif for "done listening".
+- Record collection listing in UI.
 - Code doc lib/api.php.
   - Started, but not done yet.
 - Set element focus to inputPlayerName or ctrlContinue depending on if there is a token in localStorage.

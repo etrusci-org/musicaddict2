@@ -6,3 +6,44 @@
          url('../font/share-tech-v12-latin-regular.woff2') format('woff2'),
          url('../font/share-tech-v12-latin-regular.woff') format('woff');
 }
+
+body,
+input,
+button {
+    font-family: $font-main;
+    letter-spacing: 1px;
+}
+
+body {
+    font-size: 12px;
+}
+
+input,
+button {
+    font-size: 14px;
+
+    &.ctrlProgress {
+        font-size: 26px;
+    }
+}
+
+button {
+    font-weight: bold;
+}
+
+h1,
+h2 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+label {
+    font-weight: bold;
+}
+
+main {
+    .story {
+        font-size: 18px;
+        font-style: italic;
+    }
+}

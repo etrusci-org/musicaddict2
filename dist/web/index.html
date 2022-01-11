@@ -14,45 +14,59 @@
 
     <div id="app" data-uikey="app">
 
-        <h1>Music Addict 2</h1>
+        <main>
 
-        <p data-uikey="actionGif"></p>
+            <div class="sidebar">
+                <h1>MUSIC ADDICT 2</h1>
 
-        <div data-uikey="home">
-            <p>
-                You're broke and lonely. After many sleepless nights in your nearly empty 1-room flat,
-                you decide to spend your last <span class="money">7</span> to buy music. "At least my
-                funeral will have a good soundtrack", you think.
-            </p>
-        </div>
+                <div data-uikey="actionGif"></div>
 
-        <div data-uikey="auth">
-            <p>
-                <input type="text" data-uikey="inputPlayerName" pattern="[A-Za-z0-9_-]{1,30}" title="Player Name. Can be changed while playing. Allowed characters: A-Z a-z 0-9 _ -" placeholder="Player Name">
-                <button data-uikey="ctrlRegister">REGISTER</button>
-            </p>
-            <p>
-                <input type="password" data-uikey="inputToken" maxlength="100" title="Secret Token. Enter yours to continue where you left off." placeholder="Secret Token">
-                <button data-uikey="ctrlContinue">CONTINUE</button>
-            </p>
-        </div>
+                <div data-uikey="gameCtrl">
+                    <button data-uikey="ctrlProgress">PROGRESS</button>
+                    <button data-uikey="ctrlExit">EXIT</button>
+                </div>
 
-        <div data-uikey="game">
-            <p>
-                cash: <span data-uikey="sdCash">-</span>
-                records: <span data-uikey="sdRecordsCount">-</span>
-            </p>
+                <div data-uikey="gameStats">
+                    <div>
+                        <label>cash:</label> <span data-uikey="sdCash">-</span>
+                    </div>
+                    <div>
+                        <label>records:</label> <span data-uikey="sdRecordsCount">-</span>
+                    </div>
+                    <div>
+                        <label>profit:</label> <span data-uikey="TODO">-</span>
+                    </div>
+                </div>
+            </div>
 
-            <p>
-                <button data-uikey="ctrlProgress">PROGRESS</button>
-                <button data-uikey="ctrlExit">EXIT</button>
-            </p>
+            <div class="content">
+                <div data-uikey="story">
+                    You're broke and lonely. After many sleepless nights in your nearly empty 1-room flat,
+                    you decide to spend your last <span class="money">7</span> to buy music. "At least my
+                    funeral will have a good soundtrack", you think.
+                </div>
 
-            <div data-uikey="actionLog"></div>
-        </div>
+                <div data-uikey="auth">
+                    <h2>NEW GAME</h2>
+                    <p>
+                        <input type="text" data-uikey="inputPlayerName" pattern="[A-Za-z0-9_-]{1,30}" title="Optional. Allowed characters: A-Z a-z 0-9 _ -" placeholder="Player Name">
+                        <button data-uikey="ctrlRegister">REGISTER</button>
+                    </p>
+                    <h2>CONTINUE</h2>
+                    <p>
+                        <input type="password" data-uikey="inputToken" maxlength="100" placeholder="Secret Token">
+                        <button data-uikey="ctrlContinue">CONTINUE</button>
+                    </p>
+                </div>
+
+                <div data-uikey="gameOutput">
+                    <div data-uikey="actionLog"></div>
+                </div>
+            </div>
+
+        </main>
 
     </div><!--/app-->
-
 
     <script src="./lib/app.js"></script>
     <script src="./lib/main.js"></script>
