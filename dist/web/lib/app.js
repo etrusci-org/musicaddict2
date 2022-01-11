@@ -385,6 +385,8 @@ const MusicAddict2 = {
                 // Sell records in bulk one by one.
                 this.ram.bulkSaleID = null
                 let bulkSaleCounter = 0
+                let bulkSaleIncome = 0
+                let bulkSaleProfit = 0
                 this.ram.bulkSaleID = setInterval(() => {
                     let k = this.randomArrayKey(this.sd.records)
                     this.ram.randomRecord = { ...this.sd.records[k] }
@@ -395,6 +397,8 @@ const MusicAddict2 = {
                     this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
 
                     bulkSaleCounter += 1
+                    bulkSaleIncome += this.ram.randomRecord.sellPrice
+                    bulkSaleProfit += this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice
 
                     this.uiSetVal('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
 
@@ -405,7 +409,7 @@ const MusicAddict2 = {
                         this.uiSetState('ctrlProgress', 'enabled')
                         this.uiSetState('ctrlExit', 'enabled')
 
-                        this.uiSetVal('actionLog', `Done selling ${bulkSaleCounter} records.`)
+                        this.uiSetVal('actionLog', `Done selling ${bulkSaleCounter} records for a total of ${this.moneyString(bulkSaleIncome)} (${this.moneyString(bulkSaleProfit)} profit).`)
                     }
                 }, 1_000)
 
