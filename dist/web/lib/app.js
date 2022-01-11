@@ -198,26 +198,6 @@ const MusicAddict2 = {
      * Start or continue playing. Primarily used by ctrlRegisterHandleClick() and ctrlContinueHandler().
      */
     start() {
-        // Set display of elements.
-        this.uiSetDisplay('ctrlRegister', 'hide')
-        this.uiSetDisplay('ctrlContinue', 'hide')
-        this.uiSetDisplay('inputToken', 'hide')
-        this.uiSetDisplay('home', 'hide')
-        this.uiSetDisplay('game', 'show')
-
-        // If this is the first progress, remember it forever.
-        if (!this.sd.firstPlayedOn) {
-            this.sd.firstPlayedOn = Date.now()
-            this.uiSetVal('actionLog', `
-                Welcome ${this.sd.playerName}!
-                Remember your secret token. You'll need it to continue later:
-                ${this.sd.token}
-            `)
-        }
-        else {
-            this.uiSetVal('actionLog', `Welcome back ${this.sd.playerName}!`)
-        }
-
         // Remember when the current session has started.
         this.ram.startedSessionOn = Date.now()
 
@@ -226,6 +206,26 @@ const MusicAddict2 = {
 
         // Don't auto-exit right after starting.
         this.ram.lastCtrlProgressClickOn = Date.now()
+
+        // Set display of elements.
+        this.uiSetDisplay('ctrlRegister', 'hide')
+        this.uiSetDisplay('ctrlContinue', 'hide')
+        this.uiSetDisplay('inputToken', 'hide')
+        this.uiSetDisplay('home', 'hide')
+        this.uiSetDisplay('game', 'show')
+
+        // If this is the first session, remember it and tell the user to remember the token.
+        if (!this.sd.firstPlayedOn) {
+            this.sd.firstPlayedOn = Date.now()
+            this.uiSetVal('actionLog', `
+                Welcome ${this.sd.playerName}!<br>
+                Remember your secret token. You'll need it to continue later:<br>
+                ${this.sd.token}`
+            )
+        }
+        else {
+            this.uiSetVal('actionLog', `Welcome back ${this.sd.playerName}!`)
+        }
 
         // Start background update.
         this.backgroundUpdate(true)
@@ -735,8 +735,7 @@ const MusicAddict2 = {
             case 'actionLog':
                 // Prepend a <p> element.
                 let p = document.createElement('p')
-                // p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.ram.startedSessionOn)} &middot;</span> ${val}`
-                p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} &middot;</span> ${val}`
+                p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.ram.startedSessionOn)} &middot;</span> ${val}`
                 this.ui[uikey].prepend(p)
                 // Remove excess lines.
                 while (this.ui[uikey].children.length > this.conf.actionLogMax) {
