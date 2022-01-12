@@ -84,6 +84,7 @@ const MusicAddict2 = {
             { uikey: 'ctrlContinue', type: 'click', handler: 'ctrlContinueHandleClick' },
             { uikey: 'ctrlProgress', type: 'click', handler: 'ctrlProgressHandleClick' },
             { uikey: 'ctrlExit', type: 'click', handler: 'ctrlExitHandleClick' },
+            { uikey: 'playerName', type: 'click', handler: 'playerNameHandleClick' },
         ],
         actionLogMax: 500,
         backgroundUpdateInterval: 500,
@@ -717,7 +718,23 @@ const MusicAddict2 = {
         }
     },
 
+    /**
+     * Handle playerName clicks.
+     */
+    playerNameHandleClick(/* e */) {
+        let playerName = prompt('Change player name.\n20 characters maximum.\nAllowed: A-Z a-z 0-9 _ -\n\n', this.sd.playerName)
 
+        if (!playerName) {
+            return
+        }
+
+        playerName = playerName.trim().substring(0, 20)
+        playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
+        if (playerName) {
+            this.sd.playerName = playerName
+            this.uiSetVal('playerName', this.playerNameString())
+        }
+    },
 
 
     /* ================================== BACKGROUND UPDATE ==================================== */

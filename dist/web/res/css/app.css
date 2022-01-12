@@ -140,6 +140,10 @@ main .content .actionLog p {
   content: "◈";
 }
 
+.playerName {
+  cursor: pointer;
+}
+
 .preloader {
   display: none;
 }
