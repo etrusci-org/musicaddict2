@@ -18,6 +18,10 @@ input {
     color: $color-regentgray;
     background-color: transparent;
     border-color: $color-puertorico;
+
+    &:invalid {
+        color: $color-mojo;
+    }
 }
 
 button {
@@ -65,7 +69,9 @@ button {
     color: $color-mojo;
 }
 
-
+.playerName {
+    color: $color-puertorico;
+}
 
 /* theme test: purpleish
 

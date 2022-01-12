@@ -47,7 +47,7 @@ main {
         margin-bottom: 10px;
 
         h1 {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
         div {
@@ -86,7 +86,6 @@ main {
     // Just set the dimensions and other stuff here.
     // Initial background-image will be set in .main().
     display: inline-block;
-    margin-bottom: 15px;
     width: 160px;
     height: 120px;
     border: 1px solid;
@@ -130,13 +129,14 @@ main {
                 &.gameStats {
                     div {
                         display: block;
+                        margin-bottom: 5px;
                     }
                 }
             }
         }
 
         .content {
-            margin-top: 18px;
+            margin-top: 22px;
             text-align: left;
         }
     }

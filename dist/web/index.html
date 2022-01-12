@@ -21,20 +21,29 @@
 
                 <div data-uikey="actionGif"></div>
 
+                <div data-uikey="playerName"></div>
+
                 <div data-uikey="gameCtrl">
                     <button data-uikey="ctrlProgress">PROGRESS</button>
                     <button data-uikey="ctrlExit">EXIT</button>
                 </div>
 
                 <div data-uikey="gameStats">
-                    <div>
-                        <label>cash:</label> <span data-uikey="sdCash">-</span>
+                    <div title="How many records you currently have.">
+                        <label>records:</label>
+                        <span data-uikey="sdRecordsCount">-</span>
                     </div>
-                    <div>
-                        <label>records:</label> <span data-uikey="sdRecordsCount">-</span>
+                    <div title="How much cash you currently have.">
+                        <label>cash:</label>
+                        <span data-uikey="sdCash">-</span>
                     </div>
-                    <div>
-                        <label>profit:</label> <span data-uikey="TODO">-</span>
+                    <div title="How much profit you made.">
+                        <label>profit:</label>
+                        <span data-uikey="sdTradeProfit">-</span>
+                    </div>
+                    <div title="When you started to play.">
+                        <label>started:</label>
+                        <span data-uikey="sdFirstPlayedOn">-</span>
                     </div>
                 </div>
             </div>
@@ -49,7 +58,7 @@
                 <div data-uikey="auth">
                     <h2>NEW GAME</h2>
                     <p>
-                        <input type="text" data-uikey="inputPlayerName" pattern="[A-Za-z0-9_-]{1,30}" title="Optional. Allowed characters: A-Z a-z 0-9 _ -" placeholder="Player Name">
+                        <input type="text" data-uikey="inputPlayerName" maxlength="30" pattern="[A-Za-z0-9_-]{1,20}" title="Optional. Allowed characters: A-Z a-z 0-9 _ -" placeholder="Player Name">
                         <button data-uikey="ctrlRegister">REGISTER</button>
                     </p>
                     <h2>CONTINUE</h2>

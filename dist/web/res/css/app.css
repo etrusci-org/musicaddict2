@@ -57,6 +57,10 @@ main .story {
   font-style: italic;
 }
 
+.playerName {
+  font-weight: bold;
+}
+
 #app {
   display: none;
   min-width: 320px;
@@ -96,7 +100,7 @@ main .sidebar {
   margin-bottom: 10px;
 }
 main .sidebar h1 {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 main .sidebar div {
   margin-bottom: 10px;
@@ -124,7 +128,6 @@ main .content .actionLog p {
 
 .actionGif {
   display: inline-block;
-  margin-bottom: 15px;
   width: 160px;
   height: 120px;
   border: 1px solid;
@@ -154,9 +157,10 @@ main .sidebar button {
   }
   main .sidebar div.gameStats div {
     display: block;
+    margin-bottom: 5px;
   }
   main .content {
-    margin-top: 18px;
+    margin-top: 22px;
     text-align: left;
   }
 
@@ -179,6 +183,9 @@ input {
   color: #838E99;
   background-color: transparent;
   border-color: #4FC6AB;
+}
+input:invalid {
+  color: #ca483e;
 }
 
 button {
@@ -218,6 +225,10 @@ button:disabled {
 
 .warning {
   color: #ca483e;
+}
+
+.playerName {
+  color: #4FC6AB;
 }
 
 /* theme test: purpleish
