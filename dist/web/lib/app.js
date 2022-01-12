@@ -106,6 +106,17 @@ const MusicAddict2 = {
             'Tier1': { rollMax: 1.0000, minCash: 0, range: [1, 7] },
         },
         sellPriceRangeMultiplikator: 0.5,
+        resToPreload: [
+            { tag: 'img', attrs: { src: './res/actiongif/broke.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/buy.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/digg.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/discover.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/listen.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/offer.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/sell.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/skipBuy.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/skipSell.gif' } },
+        ],
     },
 
     /**
@@ -179,6 +190,12 @@ const MusicAddict2 = {
      * Start or continue playing. Primarily used by ctrlRegisterHandleClick() and ctrlContinueHandler().
      */
     start() {
+        // Load additional data.
+        this.injectScript('data')
+
+        // Let the browser preload the action GIFs.
+        this.injectPreloaders()
+
         // Remember when the current session has started.
         this.ram.startedSessionOn = Date.now()
 
@@ -606,9 +623,6 @@ const MusicAddict2 = {
             // Set player name input value.
             this.uiSetVal('inputPlayerName', this.sd.playerName)
 
-            // Load additional data.
-            this.injectScript('./lib/data.js')
-
             // Start the game.
             this.start()
         })
@@ -646,9 +660,6 @@ const MusicAddict2 = {
 
             // Set player name input value.
             this.uiSetVal('inputPlayerName', this.sd.playerName)
-
-            // Load additional data.
-            this.injectScript('./lib/data.js')
 
             // Start the game.
             this.start()
@@ -1132,12 +1143,26 @@ const MusicAddict2 = {
 
     /**
      * Append a <script> element to document.body.
-     * @param {string} scriptPath  The path to the script file.
+     * @param {string} scriptName  Script filename without extension. Must reside in dist/web/lib/.
      */
-     injectScript(scriptPath) {
+    injectScript(scriptName) {
         let ele = document.createElement('script')
-        ele.src = scriptPath
+        ele.src = `./lib/${scriptName}.js`
         document.body.append(ele)
+    },
+
+    /**
+     * Append old-skool preloaders to the document.body.
+     */
+    injectPreloaders() {
+        this.conf.resToPreload.forEach(v => {
+            let ele = document.createElement(v.tag)
+            for (const k in v.attrs) {
+                ele.setAttribute(k, v.attrs[k])
+                ele.classList.add('preloader')
+                document.body.append(ele)
+            }
+        })
     },
 
 

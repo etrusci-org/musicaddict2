@@ -6,8 +6,8 @@ In no particular order.
 
 ## TO-DO
 
-- Preload some files from res/.
 - actionGif for "done listening".
+  - maybe add one for "started listening" too.
 - Unique GIF for progress action bulkSale.
 - Record collection listing in UI.
 - Code doc lib/api.php.
