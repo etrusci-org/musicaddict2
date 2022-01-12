@@ -9,8 +9,9 @@ CREATE TABLE IF NOT EXISTS sd (
     firstPlayedOn  INTEGER  DEFAULT NULL,
     playerName     TEXT     DEFAULT 'Anonymous',
     cash           INTEGER  DEFAULT 7,
-    records        TEXT     DEFAULT '[]',
     tradeProfit    INTEGER  DEFAULT 0,
+    records        TEXT     DEFAULT '[]',
+    upgrades       TEXT     DEFAULT '{}',
 
     -- The following columns are not part of MusicAddict2.sd object
     -- and will not be returned when loading progress.

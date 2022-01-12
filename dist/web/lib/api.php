@@ -114,8 +114,9 @@ class MusicAddictAPI {
                     'firstPlayedOn' => SQLITE3_INTEGER,
                     'playerName'    => SQLITE3_TEXT,
                     'cash'          => SQLITE3_INTEGER,
-                    'records'       => SQLITE3_TEXT,
                     'tradeProfit'   => SQLITE3_INTEGER,
+                    'records'       => SQLITE3_TEXT,
+                    'upgrades'       => SQLITE3_TEXT,
                 );
 
                 // Query database for data.
@@ -138,6 +139,9 @@ class MusicAddictAPI {
 
                 // Decode result records JSON.
                 $r['records'] = jdec($r['records']);
+
+                // Decode result upgrades JSON.
+                $r['upgrades'] = jdec($r['upgrades']);
 
                 // Set response saveData to result.
                 $this->response['saveData'] = $r;
@@ -172,8 +176,9 @@ class MusicAddictAPI {
                     'firstPlayedOn' => SQLITE3_INTEGER,
                     'playerName'    => SQLITE3_TEXT,
                     'cash'          => SQLITE3_INTEGER,
-                    'records'       => SQLITE3_TEXT,
                     'tradeProfit'   => SQLITE3_INTEGER,
+                    'records'       => SQLITE3_TEXT,
+                    'upgrades'       => SQLITE3_TEXT,
                 );
                 // unset($saveData['playerName']); // simulate error
 
@@ -193,6 +198,9 @@ class MusicAddictAPI {
 
                 // Encode records to JSON.
                 $saveData['records'] = jenc($saveData['records']);
+
+                // Encode upgrades to JSON.
+                $saveData['upgrades'] = jenc($saveData['upgrades']);
 
                 // Create initial row if it does not exist yet.
                 $q = 'SELECT token FROM sd WHERE token = :token;';

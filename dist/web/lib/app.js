@@ -52,8 +52,13 @@ const MusicAddict2 = {
         firstPlayedOn: null,
         playerName: 'Anonymous',
         cash: 7,
-        records: [],
         tradeProfit: 0,
+        records: [],
+        upgrades: {
+            // Name: Initial Level
+            clickspeed: 0,
+            autoclicker: 0,
+        },
     },
 
     /**
@@ -85,6 +90,9 @@ const MusicAddict2 = {
             { uikey: 'ctrlProgress', type: 'click', handler: 'ctrlProgressHandleClick' },
             { uikey: 'ctrlExit', type: 'click', handler: 'ctrlExitHandleClick' },
             { uikey: 'playerName', type: 'click', handler: 'playerNameHandleClick' },
+
+            { uikey: 'upgradeClickspeedLevel', type: 'click', handler: 'upgradeClickspeedLevelHandleClick' },
+            { uikey: 'upgradeAutoclickerLevel', type: 'click', handler: 'upgradeAutoclickerLevelHandleClick' },
         ],
         actionLogMax: 500,
         backgroundUpdateInterval: 500,
@@ -122,6 +130,17 @@ const MusicAddict2 = {
             { tag: 'img', attrs: { src: './res/actiongif/skipBuy.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/skipSell.gif' } },
         ],
+
+        upgrades: {
+            clickspeed: {
+                initialPrice: 100,
+                maxLevel: 10,
+            },
+            autoclicker: {
+                initialPrice: 1_000_000,
+                maxLevel: 1,
+            },
+        },
     },
 
     /**
@@ -574,6 +593,38 @@ const MusicAddict2 = {
         this.ram.nextProgressAction = this.randomArrayItem(this.ram.nextProgressActionChoices)
     },
 
+    /**
+     * By upgrades.
+     * @idea Buy upgrades with cash...
+     * @param {string} upgradeName
+     */
+    buyUpgrade(upgradeName) {
+        // Stop if max level already reached.
+        if (this.sd.upgrades[upgradeName] >= this.conf.upgrades[upgradeName].maxLevel) {
+            this.uiSetVal('actionLog', `${upgradeName} level already maxed out (${this.conf.upgrades[upgradeName].maxLevel}).`)
+            return
+        }
+
+        // Calculate price based on new level.
+        let L = this.sd.upgrades[upgradeName] + 1
+        let IP = this.conf.upgrades[upgradeName].initialPrice
+        let PRICE = Math.round(IP ** (L ** 0.420))
+
+        // Stop if not enough cash.
+        if (this.sd.cash < PRICE) {
+            this.uiSetVal('actionLog', `Not enough cash to buy ${upgradeName} level ${L} for ${this.moneyString(PRICE)} (need ${this.moneyString(PRICE - this.sd.cash, true)} more).`)
+            return
+        }
+
+        // Pay for the upgrade.
+        this.sd.cash -= PRICE
+
+        // Increase level.
+        this.sd.upgrades[upgradeName] += 1
+
+        this.uiSetVal('actionLog', `Upgraded ${upgradeName} to level ${L} for ${this.moneyString(PRICE, true)}.`)
+    },
+
 
 
 
@@ -720,6 +771,7 @@ const MusicAddict2 = {
 
     /**
      * Handle playerName clicks.
+     * @todo Make this cost cash.
      */
     playerNameHandleClick(/* e */) {
         let playerName = prompt('Change player name.\n20 characters maximum.\nAllowed: A-Z a-z 0-9 _ -\n\n', this.sd.playerName)
@@ -736,6 +788,19 @@ const MusicAddict2 = {
         }
     },
 
+    /**
+     * Handle upgradeClickspeedLevel clicks.
+     */
+    upgradeClickspeedLevelHandleClick(/* e */) {
+        this.buyUpgrade('clickspeed')
+    },
+
+    /**
+     * Handle upgradeAutoclickerLevel clicks.
+     */
+    upgradeAutoclickerLevelHandleClick(/* e */) {
+        this.buyUpgrade('autoclicker')
+    },
 
     /* ================================== BACKGROUND UPDATE ==================================== */
 
@@ -767,6 +832,9 @@ const MusicAddict2 = {
         this.uiSetVal('sdRecordsCount', `${this.sd.records.length}`)
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
+
+        this.uiSetVal('upgradeClickspeedLevel', `<span class="a">L${this.sd.upgrades.clickspeed}</span>`)
+        this.uiSetVal('upgradeAutoclickerLevel', `<span class="a">L${this.sd.upgrades.autoclicker}</span>`)
     },
 
     /**
@@ -1170,7 +1238,7 @@ const MusicAddict2 = {
      * @returns {string}  Formatted HTML.
      */
     playerNameString() {
-        return `<span class="playerName">&lt;${this.sd.playerName}&gt;</span>`
+        return `<span class="playerName a">&lt;${this.sd.playerName}&gt;</span>`
     },
 
 

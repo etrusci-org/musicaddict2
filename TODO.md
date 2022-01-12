@@ -6,15 +6,15 @@ In no particular order.
 
 ## TO-DO
 
-- Record collection listing in UI.
-- Code doc lib/api.php.
-  - Started, but not done yet.
-- Set element focus to inputPlayerName or ctrlContinue depending on if there is a token in localStorage.
-- Only save firstPlayedOn once to db.
-- Better variable/method names.
 - Random generators.
 - Better random data.
-- Chances for progress() actions.
+- Record collection listing in UI.
+- Only save firstPlayedOn once to db.
+- Set element focus to inputPlayerName or ctrlContinue depending on if there is a token in localStorage.
+- More granular chances for progress() actions.
+- Code doc lib/api.php.
+  - Started, but not done yet.
+- Better variable/method names.
 
 ---
 
