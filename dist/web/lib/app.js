@@ -108,10 +108,13 @@ const MusicAddict2 = {
         sellPriceRangeMultiplikator: 0.5,
         resToPreload: [
             { tag: 'img', attrs: { src: './res/actiongif/broke.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/bulkSale.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/buy.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/digg.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/discover.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/listen.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/listenDone.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/listenStart.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/offer.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/sell.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/skipBuy.gif' } },
@@ -380,7 +383,7 @@ const MusicAddict2 = {
 
             case 'bulkSale':
                 // Update action GIF.
-                this.uiSetVal('actionGif', 'sell')
+                this.uiSetVal('actionGif', 'bulkSale')
 
                 // Add action log Message.
                 this.uiSetVal('actionLog', `You can not store more records and decide to sell some in bulk.`)
@@ -417,6 +420,7 @@ const MusicAddict2 = {
                         this.uiSetState('ctrlProgress', 'enabled')
                         this.uiSetState('ctrlExit', 'enabled')
 
+                        this.uiSetVal('actionGif', 'sell')
                         this.uiSetVal('actionLog', `Done selling ${bulkSaleCounter} records for a total of ${this.moneyString(bulkSaleIncome)} (${this.moneyString(bulkSaleProfit)} profit).`)
                     }
                 }, 1_000)
@@ -440,9 +444,6 @@ const MusicAddict2 = {
                 break
 
             case 'listen':
-                // Update action GIF.
-                this.uiSetVal('actionGif', 'listen')
-
                 // Set next action to digg by default.
                 this.ram.nextProgressActionChoices = ['listen']
 
@@ -450,22 +451,35 @@ const MusicAddict2 = {
                 if (!this.ram.startedListeningOn) {
                     this.ram.startedListeningOn = Date.now()
                     this.ram.listenDuration = this.randomInteger(this.conf.listenDuration.min, this.conf.listenDuration.max)
-                }
 
-                // If listening duration is not over.
-                if (!this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
+                    // Update action GIF.
+                    this.uiSetVal('actionGif', 'listenStart')
+
                     // Add action log message.
-                    this.uiSetVal('actionLog', `Listening.`)
+                    this.uiSetVal('actionLog', `Starting listening.`)
                 }
-                // If listening duration is over.
                 else {
-                    // Add buy and skipBuy to next action choices.
-                    this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
-                    this.ram.startedListeningOn = null
-                    this.ram.listenDuration = null
+                    // If listening duration is not over.
+                    if (!this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
+                        // Update action GIF.
+                        this.uiSetVal('actionGif', 'listen')
 
-                    // Add action log message.
-                    this.uiSetVal('actionLog', `Done listening.`)
+                        // Add action log message.
+                        this.uiSetVal('actionLog', `Listening.`)
+                    }
+                    // If listening duration is over.
+                    else {
+                        // Add buy and skipBuy to next action choices.
+                        this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
+                        this.ram.startedListeningOn = null
+                        this.ram.listenDuration = null
+
+                        // Update action GIF.
+                        this.uiSetVal('actionGif', 'listenDone')
+
+                        // Add action log message.
+                        this.uiSetVal('actionLog', `Done listening.`)
+                    }
                 }
                 break
 

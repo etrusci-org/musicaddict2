@@ -6,9 +6,7 @@ In no particular order.
 
 ## TO-DO
 
-- actionGif for "done listening".
-  - maybe add one for "started listening" too.
-- Unique GIF for progress action bulkSale.
+- Action GIF for "start bulkSale".
 - Record collection listing in UI.
 - Code doc lib/api.php.
   - Started, but not done yet.
