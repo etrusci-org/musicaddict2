@@ -106,7 +106,7 @@ const MusicAddict2 = {
             'Tier1': { rollMax: 1.0000, minCash: 0, range: [1, 7] },
         },
         sellPriceRangeMultiplikator: 0.5,
-        resToPreload: [
+        preloadMedia: [
             { tag: 'img', attrs: { src: './res/actiongif/broke.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/bulkSale.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/bulkSaleStart.gif' } },
@@ -269,7 +269,6 @@ const MusicAddict2 = {
         },
         (response) => {
             if (!response.saved) {
-                console.warn('Error while saving', response._errors)
                 return
             }
 
@@ -585,11 +584,11 @@ const MusicAddict2 = {
     registerEventHandlers() {
         this.conf.eventHandler.forEach((v) => {
             if (typeof(this[v.handler]) != 'function') {
-                // console.warn('main()', 'Event handler is configured but function does not exist:', `${v.handler}()`)
+                console.warn('main()', 'Event handler is configured but function does not exist:', `${v.handler}()`)
             }
             else {
                 if (!this.ui[v.uikey]) {
-                    // console.warn('main()', 'Event handler is configured but HTML element does not exist:', `${v.uikey}`)
+                    console.warn('main()', 'Event handler is configured but HTML element does not exist:', `${v.uikey}`)
                 }
                 else {
                     this.ui[v.uikey].addEventListener(v.type, e => this[v.handler](e))
@@ -607,13 +606,19 @@ const MusicAddict2 = {
             return
         }
 
+        // Disable register button for a short while.
+        this.uiSetState('ctrlRegister', 'disabled')
+        setTimeout(() => {
+            this.uiSetState('ctrlRegister', 'enabled')
+        }, 7_000)
+
         // Request new token from api
         this.apiRequest({
             action: 'register',
         },
         (response) => {
             if (!response.token) {
-                console.error('Got no token from api')
+                alert(`Error while requesting new token.\n\n${response._errors.join('\n')}`)
                 return
             }
 
@@ -630,14 +635,7 @@ const MusicAddict2 = {
             playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
             if (playerName) {
                 this.sd.playerName = playerName
-                this.uiSetVal('inputPlayerName', playerName)
             }
-
-            // Set token input value for easy re-login after exit.
-            this.uiSetVal('inputToken', this.sd.token)
-
-            // Set player name input value.
-            this.uiSetVal('inputPlayerName', this.sd.playerName)
 
             // Start the game.
             this.start()
@@ -656,9 +654,15 @@ const MusicAddict2 = {
         // Stop if the token input is empty.
         let inputToken = this.ui.inputToken.value.trim()
         if (!inputToken) {
-            console.info('You need to enter your Secret Token to continue.')
+            alert(`Please enter your secret token to continue.`)
             return
         }
+
+        // Disable continue button for a short while.
+        this.uiSetState('ctrlContinue', 'disabled')
+        setTimeout(() => {
+            this.uiSetState('ctrlContinue', 'enabled')
+        }, 7_000)
 
         // Request save data from api.
         this.apiRequest({
@@ -667,15 +671,12 @@ const MusicAddict2 = {
         },
         (response) => {
             if (!response.saveData) {
-                console.error('did not get saveData from api')
+                alert(`Error while fetching save data.\n\n${response._errors.join('\n')}`)
                 return
             }
 
             // Store token the db returned not what the user has entered.
             this.sd = response.saveData
-
-            // Set player name input value.
-            this.uiSetVal('inputPlayerName', this.sd.playerName)
 
             // Start the game.
             this.start()
@@ -691,9 +692,6 @@ const MusicAddict2 = {
             return
         }
 
-        // Remember when this method was last run for later use.
-        this.ram.lastCtrlProgressClickOn = Date.now()
-
         // Disable progress button for a short while.
         this.uiSetState('ctrlProgress', 'disabled')
         setTimeout(() => {
@@ -701,6 +699,9 @@ const MusicAddict2 = {
                 this.uiSetState('ctrlProgress', 'enabled')
             }
         }, this.conf.clickSpeed)
+
+        // Remember when this method was last run for later use.
+        this.ram.lastCtrlProgressClickOn = Date.now()
 
         // Trigger a progress action.
         this.progress()
@@ -938,7 +939,8 @@ const MusicAddict2 = {
         // Sad times.
         .catch(error => {
             console.error('apiRequest Error:', error)
-        })
+            alert(`apiRequest Error.\n\n${error}`)
+    })
     },
 
 
@@ -1171,7 +1173,7 @@ const MusicAddict2 = {
      * Append old-skool preloaders to the document.body.
      */
     injectPreloaders() {
-        this.conf.resToPreload.forEach(v => {
+        this.conf.preloadMedia.forEach(v => {
             let ele = document.createElement(v.tag)
             for (const k in v.attrs) {
                 ele.setAttribute(k, v.attrs[k])

@@ -15,7 +15,6 @@ In no particular order.
 - Random generators.
 - Better random data.
 - Chances for progress() actions.
-- Cleanup or replace console.log's to display useful data and ditch debug stuff.
 
 ---
 

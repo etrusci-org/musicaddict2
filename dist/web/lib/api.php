@@ -101,7 +101,7 @@ class MusicAddictAPI {
             case 'continue':
                 // Stop if no valid token in query.
                 if (!isset($this->query['token']) || !array_key_exists('token', $this->query) || !isValidToken($this->query['token'])) {
-                    $this->response['_errors'][] = 'missing query token.';
+                    $this->response['_errors'][] = 'Missing or invalid token.';
                     break;
                 }
 
