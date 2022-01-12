@@ -39,6 +39,30 @@ button {
     }
 }
 
+a,
+.a {
+    border-color: $color-heater;
+}
+
+a {
+    &:link,
+    &:visited {
+        color: $color-heater;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: $color-puertorico;
+    }
+}
+
+.a {
+    &:hover {
+        color: $color-puertorico;
+    }
+}
+
 .actionGif {
     border-color: $color-abbey;
 }

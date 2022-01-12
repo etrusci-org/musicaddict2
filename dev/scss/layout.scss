@@ -38,6 +38,13 @@ button {
     border-radius: 5px;
 }
 
+a,
+.a {
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 1px dotted;
+}
+
 main {
     display: block;
     margin-bottom: 50px;
@@ -58,6 +65,7 @@ main {
 
                 div {
                     display: inline-block;
+                    margin-bottom: 5px;
                 }
             }
         }
@@ -104,6 +112,11 @@ main {
     cursor: pointer;
 }
 
+.upgradeClickspeedLevel,
+.upgradeAutoclickerLevel {
+    cursor: pointer;
+}
+
 .preloader {
     display: none;
 }
@@ -136,7 +149,6 @@ main {
                 &.gameStats {
                     div {
                         display: block;
-                        margin-bottom: 5px;
                     }
                 }
             }
