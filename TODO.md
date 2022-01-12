@@ -6,7 +6,9 @@ In no particular order.
 
 ## TO-DO
 
+- Preload some files from res/.
 - actionGif for "done listening".
+- Unique GIF for progress action bulkSale.
 - Record collection listing in UI.
 - Code doc lib/api.php.
   - Started, but not done yet.
@@ -17,7 +19,6 @@ In no particular order.
 - Better random data.
 - Chances for progress() actions.
 - Cleanup or replace console.log's to display useful data and ditch debug stuff.
-- Unique GIF for progress action bulkSale.
 
 ---
 
