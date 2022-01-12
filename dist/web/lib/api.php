@@ -115,6 +115,7 @@ class MusicAddictAPI {
                     'playerName'    => SQLITE3_TEXT,
                     'cash'          => SQLITE3_INTEGER,
                     'records'       => SQLITE3_TEXT,
+                    'tradeProfit'   => SQLITE3_INTEGER,
                 );
 
                 // Query database for data.
@@ -172,6 +173,7 @@ class MusicAddictAPI {
                     'playerName'    => SQLITE3_TEXT,
                     'cash'          => SQLITE3_INTEGER,
                     'records'       => SQLITE3_TEXT,
+                    'tradeProfit'   => SQLITE3_INTEGER,
                 );
                 // unset($saveData['playerName']); // simulate error
 
@@ -183,7 +185,7 @@ class MusicAddictAPI {
                 }
 
                 // Sanitize playerName and set to default if empty.
-                $saveData['playerName'] = substr(trim($saveData['playerName']), 0, 30);
+                $saveData['playerName'] = substr(trim($saveData['playerName']), 0, 20);
                 $saveData['playerName'] = preg_replace('/[^A-Za-z0-9_-]/', '', $saveData['playerName']);
                 if (empty($saveData['playerName'])) {
                     $saveData['playerName'] = 'Anonymous';
