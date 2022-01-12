@@ -5,11 +5,12 @@ BEGIN TRANSACTION;
 
 
 CREATE TABLE IF NOT EXISTS sd (
-    token          TEXT     NOT NULL  UNIQUE,
+    token          TEXT     NOT NULL UNIQUE,
     firstPlayedOn  INTEGER  DEFAULT NULL,
     playerName     TEXT     DEFAULT 'Anonymous',
     cash           INTEGER  DEFAULT 7,
     records        TEXT     DEFAULT '[]',
+    tradeProfit    INTEGER  DEFAULT 0,
 
     -- The following columns are not part of MusicAddict2.sd object
     -- and will not be returned when loading progress.
