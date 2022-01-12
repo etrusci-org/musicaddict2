@@ -6,7 +6,6 @@ In no particular order.
 
 ## TO-DO
 
-- Action GIF for "start bulkSale".
 - Record collection listing in UI.
 - Code doc lib/api.php.
   - Started, but not done yet.

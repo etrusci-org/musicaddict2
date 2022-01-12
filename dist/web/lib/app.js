@@ -109,6 +109,7 @@ const MusicAddict2 = {
         resToPreload: [
             { tag: 'img', attrs: { src: './res/actiongif/broke.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/bulkSale.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/bulkSaleStart.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/buy.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/digg.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/discover.gif' } },
@@ -383,7 +384,7 @@ const MusicAddict2 = {
 
             case 'bulkSale':
                 // Update action GIF.
-                this.uiSetVal('actionGif', 'bulkSale')
+                this.uiSetVal('actionGif', 'bulkSaleStart')
 
                 // Add action log Message.
                 this.uiSetVal('actionLog', `You can not store more records and decide to sell some in bulk.`)
@@ -411,6 +412,7 @@ const MusicAddict2 = {
                     bulkSaleIncome += this.ram.randomRecord.sellPrice
                     bulkSaleProfit += this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice
 
+                    this.uiSetVal('actionGif', 'bulkSale')
                     this.uiSetVal('actionLog', `Sold ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.sellPrice)} (${this.moneyString(this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice)} profit).`)
 
                     if (bulkSaleCounter >= this.conf.bulkSaleAmount) {
@@ -423,7 +425,7 @@ const MusicAddict2 = {
                         this.uiSetVal('actionGif', 'sell')
                         this.uiSetVal('actionLog', `Done selling ${bulkSaleCounter} records for a total of ${this.moneyString(bulkSaleIncome)} (${this.moneyString(bulkSaleProfit)} profit).`)
                     }
-                }, 1_000)
+                }, 2_000)
 
                 // Set next action choices.
                 this.ram.nextProgressActionChoices = ['digg']
