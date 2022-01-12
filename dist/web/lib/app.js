@@ -53,6 +53,7 @@ const MusicAddict2 = {
         playerName: 'Anonymous',
         cash: 7,
         records: [],
+        tradeProfit: 0,
     },
 
     /**
@@ -88,7 +89,7 @@ const MusicAddict2 = {
         backgroundUpdateInterval: 500,
         clickSpeed: 1_000,
         exitDelay: 2_000,
-        autoSaveInterval: 60_000,
+        autoSaveInterval: 180_000,
         recordsMax: 500,
         bulkSaleAmount: 50,
         listenDuration: { min: 5_000, max: 20_000 },
@@ -148,9 +149,6 @@ const MusicAddict2 = {
         // Collect marked ui elements.
         this.uiCollectElements()
 
-        // // Load template.
-        // this.injectTemplate('intro')
-
         // Register event handlers.
         this.registerEventHandlers()
 
@@ -164,6 +162,7 @@ const MusicAddict2 = {
         }
 
         // Initially hide some UI elements.
+        this.uiSetDisplay('playerName', 'hide') // unhide in start()
         this.uiSetDisplay('gameCtrl', 'hide') // unhide in start()
         this.uiSetDisplay('gameStats', 'hide') // unhide in start()
         this.uiSetDisplay('gameOutput', 'hide') // unhide in start()
@@ -189,15 +188,11 @@ const MusicAddict2 = {
         // Don't auto-exit right after starting.
         this.ram.lastCtrlProgressClickOn = Date.now()
 
-        // Set display of elements.
-        // this.uiSetDisplay('ctrlRegister', 'hide')
-        // this.uiSetDisplay('ctrlContinue', 'hide')
-        // this.uiSetDisplay('inputToken', 'hide')
-        // this.uiSetDisplay('home', 'hide')
-        // this.uiSetDisplay('game', 'show')
-        // this.injectTemplate('game')
+        // Update ui elements.
         this.uiSetDisplay('story', 'hide')
         this.uiSetDisplay('auth', 'hide')
+        this.uiSetDisplay('playerName', 'show')
+        this.uiSetVal('playerName', this.playerNameString())
         this.uiSetDisplay('gameCtrl', 'show')
         this.uiSetDisplay('gameStats', 'show')
         this.uiSetDisplay('gameOutput', 'show')
@@ -240,7 +235,7 @@ const MusicAddict2 = {
         this.ram.lastSavedOn = Date.now()
 
         // Sanitize and remember player name input.
-        let playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+        let playerName = this.ui.inputPlayerName.value.trim().substring(0, 20)
         playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
         if (playerName) {
             this.sd.playerName = playerName
@@ -389,6 +384,7 @@ const MusicAddict2 = {
                     this.ram.randomRecord.sellPrice = this.randomSellPrice(this.ram.randomRecord.buyPrice)
 
                     this.sd.cash += this.ram.randomRecord.sellPrice
+                    this.sd.tradeProfit += this.ram.randomRecord.sellPrice
                     this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
 
                     bulkSaleCounter += 1
@@ -463,6 +459,7 @@ const MusicAddict2 = {
                     this.uiSetVal('actionGif', 'buy')
 
                     this.sd.cash -= this.ram.randomRecord.buyPrice
+                    this.sd.tradeProfit -= this.ram.randomRecord.buyPrice
                     this.sd.records.push(this.ram.randomRecord)
 
                     this.uiSetVal('actionLog', `Bought ${this.recordString(this.ram.randomRecord)} for ${this.moneyString(this.ram.randomRecord.buyPrice, true)}.`)
@@ -510,6 +507,8 @@ const MusicAddict2 = {
 
                 // Sell the record and reset the incomingOffer boolean that was maybe set in the broke action.
                 this.sd.cash += this.ram.randomRecord.sellPrice
+                // this.sd.tradeProfit += this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice
+                this.sd.tradeProfit += this.ram.randomRecord.sellPrice
                 this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
                 this.ram.incomingOffer = null
 
@@ -594,7 +593,7 @@ const MusicAddict2 = {
             }
 
             // Set player name from input or leave it to the default.
-            let playerName = this.ui.inputPlayerName.value.trim().substring(0, 30)
+            let playerName = this.ui.inputPlayerName.value.trim().substring(0, 20)
             playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
             if (playerName) {
                 this.sd.playerName = playerName
@@ -721,6 +720,8 @@ const MusicAddict2 = {
         // Update UI elements.
         this.uiSetVal('sdCash', `${this.moneyString(this.sd.cash)}`)
         this.uiSetVal('sdRecordsCount', `${this.sd.records.length}`)
+        this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
+        this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
     },
 
     /**
@@ -741,6 +742,7 @@ const MusicAddict2 = {
 
     /**
      * Set UI element values.
+     * @todo rename to uiSetValue
      * @param {string} uikey  Key of the element stored inside ui. By default innerHTML will be set to val. For the following some extra transformation will be applied: actionLog, inputPlayerName, inputToken, actionGif.
      * @param {string} [val='']  Value to update the element with.
      */
@@ -1117,7 +1119,13 @@ const MusicAddict2 = {
         return `<span class="money${warningClass}">${moneyAmount}</span>`
     },
 
-
+    /**
+     * Nice formatted player name string.
+     * @returns {string}  Formatted HTML.
+     */
+    playerNameString() {
+        return `<span class="playerName">&lt;${this.sd.playerName}&gt;</span>`
+    },
 
 
     /* ====================================== MISC ==================================== */
@@ -1131,40 +1139,6 @@ const MusicAddict2 = {
         ele.src = scriptPath
         document.body.append(ele)
     },
-
-    // /**
-    //  * Inject the contents of a template file into the page.
-    //  * @param {string} tplFilename  Filename without extension.
-    //  * @param {string} [uikey='app']  Destination element (must not be collected before, just marked).
-    //  */
-    // injectTemplate(tplFilename, uikey='app') {
-    //     let tplFile = `./tpl/${tplFilename}.html`
-
-    //     // Fetch template file.
-    //     fetch(tplFile, {})
-
-    //     // Process the response.
-    //     .then(response => {
-    //         if (!response.ok) {
-    //             throw new Error('Network response was not OK')
-    //         }
-    //         return response.text()
-    //     })
-
-    //     // Inject the HTML into the page.
-    //     .then(responseData => {
-    //         document.querySelector(`[data-uikey=${uikey}]`).innerHTML = responseData
-    //         // Re-collect elements to catch possible new ones.
-    //         this.uiCollectElements()
-    //         // Re-register event handlers to catch possible new ones.
-    //         this.registerEventHandlers()
-    //     })
-
-    //     // Sad times.
-    //     .catch(error => {
-    //         console.error('fetchTemplate Error:', error)
-    //     })
-    // },
 
 
 } // /MusicAddict2
