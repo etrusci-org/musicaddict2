@@ -1,9 +1,5 @@
 // DEFAULT THEME -----------------------------------
 
-
-
-
-
 body {
     color: $color-regentgray;
     background-color: $color-shark;
@@ -96,69 +92,3 @@ a {
 .playerName {
     color: $color-puertorico;
 }
-
-/* theme test: purpleish
-
-body {
-    color: #c5abd6;
-    background-color: #0f0913;
-}
-
-input {
-    color: #a85eda;
-    background-color: #19141d;
-
-    &:invalid {
-        color: #d36b51;
-    }
-}
-
-button {
-    color: #c5abd6;
-    background-color: #28202e;
-
-    &:hover {
-        color: #a85eda;
-        background-color: #24172e;
-    }
-
-    &:disabled {
-        color: #4e4653;
-        background-color: #29252c;
-    }
-}
-
-.actionGif {
-    border-color: #28202e;
-}
-
-.money {
-    color: #83ce74;
-}
-
-.record {
-    .title {
-        color: #74cece;
-    }
-
-    .artist {
-        color: #64a2cc;
-    }
-
-    .format {
-        color: #9d92a5;
-    }
-}
-
-.important {
-    color: #fff;
-}
-
-.warning {
-    color: #d36b51;
-}
-
-.sys {
-    color: #a85eda;
-}
-*/

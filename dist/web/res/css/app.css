@@ -95,7 +95,18 @@ a,
 .a {
   cursor: pointer;
   text-decoration: none;
+}
+
+.a {
   border-bottom: 1px dotted;
+}
+
+a:hover, a:focus, a:active {
+  border-bottom: 1px dotted;
+}
+
+.a:hover, .a:focus {
+  border-bottom: 0;
 }
 
 main {
@@ -117,7 +128,11 @@ main .sidebar div.gameStats {
 }
 main .sidebar div.gameStats div {
   display: inline-block;
+  margin-right: 5px;
   margin-bottom: 5px;
+}
+main .sidebar div.gameStats div label {
+  cursor: help;
 }
 main .content {
   text-align: center;
@@ -139,6 +154,7 @@ main .content .actionLog p {
   width: 160px;
   height: 120px;
   border: 1px solid;
+  border-radius: 5px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -151,10 +167,8 @@ main .content .actionLog p {
 .playerName {
   cursor: pointer;
 }
-
-.upgradeClickspeedLevel,
-.upgradeAutoclickerLevel {
-  cursor: pointer;
+.playerName .a {
+  border: 0;
 }
 
 .preloader {
@@ -266,71 +280,5 @@ a:hover, a:focus, a:active {
 .playerName {
   color: #4FC6AB;
 }
-
-/* theme test: purpleish
-
-body {
-    color: #c5abd6;
-    background-color: #0f0913;
-}
-
-input {
-    color: #a85eda;
-    background-color: #19141d;
-
-    &:invalid {
-        color: #d36b51;
-    }
-}
-
-button {
-    color: #c5abd6;
-    background-color: #28202e;
-
-    &:hover {
-        color: #a85eda;
-        background-color: #24172e;
-    }
-
-    &:disabled {
-        color: #4e4653;
-        background-color: #29252c;
-    }
-}
-
-.actionGif {
-    border-color: #28202e;
-}
-
-.money {
-    color: #83ce74;
-}
-
-.record {
-    .title {
-        color: #74cece;
-    }
-
-    .artist {
-        color: #64a2cc;
-    }
-
-    .format {
-        color: #9d92a5;
-    }
-}
-
-.important {
-    color: #fff;
-}
-
-.warning {
-    color: #d36b51;
-}
-
-.sys {
-    color: #a85eda;
-}
-*/
 
 /*# sourceMappingURL=app.css.map */

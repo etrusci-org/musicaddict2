@@ -42,7 +42,25 @@ a,
 .a {
     cursor: pointer;
     text-decoration: none;
+}
+
+.a {
     border-bottom: 1px dotted;
+}
+
+a {
+    &:hover,
+    &:focus,
+    &:active {
+        border-bottom: 1px dotted;
+    }
+}
+
+.a {
+    &:hover,
+    &:focus {
+        border-bottom: 0;
+    }
 }
 
 main {
@@ -65,7 +83,12 @@ main {
 
                 div {
                     display: inline-block;
+                    margin-right: 5px;
                     margin-bottom: 5px;
+
+                    label {
+                        cursor: help;
+                    }
                 }
             }
         }
@@ -97,6 +120,7 @@ main {
     width: 160px;
     height: 120px;
     border: 1px solid;
+    border-radius: 5px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -110,12 +134,16 @@ main {
 
 .playerName {
     cursor: pointer;
+
+    .a {
+        border: 0;
+    }
 }
 
-.upgradeClickspeedLevel,
-.upgradeAutoclickerLevel {
-    cursor: pointer;
-}
+// .upgradeClickspeedLevel,
+// .upgradeAutoclickerLevel {
+//     cursor: pointer;
+// }
 
 .preloader {
     display: none;

@@ -81,6 +81,8 @@ const MusicAddict2 = {
      * @prop {secMilli} conf.maxIdleDuration=600_000  Maximum time can pass without clicking before getting kicked out of the game.
      * @prop {object} conf.buyPriceRanges={...}  Buy price configuration.
      * @prop {float} conf.sellPriceRangeMultiplikator=0.5  Used to calculate the maximum possible sellPrice of a record: buyPrice * sellPriceRangeMultiplikator.
+     * @todo doc conf.preloadMedia
+     * @todo doc conf.upgrades
      */
     conf: {
         apiPath: './api.php',
