@@ -30,7 +30,7 @@
 
                 <div data-uikey="gameStats">
                     <div>
-                        <label title="How many records you currently have in your collection.">records:</label>
+                        <label title="How many records you currently have in your collection. Click to show list.">records:</label>
                         <span data-uikey="sdRecordsCount">-</span>
                     </div>
                     <div>
@@ -73,6 +73,21 @@
                 </div>
 
                 <div data-uikey="gameOutput">
+                    <div data-uikey="recordCollection">
+                        <h2>RECORD COLLECTION [<span class="a" data-uikey="recordCollectionClose">close</span>]</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>record title</th>
+                                    <th>artist name</th>
+                                    <th>format</th>
+                                    <th>buy price</th>
+                                </tr>
+                            </thead>
+                            <tbody data-uikey="recordCollectionList"></tbody>
+                        </table>
+                    </div>
+
                     <div data-uikey="actionLog"></div>
                 </div>
             </div>

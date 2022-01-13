@@ -92,6 +92,9 @@ const MusicAddict2 = {
             { uikey: 'playerName', type: 'click', handler: 'playerNameHandleClick' },
 
             { uikey: 'upgradeClickspeedLevel', type: 'click', handler: 'upgradeClickspeedLevelHandleClick' },
+            { uikey: 'sdRecordsCount', type: 'click', handler: 'sdRecordsCountHandleClick' },
+            { uikey: 'recordCollectionClose', type: 'click', handler: 'recordCollectionCloseHandleClick' },
+
         ],
         actionLogMax: 500,
         backgroundUpdateInterval: 500,
@@ -196,6 +199,7 @@ const MusicAddict2 = {
         this.uiSetDisplay('gameCtrl', 'hide') // unhide in start()
         this.uiSetDisplay('gameStats', 'hide') // unhide in start()
         this.uiSetDisplay('gameOutput', 'hide') // unhide in start()
+        this.uiSetDisplay('recordCollection', 'hide') // unhide in start()
 
         // Update some UI elements.
         this.uiSetVal('inputPlayerName', '')
@@ -624,6 +628,16 @@ const MusicAddict2 = {
         this.uiSetVal('actionLog', `Upgraded ${upgradeName} to level ${newLevel} for ${this.moneyString(newPrice, true)}.`)
     },
 
+    /**
+     * Update record collection list.
+     */
+    updateRecordCollection() {
+        this.ui.recordCollectionList.innerHTML = ``
+        this.sd.records.forEach((v) => {
+            this.uiSetVal('recordCollectionList', v)
+        })
+    },
+
 
 
 
@@ -794,6 +808,23 @@ const MusicAddict2 = {
         this.buyUpgrade('clickspeed')
     },
 
+    /**
+     * Handle sdRecordsCount clicks.
+     */
+    sdRecordsCountHandleClick(/* e */) {
+        this.updateRecordCollection()
+        this.uiSetDisplay('actionLog', 'hide')
+        this.uiSetDisplay('recordCollection', 'show')
+    },
+
+    /**
+     * Handle recordCollectionClose clicks.
+     */
+    recordCollectionCloseHandleClick(/* e */) {
+        this.uiSetDisplay('recordCollection', 'hide')
+        this.uiSetDisplay('actionLog', 'show')
+    },
+
 
 
 
@@ -824,7 +855,7 @@ const MusicAddict2 = {
 
         // Update UI elements.
         this.uiSetVal('sdCash', `${this.moneyString(this.sd.cash)}`)
-        this.uiSetVal('sdRecordsCount', `${this.sd.records.length}`)
+        this.uiSetVal('sdRecordsCount', `<span class="a">${this.sd.records.length}</a>`)
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
 
@@ -851,7 +882,7 @@ const MusicAddict2 = {
      * Set UI element values.
      * @todo rename to uiSetValue
      * @param {string} uikey  Key of the element stored inside ui. By default innerHTML will be set to val. For the following some extra transformation will be applied: actionLog, inputPlayerName, inputToken, actionGif.
-     * @param {string} [val='']  Value to update the element with.
+     * @param {string|object} [val='']  Value to update the element with.
      */
     uiSetVal(uikey, val='') {
         // Stop if no uikey.
@@ -870,6 +901,27 @@ const MusicAddict2 = {
                 while (this.ui[uikey].children.length > this.conf.actionLogMax) {
                     this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
                 }
+                break
+
+            case 'recordCollectionList':
+                let tr = document.createElement('tr')
+                let td1 = document.createElement('td')
+                let td2 = document.createElement('td')
+                let td3 = document.createElement('td')
+                let td4 = document.createElement('td')
+
+                tr.classList.add('record')
+                td1.innerHTML = `<span class="title">${val.title}</span>`
+                td2.innerHTML = `<span class="artist">${val.artist}</span>`
+                td3.innerHTML = `<span class="format">${val.format}</span>`
+                td4.innerHTML = this.moneyString(val.buyPrice)
+
+                tr.append(td1)
+                tr.append(td2)
+                tr.append(td3)
+                tr.append(td4)
+
+                this.ui.recordCollectionList.append(tr)
                 break
 
             case 'inputPlayerName':
