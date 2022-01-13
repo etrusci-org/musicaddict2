@@ -55,9 +55,7 @@ const MusicAddict2 = {
         tradeProfit: 0,
         records: [],
         upgrades: {
-            // Name: Initial Level
             clickspeed: 0,
-            autoclicker: 0,
         },
     },
 
@@ -68,7 +66,7 @@ const MusicAddict2 = {
      * @prop {object} conf.eventHandler={...}  Event handler configuration.
      * @prop {integer} conf.actionLogMax=500  How many lines to keep in the action log.
      * @prop {secMilli} conf.backgroundUpdateInterval=500  Background updater interval delay.
-     * @prop {secMilli} conf.clickSpeed=1_000  Timeout after a ctrlProgress click.
+     * @prop {secMilli} conf.clickspeed=1_500  Timeout after a ctrlProgress click.
      * @prop {secMilli} conf.exitDelay=2_000  Delay before exiting after ctrlExit.
      * @prop {secMilli} conf.autoSaveInterval=60_000  How often to save automagically.
      * @prop {integer} conf.recordsMax=500  How many records the player can keep in the collection before a bulk sale gets triggered.
@@ -94,11 +92,10 @@ const MusicAddict2 = {
             { uikey: 'playerName', type: 'click', handler: 'playerNameHandleClick' },
 
             { uikey: 'upgradeClickspeedLevel', type: 'click', handler: 'upgradeClickspeedLevelHandleClick' },
-            { uikey: 'upgradeAutoclickerLevel', type: 'click', handler: 'upgradeAutoclickerLevelHandleClick' },
         ],
         actionLogMax: 500,
         backgroundUpdateInterval: 500,
-        clickSpeed: 1_000,
+        clickspeed: 1_500,
         exitDelay: 2_000,
         autoSaveInterval: 180_000,
         recordsMax: 500,
@@ -137,10 +134,6 @@ const MusicAddict2 = {
             clickspeed: {
                 initialPrice: 100,
                 maxLevel: 10,
-            },
-            autoclicker: {
-                initialPrice: 1_000_000,
-                maxLevel: 1,
             },
         },
     },
@@ -601,6 +594,10 @@ const MusicAddict2 = {
      * @param {string} upgradeName
      */
     buyUpgrade(upgradeName) {
+        if (!confirm('Upgrade Clickspeed?')) {
+            return
+        }
+
         // Stop if max level already reached.
         if (this.sd.upgrades[upgradeName] >= this.conf.upgrades[upgradeName].maxLevel) {
             this.uiSetVal('actionLog', `${upgradeName} level already maxed out (${this.conf.upgrades[upgradeName].maxLevel}).`)
@@ -608,23 +605,22 @@ const MusicAddict2 = {
         }
 
         // Calculate price based on new level.
-        let L = this.sd.upgrades[upgradeName] + 1
-        let IP = this.conf.upgrades[upgradeName].initialPrice
-        let PRICE = Math.round(IP ** (L ** 0.420))
+        let newLevel = this.sd.upgrades[upgradeName] + 1
+        let newPrice = Math.round(this.conf.upgrades[upgradeName].initialPrice ** (newLevel ** 0.420))
 
         // Stop if not enough cash.
-        if (this.sd.cash < PRICE) {
-            this.uiSetVal('actionLog', `Not enough cash to buy ${upgradeName} level ${L} for ${this.moneyString(PRICE)} (need ${this.moneyString(PRICE - this.sd.cash, true)} more).`)
+        if (this.sd.cash < newPrice) {
+            this.uiSetVal('actionLog', `Not enough cash to buy ${upgradeName} level ${newLevel} for ${this.moneyString(newPrice)} (need ${this.moneyString(newPrice - this.sd.cash, true)} more).`)
             return
         }
 
         // Pay for the upgrade.
-        this.sd.cash -= PRICE
+        this.sd.cash -= newPrice
 
         // Increase level.
         this.sd.upgrades[upgradeName] += 1
 
-        this.uiSetVal('actionLog', `Upgraded ${upgradeName} to level ${L} for ${this.moneyString(PRICE, true)}.`)
+        this.uiSetVal('actionLog', `Upgraded ${upgradeName} to level ${newLevel} for ${this.moneyString(newPrice, true)}.`)
     },
 
 
@@ -752,7 +748,7 @@ const MusicAddict2 = {
             if (!this.ram.bulkSaleID) {
                 this.uiSetState('ctrlProgress', 'enabled')
             }
-        }, this.conf.clickSpeed)
+        }, Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100)))
 
         // Remember when this method was last run for later use.
         this.ram.lastCtrlProgressClickOn = Date.now()
@@ -797,12 +793,8 @@ const MusicAddict2 = {
         this.buyUpgrade('clickspeed')
     },
 
-    /**
-     * Handle upgradeAutoclickerLevel clicks.
-     */
-    upgradeAutoclickerLevelHandleClick(/* e */) {
-        this.buyUpgrade('autoclicker')
-    },
+
+
 
     /* ================================== BACKGROUND UPDATE ==================================== */
 
@@ -836,7 +828,6 @@ const MusicAddict2 = {
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
 
         this.uiSetVal('upgradeClickspeedLevel', `<span class="a">L${this.sd.upgrades.clickspeed}</span>`)
-        this.uiSetVal('upgradeAutoclickerLevel', `<span class="a">L${this.sd.upgrades.autoclicker}</span>`)
     },
 
     /**
