@@ -125,8 +125,6 @@ const MusicAddict2 = {
             { tag: 'img', attrs: { src: './res/actiongif/digg.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/discover.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/listen.gif' } },
-            { tag: 'img', attrs: { src: './res/actiongif/listenDone.gif' } },
-            { tag: 'img', attrs: { src: './res/actiongif/listenStart.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/offer.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/sell.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/skipBuy.gif' } },
@@ -254,7 +252,7 @@ const MusicAddict2 = {
             )
         }
         else {
-            this.uiSetVal('actionLog', `Welcome back ${this.sd.playerName}!`)
+            this.uiSetVal('actionLog', `<span class="sys">Welcome back ${this.sd.playerName}!</span>`)
         }
 
         // Start background update.
@@ -312,7 +310,7 @@ const MusicAddict2 = {
         // Update ui elements
         this.uiSetState('ctrlProgress', 'disabled')
         this.uiSetState('ctrlExit', 'disabled')
-        this.uiSetVal('actionLog', `Bye ${this.sd.playerName}, see you soon!`)
+        this.uiSetVal('actionLog', `<span class="sys">Bye ${this.sd.playerName}, see you soon!</span>`)
 
         // Wait a bit before exiting.
         setTimeout(() => {
@@ -464,41 +462,27 @@ const MusicAddict2 = {
                 break
 
             case 'listen':
-                // Set next action to digg by default.
+                // Set next action to listen by default.
                 this.ram.nextProgressActionChoices = ['listen']
+
+                // Update action GIF.
+                this.uiSetVal('actionGif', 'listen')
+
+                // Add action log message.
+                this.uiSetVal('actionLog', `Listening.`)
 
                 // Start tracking listening time if not doing so already and set the listening duration.
                 if (!this.ram.startedListeningOn) {
                     this.ram.startedListeningOn = Date.now()
                     this.ram.listenDuration = this.randomInteger(this.conf.listenDuration.min, this.conf.listenDuration.max)
-
-                    // Update action GIF.
-                    this.uiSetVal('actionGif', 'listenStart')
-
-                    // Add action log message.
-                    this.uiSetVal('actionLog', `Starting listening.`)
                 }
                 else {
-                    // If listening duration is not over.
-                    if (!this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
-                        // Update action GIF.
-                        this.uiSetVal('actionGif', 'listen')
-
-                        // Add action log message.
-                        this.uiSetVal('actionLog', `Listening.`)
-                    }
                     // If listening duration is over.
-                    else {
+                    if (this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
                         // Add buy and skipBuy to next action choices.
                         this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
                         this.ram.startedListeningOn = null
                         this.ram.listenDuration = null
-
-                        // Update action GIF.
-                        this.uiSetVal('actionGif', 'listenDone')
-
-                        // Add action log message.
-                        this.uiSetVal('actionLog', `Done listening.`)
                     }
                 }
                 break
@@ -517,6 +501,7 @@ const MusicAddict2 = {
                 }
                 // Be sad if not enough cash.
                 else {
+                    this.uiSetVal('actionGif', 'broke')
                     this.uiSetVal('actionLog', `You want ${this.recordString(this.ram.randomRecord)}, but don't have enough cash to buy it for ${this.moneyString(this.ram.randomRecord.buyPrice)} (need ${this.moneyString(this.ram.randomRecord.buyPrice - this.sd.cash, true)} more).`)
                 }
 
@@ -675,7 +660,7 @@ const MusicAddict2 = {
         this.uiSetState('ctrlRegister', 'disabled')
         setTimeout(() => {
             this.uiSetState('ctrlRegister', 'enabled')
-        }, 7_000)
+        }, 10_000)
 
         // Request new token from api
         this.apiRequest({
@@ -727,7 +712,7 @@ const MusicAddict2 = {
         this.uiSetState('ctrlContinue', 'disabled')
         setTimeout(() => {
             this.uiSetState('ctrlContinue', 'enabled')
-        }, 7_000)
+        }, 10_000)
 
         // Request save data from api.
         this.apiRequest({
