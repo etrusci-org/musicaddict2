@@ -76,6 +76,20 @@ p {
   margin-bottom: 15px;
 }
 
+table {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+}
+table th,
+table td {
+  padding: 2px 10px 2px 0;
+}
+table td {
+  border-bottom: 1px dotted;
+}
+
 input,
 button {
   padding: 3px;
@@ -214,6 +228,20 @@ h2 {
   color: #4FC6AB;
 }
 
+table {
+  border-color: #4FC6AB;
+}
+table th {
+  color: #4FC6AB;
+}
+table td {
+  border-color: #535B61;
+}
+table tr:hover td {
+  color: #B6C1CB;
+  background-color: #30353A;
+}
+
 input {
   color: #838E99;
   background-color: transparent;
@@ -280,6 +308,10 @@ a:hover, a:focus, a:active {
 
 .playerName {
   color: #4FC6AB;
+}
+
+main .content .actionLog p {
+  border-color: #535B61;
 }
 
 /*# sourceMappingURL=app.css.map */

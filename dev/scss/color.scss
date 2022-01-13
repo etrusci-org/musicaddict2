@@ -10,6 +10,31 @@ h2 {
     color: $color-puertorico;
 }
 
+table {
+    border-color: $color-puertorico;
+
+    th {
+        color: $color-puertorico;
+    }
+
+    td {
+        border-color: $color-abbey;
+    }
+
+    tr {
+        // &:last-child td {
+        //     border-color: $color-puertorico;
+        // }
+
+        &:hover {
+            td {
+                color: $color-heater;
+                background-color: $color-outerspace;
+            }
+        }
+    }
+}
+
 input {
     color: $color-regentgray;
     background-color: transparent;
@@ -91,4 +116,15 @@ a {
 
 .playerName {
     color: $color-puertorico;
+}
+
+
+main {
+    .content {
+        .actionLog {
+            p {
+                border-color: $color-abbey;
+            }
+        }
+    }
 }

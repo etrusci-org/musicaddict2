@@ -23,6 +23,23 @@ p {
     margin-bottom: 15px;
 }
 
+table {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    // border-top: 1px dotted;
+
+    th,
+    td {
+        padding: 2px 10px 2px 0;
+    }
+
+    td {
+        border-bottom: 1px dotted;
+    }
+}
+
 input,
 button {
     padding: 3px;
