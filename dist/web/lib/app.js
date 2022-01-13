@@ -594,13 +594,9 @@ const MusicAddict2 = {
      * @param {string} upgradeName
      */
     buyUpgrade(upgradeName) {
-        if (!confirm('Upgrade Clickspeed?')) {
-            return
-        }
-
         // Stop if max level already reached.
         if (this.sd.upgrades[upgradeName] >= this.conf.upgrades[upgradeName].maxLevel) {
-            this.uiSetVal('actionLog', `${upgradeName} level already maxed out (${this.conf.upgrades[upgradeName].maxLevel}).`)
+            alert(`${upgradeName} level already maxed out (${this.conf.upgrades[upgradeName].maxLevel}).`)
             return
         }
 
@@ -610,7 +606,12 @@ const MusicAddict2 = {
 
         // Stop if not enough cash.
         if (this.sd.cash < newPrice) {
-            this.uiSetVal('actionLog', `Not enough cash to buy ${upgradeName} level ${newLevel} for ${this.moneyString(newPrice)} (need ${this.moneyString(newPrice - this.sd.cash, true)} more).`)
+            alert(`Not enough cash to buy ${upgradeName} level ${newLevel} for ${newPrice} (need ${newPrice - this.sd.cash} more).`)
+            return
+        }
+
+        // Confirm action just in case it was clicked unintentionally.
+        if (!confirm('Upgrade Clickspeed?')) {
             return
         }
 

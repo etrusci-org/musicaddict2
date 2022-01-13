@@ -192,6 +192,7 @@ main .sidebar button {
   }
   main .sidebar div.gameStats div {
     display: block;
+    margin-right: 0;
   }
   main .content {
     margin-top: 22px;
