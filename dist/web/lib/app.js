@@ -748,7 +748,8 @@ const MusicAddict2 = {
             if (!this.ram.bulkSaleID) {
                 this.uiSetState('ctrlProgress', 'enabled')
             }
-        }, Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100)))
+        // }, Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100)))
+        }, this.currentClickSpeed())
 
         // Remember when this method was last run for later use.
         this.ram.lastCtrlProgressClickOn = Date.now()
@@ -844,7 +845,7 @@ const MusicAddict2 = {
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
 
-        this.uiSetVal('upgradeClickspeedLevel', `<span class="a">L${this.sd.upgrades.clickspeed}</span>`)
+        this.uiSetVal('upgradeClickspeedLevel', `<span class="a">L${this.sd.upgrades.clickspeed}</span> (${this.currentClickSpeed()/1000}s)`)
     },
 
     /**
@@ -1225,7 +1226,13 @@ const MusicAddict2 = {
         return `${this.padNum(s)}s`
     },
 
-
+    /**
+     * Get the calculated click speed.
+     * @returns {secMilli}  Calculated click speed.
+     */
+    currentClickSpeed() {
+        return Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100))
+    },
 
 
     /* ============================== TEXT/NUMBER TRASNFORM ==================================== */
