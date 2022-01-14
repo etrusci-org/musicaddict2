@@ -46,6 +46,8 @@ const MusicAddict2 = {
      * @prop {string} sd.playerName='Anonymous'  Player name.
      * @prop {integer} sd.cash=7  Cash holdings.
      * @prop {array} sd.records=[]]  Record collection.
+     * @todo Doc upgrades.
+     * @todo Doc tradeProfit.
      */
     sd: {
         token: null,
@@ -93,7 +95,7 @@ const MusicAddict2 = {
 
             { uikey: 'upgradeClickspeedLevel', type: 'click', handler: 'upgradeClickspeedLevelHandleClick' },
             { uikey: 'sdRecordsCount', type: 'click', handler: 'sdRecordsCountHandleClick' },
-            { uikey: 'recordCollectionClose', type: 'click', handler: 'recordCollectionCloseHandleClick' },
+            { uikey: 'recordCollectionClose', type: 'click', handler: 'sdRecordsCountHandleClick' },
 
         ],
         actionLogMax: 500,
@@ -543,7 +545,6 @@ const MusicAddict2 = {
 
                 // Sell the record and reset the incomingOffer boolean that was maybe set in the broke action.
                 this.sd.cash += this.ram.randomRecord.sellPrice
-                // this.sd.tradeProfit += this.ram.randomRecord.sellPrice - this.ram.randomRecord.buyPrice
                 this.sd.tradeProfit += this.ram.randomRecord.sellPrice
                 this.sd.records.splice(this.ram.randomRecord.collectionKey, 1)
                 this.ram.incomingOffer = null
@@ -799,16 +800,16 @@ const MusicAddict2 = {
      */
     sdRecordsCountHandleClick(/* e */) {
         this.updateRecordCollection()
-        this.uiSetDisplay('actionLog', 'hide')
-        this.uiSetDisplay('recordCollection', 'show')
+        this.uiSetDisplay('actionLog', 'toggle')
+        this.uiSetDisplay('recordCollection', 'toggle')
     },
 
     /**
      * Handle recordCollectionClose clicks.
      */
     recordCollectionCloseHandleClick(/* e */) {
-        this.uiSetDisplay('recordCollection', 'hide')
-        this.uiSetDisplay('actionLog', 'show')
+        this.uiSetDisplay('actionLog', 'toggle')
+        this.uiSetDisplay('recordCollection', 'toggle')
     },
 
 
@@ -929,7 +930,7 @@ const MusicAddict2 = {
     /**
      * Set UI element display.
      * @param {string} uikey  Key of the element stored inside ui.
-     * @param {string} vis  Can be either hide, show, or any value accepted by CSS's display property.
+     * @param {string} vis  Can be either hide, show, toggle, or any value accepted by CSS's display property.
      */
     uiSetDisplay(uikey, vis) {
         // Stop if no uikey.
@@ -953,6 +954,16 @@ const MusicAddict2 = {
             case 'show':
                 // Show element.
                 this.ui[uikey].style.display = ''
+                break
+
+            case 'toggle':
+                // Toggle element.
+                if (this.ui[uikey].style.display == 'none') {
+                    this.ui[uikey].style.display = ''
+                }
+                else {
+                    this.ui[uikey].style.display = 'none'
+                }
                 break
 
             default:
