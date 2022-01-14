@@ -1097,11 +1097,10 @@ const MusicAddict2 = {
         let c = this.randomInteger(1, 3)
         let name = []
 
-        while (c > 0) {
-            let word = this.randomArrayItem(this.rd.recordArtistWords)
+        while (name.length < c) {
+            let word = this.randomArrayItem(this.rd.artistNameWords)
             if (name.indexOf(word) == -1) {
                 name.push(word)
-                c--
             }
         }
 
@@ -1116,11 +1115,10 @@ const MusicAddict2 = {
         let c = this.randomInteger(1, 4)
         let title = []
 
-        while (c > 0) {
+        while (title.length < c) {
             let word = this.randomArrayItem(this.rd.recordTitleWords)
             if (title.indexOf(word) == -1) {
                 title.push(word)
-                c--
             }
         }
 
@@ -1288,7 +1286,7 @@ const MusicAddict2 = {
      */
     injectScript(scriptName) {
         let ele = document.createElement('script')
-        ele.src = `./lib/${scriptName}.js`
+        ele.src = `./lib/${scriptName}.js?v=${Date.now()}`
         document.body.append(ele)
     },
 
