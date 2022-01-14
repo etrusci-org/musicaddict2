@@ -178,7 +178,7 @@ class MusicAddictAPI {
                     'cash'          => SQLITE3_INTEGER,
                     'tradeProfit'   => SQLITE3_INTEGER,
                     'records'       => SQLITE3_TEXT,
-                    'upgrades'       => SQLITE3_TEXT,
+                    'upgrades'      => SQLITE3_TEXT,
                 );
                 // unset($saveData['playerName']); // simulate error
 
@@ -203,11 +203,11 @@ class MusicAddictAPI {
                 $saveData['upgrades'] = jenc($saveData['upgrades']);
 
                 // Create initial row if it does not exist yet.
-                $q = 'SELECT token FROM sd WHERE token = :token;';
+                $q = 'SELECT firstPlayedOn, token FROM sd WHERE token = :token;';
                 $v = array(
                     array('token', ripemdHash($saveData['token']), SQLITE3_TEXT),
                 );
-                $r = $this->Database->query($q, $v);
+                $r = $this->Database->querySingle($q, $v);
                 if (!$r) {
                     $q = 'INSERT INTO sd (token) VALUES (:token);';
                     if (!$this->Database->write($q, $v)) {
@@ -220,6 +220,13 @@ class MusicAddictAPI {
                 $c = array(
                     'lastSavedOn = :lastSavedOn',
                 );
+                if (!$r) {
+                    $c[] = 'firstPlayedOn = :firstPlayedOn';
+                }
+                else {
+                    unset($validCols['firstPlayedOn']);
+                }
+
                 $v = array(
                     array('lastSavedOn', time(), SQLITE3_INTEGER),
                 );

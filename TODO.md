@@ -6,8 +6,6 @@ In no particular order.
 
 ## TO-DO
 
-- Random generators.
-- Only save firstPlayedOn once to db.
 - More granular chances for progress() actions.
 - Code doc lib/api.php.
   - Started, but not done yet.
