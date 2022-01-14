@@ -1092,8 +1092,8 @@ const MusicAddict2 = {
      */
     randomRecord() {
         return {
-            title: this.randomRecordTitle(),
-            artist: this.randomArtistName(),
+            title: this.randomString('recordTitle'),
+            artist: this.randomString('artistName'),
             format: this.randomRecordFormat(),
             buyPrice: this.randomBuyPrice(),
             sellPrice: null, // will be decided in action offer, not when buying.
@@ -1101,39 +1101,36 @@ const MusicAddict2 = {
     },
 
     /**
-     * A random record artist.
-     * @returns {string}  A random artist name.
+     * A random string for names and titles.
+     * @param {string} stringType  Can be artistName or recordTitle.
+     * @returns {string}  Random string with variable word count.
      */
-    randomArtistName() {
-        let c = this.randomInteger(1, 3)
-        let name = []
+    randomString(stringType) {
+        let wordCount = 1
+        let randomString = []
 
-        while (name.length < c) {
-            let word = this.randomArrayItem(this.rd.artistNameWords)
-            if (name.indexOf(word) == -1) {
-                name.push(word)
+        switch (stringType) {
+            case 'artistName':
+                wordCount = this.randomInteger(1, 3)
+                break
+
+            case 'recordTitle':
+                wordCount = this.randomInteger(1, 4)
+                break
+
+            default:
+                console.error('Unknown stringType:', stringType)
+                return
+        }
+
+        while (randomString.length < wordCount) {
+            let word = this.randomArrayItem(this.rd[`${stringType}Words`])
+            if (randomString.indexOf(word) == -1) {
+                randomString.push(word)
             }
         }
 
-        return name.join(' ')
-    },
-
-    /**
-     * A random record title.
-     * @returns {string}  A random record title.
-     */
-    randomRecordTitle() {
-        let c = this.randomInteger(1, 4)
-        let title = []
-
-        while (title.length < c) {
-            let word = this.randomArrayItem(this.rd.recordTitleWords)
-            if (title.indexOf(word) == -1) {
-                title.push(word)
-            }
-        }
-
-        return title.join(' ')
+        return randomString.join(' ')
     },
 
     /**
