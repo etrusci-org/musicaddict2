@@ -92,11 +92,9 @@ const MusicAddict2 = {
             { uikey: 'ctrlProgress', type: 'click', handler: 'ctrlProgressHandleClick' },
             { uikey: 'ctrlExit', type: 'click', handler: 'ctrlExitHandleClick' },
             { uikey: 'playerName', type: 'click', handler: 'playerNameHandleClick' },
-
             { uikey: 'upgradeClickspeedLevel', type: 'click', handler: 'upgradeClickspeedLevelHandleClick' },
             { uikey: 'sdRecordsCount', type: 'click', handler: 'sdRecordsCountHandleClick' },
             { uikey: 'recordCollectionClose', type: 'click', handler: 'sdRecordsCountHandleClick' },
-
         ],
         actionLogMax: 500,
         backgroundUpdateInterval: 500,
@@ -596,12 +594,12 @@ const MusicAddict2 = {
 
         // Stop if not enough cash.
         if (this.sd.cash < newPrice) {
-            alert(`Not enough cash to buy ${upgradeName} level ${newLevel} for ${newPrice} (need ${newPrice - this.sd.cash} more).`)
+            alert(`Not enough cash to upgrade ${upgradeName} to level ${newLevel} for ${newPrice}◈ (need ${newPrice - this.sd.cash}◈ more).`)
             return
         }
 
         // Confirm action just in case it was clicked unintentionally.
-        if (!confirm('Upgrade Clickspeed?')) {
+        if (!confirm(`Upgrade ${upgradeName} to level ${newLevel} for ${newPrice}◈?`)) {
             return
         }
 
@@ -842,11 +840,10 @@ const MusicAddict2 = {
 
         // Update UI elements.
         this.uiSetVal('sdCash', `${this.moneyString(this.sd.cash)}`)
-        this.uiSetVal('sdRecordsCount', `<span class="a">${this.sd.records.length}</a>`)
+        this.uiSetVal('sdRecordsCount', `<span class="a">${this.sd.records.length}</span>`)
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
-
-        this.uiSetVal('upgradeClickspeedLevel', `<span class="a">L${this.sd.upgrades.clickspeed}</span> (${this.currentClickSpeed()/1000}s)`)
+        this.uiSetVal('upgradeClickspeedLevel', `<span class="a">Level ${this.sd.upgrades.clickspeed}</span>, ${this.currentClickSpeed()/1000}s`)
     },
 
     /**
