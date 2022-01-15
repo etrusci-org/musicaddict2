@@ -7,6 +7,7 @@ require 'shared.php';
  */
 class MusicAddictAPI {
     protected $querySrc;
+    protected $databaseFile;
     protected $query;
     protected $response;
     protected $Database;
@@ -18,7 +19,7 @@ class MusicAddictAPI {
      * @param string $querySrc  From where to read the query. Can be post, get or both.
      * @return void
      */
-    public function __construct($querySrc='post') {
+    public function __construct($querySrc='post', $databaseFile=null) {
         // Decide where to read the query from.
         switch ($querySrc) {
             case 'post':
@@ -55,12 +56,12 @@ class MusicAddictAPI {
         );
 
         // Initialize Database.
-        $databaseFile = realpath('../data/db.sqlite3');
-        if (!$databaseFile) {
+        $this->databaseFile = realpath($databaseFile);
+        if (!$this->databaseFile) {
             $this->response['_errors'][] = 'databaseFile does not exist.';
             $this->output();
         }
-        $this->Database = new DatabaseSQLite3($databaseFile);
+        $this->Database = new DatabaseSQLite3($this->databaseFile);
 
         // Parse request.
         $this->parseQuery();
