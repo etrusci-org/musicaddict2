@@ -344,8 +344,8 @@ const MusicAddict2 = {
             // --------------------------------------
             // ! = Triggered on special conditions.
             // ? = Based on chance.
-            // Default entry action is digg.
-            //
+            // default entry action is *digg*.
+
             // !broke
             //   ?offer
             // !bulkSale
@@ -355,8 +355,8 @@ const MusicAddict2 = {
             //     listen
             //       ?buy
             //         digg
-            //         ?skipBuy
-            //           digg
+            //       ?skipBuy
+            //         digg
             //   ?offer
             //     ?sell
             //       digg
@@ -659,7 +659,7 @@ const MusicAddict2 = {
         this.uiSetState('ctrlRegister', 'disabled')
         setTimeout(() => {
             this.uiSetState('ctrlRegister', 'enabled')
-        }, 10_000)
+        }, 30_000)
 
         // Request new token from api
         this.apiRequest({
@@ -711,7 +711,7 @@ const MusicAddict2 = {
         this.uiSetState('ctrlContinue', 'disabled')
         setTimeout(() => {
             this.uiSetState('ctrlContinue', 'enabled')
-        }, 10_000)
+        }, 30_000)
 
         // Request save data from api.
         this.apiRequest({
