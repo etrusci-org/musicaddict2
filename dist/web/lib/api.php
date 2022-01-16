@@ -118,8 +118,6 @@ class MusicAddictAPI {
                     'tradeProfit'   => SQLITE3_INTEGER,
                     'records'       => SQLITE3_TEXT,
                     'upgrades'      => SQLITE3_TEXT,
-                    'pickyness'     => SQLITE3_FLOAT,
-                    'clingyness'    => SQLITE3_FLOAT
                 );
 
                 // Query database for data.
@@ -182,8 +180,6 @@ class MusicAddictAPI {
                     'tradeProfit'   => SQLITE3_INTEGER,
                     'records'       => SQLITE3_TEXT,
                     'upgrades'      => SQLITE3_TEXT,
-                    'pickyness'     => SQLITE3_FLOAT,
-                    'clingyness'    => SQLITE3_FLOAT,
                 );
                 // unset($saveData['playerName']); // simulate error
 

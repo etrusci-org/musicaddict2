@@ -48,8 +48,6 @@ const MusicAddict2 = {
      * @prop {array} sd.records=[]]  Record collection.
      * @todo Doc upgrades.
      * @todo Doc tradeProfit.
-     * @todo Doc pickyness
-     * @todo Doc clingyness.
      */
     sd: {
         token: null,
@@ -61,9 +59,6 @@ const MusicAddict2 = {
         upgrades: {
             clickspeed: 0,
         },
-
-        pickyness: 0.5,
-        clingyness: 0.5,
     },
 
     /**
@@ -88,6 +83,8 @@ const MusicAddict2 = {
      * @prop {float} conf.sellPriceRangeMultiplikator=0.5  Used to calculate the maximum possible sellPrice of a record: buyPrice * sellPriceRangeMultiplikator.
      * @todo doc conf.preloadMedia
      * @todo doc conf.upgrades
+     * @todo Doc conf.buyChance
+     * @todo Doc conf.sellChance
      */
     conf: {
         apiPath: './api.php',
@@ -100,8 +97,6 @@ const MusicAddict2 = {
             { uikey: 'upgradeClickspeedLevel', type: 'click', handler: 'upgradeClickspeedLevelHandleClick' },
             { uikey: 'sdRecordsCount', type: 'click', handler: 'sdRecordsCountHandleClick' },
             { uikey: 'recordCollectionClose', type: 'click', handler: 'sdRecordsCountHandleClick' },
-            { uikey: 'changePickyness', type: 'click', handler: 'changePickynessHandleClick' },
-            { uikey: 'changeClingyness', type: 'click', handler: 'changeClingynessHandleClick' },
         ],
         actionLogMax: 500,
         backgroundUpdateInterval: 500,
@@ -144,6 +139,9 @@ const MusicAddict2 = {
                 maxLevel: 10,
             },
         },
+
+        buyChance: 0.5,
+        sellChance: 0.5,
     },
 
     /**
@@ -486,13 +484,11 @@ const MusicAddict2 = {
                 else {
                     // If listening duration is over.
                     if (this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
-                        // // Add buy and skipBuy to next action choices.
-                        // this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
                         this.ram.startedListeningOn = null
                         this.ram.listenDuration = null
 
                         // Be more open minded and buy the record, or be picky and skip it.
-                        if (this.lucky(this.sd.pickyness)) {
+                        if (this.lucky(this.conf.buyChance)) {
                             this.ram.nextProgressActionChoices = ['buy']
                         }
                         else {
@@ -548,11 +544,8 @@ const MusicAddict2 = {
                 // Add action log message.
                 this.uiSetVal('actionLog', `Someone wants to buy ${this.recordString(this.ram.randomRecord)} from your collection.`)
 
-                // // Set next action choices to sell and skipSell.
-                // this.ram.nextProgressActionChoices = ['sell', 'skipSell']
-
                 // Be more open minded and sell the record, or be clingy and skip it.
-                if (this.lucky(this.sd.clingyness)) {
+                if (this.lucky(this.conf.sellChance)) {
                     this.ram.nextProgressActionChoices = ['sell']
                 }
                 else {
@@ -848,20 +841,6 @@ const MusicAddict2 = {
         this.uiSetDisplay('recordCollection', 'toggle')
     },
 
-    /**
-     * Handle changePickyness clicks.
-     */
-    changePickynessHandleClick(/* e */) {
-        this.updateBehaviour('pickyness')
-    },
-
-    /**
-     * Handle changeClingyness clicks.
-     */
-    changeClingynessHandleClick(/* e */) {
-        this.updateBehaviour('clingyness')
-    },
-
 
 
 
@@ -896,10 +875,6 @@ const MusicAddict2 = {
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
         this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}, ${this.currentClickSpeed()/1000}s`)
-
-        this.uiSetVal('changePickyness', this.sd.pickyness)
-        this.uiSetVal('changeClingyness', this.sd.clingyness)
-
     },
 
     /**
