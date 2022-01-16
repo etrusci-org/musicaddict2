@@ -792,6 +792,12 @@ const MusicAddict2 = {
      * Handle ctrlExit clicks.
      */
     ctrlExitHandleClick(/* e */) {
+        // Disable exit button for a short while.
+        this.uiSetState('ctrlExit', 'disabled')
+        setTimeout(() => {
+            this.uiSetState('ctrlExit', 'enabled')
+        }, 30_000)
+
         if (confirm('Exit the game?')) {
             // Save and exit.
             this.save(true)
