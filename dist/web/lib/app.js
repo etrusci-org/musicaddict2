@@ -775,14 +775,17 @@ const MusicAddict2 = {
             return
         }
 
+        // Show again actionLog if recordCollection opened.
+        this.uiSetDisplay('actionLog', 'show')
+        this.uiSetDisplay('recordCollection', 'hide')
+
         // Disable progress button for a short while.
         this.uiSetState('ctrlProgress', 'disabled')
         setTimeout(() => {
             if (!this.ram.bulkSaleID) {
                 this.uiSetState('ctrlProgress', 'enabled')
             }
-        // }, Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100)))
-        }, this.currentClickSpeed())
+        }, this.currentClickspeed())
 
         // Remember when this method was last run for later use.
         this.ram.lastCtrlProgressClickOn = Date.now()
@@ -884,7 +887,7 @@ const MusicAddict2 = {
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
         this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}`)
-        this.uiSetVal('sdUpgradesClickspeed', `${this.currentClickSpeed()/1000}s`)
+        this.uiSetVal('sdUpgradesClickspeed', `${this.currentClickspeed()/1000}s`)
     },
 
     /**
@@ -1274,7 +1277,7 @@ const MusicAddict2 = {
      * Get the calculated click speed.
      * @returns {secMilli}  Calculated click speed.
      */
-    currentClickSpeed() {
+    currentClickspeed() {
         return Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100))
     },
 

@@ -14,4 +14,5 @@ In no particular order.
 
 ## IDEAS
 
+- Log total and session progress clicks.
 - Log recent trades in ram for a listing.
