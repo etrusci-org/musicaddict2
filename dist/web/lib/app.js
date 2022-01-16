@@ -1065,7 +1065,7 @@ const MusicAddict2 = {
         .catch(error => {
             console.error('apiRequest Error:', error)
             alert(`apiRequest Error.\n\n${error}`)
-    })
+        })
     },
 
 
