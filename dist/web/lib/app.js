@@ -59,6 +59,9 @@ const MusicAddict2 = {
         upgrades: {
             clickspeed: 0,
         },
+
+        pickyGrade: 0.5,
+        clingyGrade: 0.5,
     },
 
     /**
@@ -378,7 +381,7 @@ const MusicAddict2 = {
                     this.ram.nextProgressActionChoices.push('discover')
                 }
 
-                // If lucky, add offer to next action choices.
+                // If lucky, and records in collection, add offer to next action choices.
                 if (this.lucky(this.conf.offerChance) && this.sd.records.length > 0) {
                     this.ram.nextProgressActionChoices.push('offer')
                 }
@@ -479,10 +482,18 @@ const MusicAddict2 = {
                 else {
                     // If listening duration is over.
                     if (this.timesUp(this.ram.startedListeningOn, this.ram.listenDuration)) {
-                        // Add buy and skipBuy to next action choices.
-                        this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
+                        // // Add buy and skipBuy to next action choices.
+                        // this.ram.nextProgressActionChoices = ['buy', 'skipBuy']
                         this.ram.startedListeningOn = null
                         this.ram.listenDuration = null
+
+                        // Be more open minded and buy the record, or be picky and skip it.
+                        if (this.lucky(this.sd.pickyGrade)) {
+                            this.ram.nextProgressActionChoices = ['buy']
+                        }
+                        else {
+                            this.ram.nextProgressActionChoices = ['skipBuy']
+                        }
                     }
                 }
                 break
@@ -533,8 +544,16 @@ const MusicAddict2 = {
                 // Add action log message.
                 this.uiSetVal('actionLog', `Someone wants to buy ${this.recordString(this.ram.randomRecord)} from your collection.`)
 
-                // Set next action choices to sell and skipSell.
-                this.ram.nextProgressActionChoices = ['sell', 'skipSell']
+                // // Set next action choices to sell and skipSell.
+                // this.ram.nextProgressActionChoices = ['sell', 'skipSell']
+
+                // Be more open minded and sell the record, or be clingy and skip it.
+                if (this.lucky(this.sd.clingyGrade)) {
+                    this.ram.nextProgressActionChoices = ['sell']
+                }
+                else {
+                    this.ram.nextProgressActionChoices = ['skipSell']
+                }
                 break
 
             case 'sell':
@@ -1079,7 +1098,7 @@ const MusicAddict2 = {
      * @returns {boolean}  True if lucky.
      */
     lucky(chance) {
-        chance = Math.max(0, chance)
+        chance = (chance >= 0.0 && chance <= 1.0) ? chance : 0.0
         return Math.random() < chance
     },
 
