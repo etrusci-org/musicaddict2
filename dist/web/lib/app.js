@@ -188,6 +188,9 @@ const MusicAddict2 = {
         // Register event handlers.
         this.registerEventHandlers()
 
+        // Make tables sortable
+        this.makeTablesSortable()
+
         // Check if we have a token in localStorage and enter it into inputToken for the lazy.
         if (window.localStorage) {
             let localStorageToken = window.localStorage.getItem('musicaddict2')
@@ -880,7 +883,8 @@ const MusicAddict2 = {
         this.uiSetVal('sdRecordsCount', this.sd.records.length)
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
-        this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}, ${this.currentClickSpeed()/1000}s`)
+        this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}`)
+        this.uiSetVal('sdUpgradesClickspeed', `${this.currentClickSpeed()/1000}s`)
     },
 
     /**
@@ -1346,5 +1350,25 @@ const MusicAddict2 = {
         })
     },
 
+    makeTablesSortable() {
+        for (let table of document.querySelectorAll('table')) {
+            for (let th of table.tHead.rows[0].cells) {
+                th.onclick = function () {
+                    const tBody = table.tBodies[0]
+                    const rows = tBody.rows
+                    for (let tr of rows) {
+                        Array.prototype.slice.call(rows)
+                        .sort(function (tr1, tr2) {
+                            const cellIndex = th.cellIndex
+                            return tr1.cells[cellIndex].textContent.localeCompare(tr2.cells[cellIndex].textContent)
+                        })
+                        .forEach(function (tr) {
+                            this.appendChild(this.removeChild(tr))
+                        }, tBody)
+                    }
+                }
+            }
+        }
+    }
 
 } // /MusicAddict2
