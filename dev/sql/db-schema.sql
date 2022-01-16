@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS sd (
     tradeProfit    INTEGER  DEFAULT 0,
     records        TEXT     DEFAULT '[]',
     upgrades       TEXT     DEFAULT '{}',
-    pickyGrade     REAL     DEFAULT 0.5,
-    clingyGrade    REAL     DEFAULT 0.5,
+    pickyness      REAL     DEFAULT 0.5,
+    clingyness     REAL     DEFAULT 0.5,
 
     -- The following columns are not part of MusicAddict2.sd object
     -- and will not be returned when loading progress.

@@ -6,7 +6,6 @@ In no particular order.
 
 ## TO-DO
 
-- More granular chances for progress() actions.
 - Code doc lib/api.php.
   - Started, but not done yet.
 - Better variable/method names.

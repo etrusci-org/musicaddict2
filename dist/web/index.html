@@ -31,7 +31,7 @@
                 <div data-uikey="gameStats">
                     <div>
                         <label title="How many records you currently have in your collection. Click to show list.">records:</label>
-                        <span data-uikey="sdRecordsCount">-</span>
+                        <span class="a" data-uikey="sdRecordsCount">-</span>
                     </div>
                     <div>
                         <label title="How much cash you currently have in your pockets.">cash:</label>
@@ -43,8 +43,18 @@
                     </div>
                     <div>
                         <label title="Clickspeed uprade level. Click to buy next level.">clickspeed:</label>
-                        <span data-uikey="upgradeClickspeedLevel">-</span>
+                        <span class="a" data-uikey="upgradeClickspeedLevel">-</span>
                     </div>
+
+                    <div>
+                        <label title="How picky you are when buying records. Click to change.">pickyness:</label>
+                        <span class="a" data-uikey="changePickyness">-</span>
+                    </div>
+                    <div>
+                        <label title="How clingy you are when selling records. Click to change.">clingyness:</label>
+                        <span class="a" data-uikey="changeClingyness">-</span>
+                    </div>
+
                     <div>
                         <label title="When you started to play.">started:</label>
                         <span data-uikey="sdFirstPlayedOn">-</span>
@@ -62,12 +72,12 @@
                 <div data-uikey="auth">
                     <h2>NEW GAME</h2>
                     <p>
-                        <input type="text" data-uikey="inputPlayerName" maxlength="20" pattern="[A-Za-z0-9_-]{1,20}" title="Optional. Allowed characters: A-Z a-z 0-9 _ -" placeholder="Player Name">
+                        <input type="text" data-uikey="inputPlayerName" maxlength="20" autocomplete="off" pattern="[A-Za-z0-9_-]{1,20}" title="Optional. Allowed characters: A-Z a-z 0-9 _ -" placeholder="Player Name">
                         <button data-uikey="ctrlRegister">REGISTER</button>
                     </p>
                     <h2>CONTINUE</h2>
                     <p>
-                        <input type="password" data-uikey="inputToken" maxlength="100" placeholder="Secret Token">
+                        <input type="password" data-uikey="inputToken" maxlength="100" autocomplete="off" placeholder="Secret Token">
                         <button data-uikey="ctrlContinue">CONTINUE</button>
                     </p>
                 </div>

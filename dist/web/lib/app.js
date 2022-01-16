@@ -48,6 +48,8 @@ const MusicAddict2 = {
      * @prop {array} sd.records=[]]  Record collection.
      * @todo Doc upgrades.
      * @todo Doc tradeProfit.
+     * @todo Doc pickyness
+     * @todo Doc clingyness.
      */
     sd: {
         token: null,
@@ -60,8 +62,8 @@ const MusicAddict2 = {
             clickspeed: 0,
         },
 
-        pickyGrade: 0.5,
-        clingyGrade: 0.5,
+        pickyness: 0.5,
+        clingyness: 0.5,
     },
 
     /**
@@ -98,6 +100,8 @@ const MusicAddict2 = {
             { uikey: 'upgradeClickspeedLevel', type: 'click', handler: 'upgradeClickspeedLevelHandleClick' },
             { uikey: 'sdRecordsCount', type: 'click', handler: 'sdRecordsCountHandleClick' },
             { uikey: 'recordCollectionClose', type: 'click', handler: 'sdRecordsCountHandleClick' },
+            { uikey: 'changePickyness', type: 'click', handler: 'changePickynessHandleClick' },
+            { uikey: 'changeClingyness', type: 'click', handler: 'changeClingynessHandleClick' },
         ],
         actionLogMax: 500,
         backgroundUpdateInterval: 500,
@@ -488,7 +492,7 @@ const MusicAddict2 = {
                         this.ram.listenDuration = null
 
                         // Be more open minded and buy the record, or be picky and skip it.
-                        if (this.lucky(this.sd.pickyGrade)) {
+                        if (this.lucky(this.sd.pickyness)) {
                             this.ram.nextProgressActionChoices = ['buy']
                         }
                         else {
@@ -548,7 +552,7 @@ const MusicAddict2 = {
                 // this.ram.nextProgressActionChoices = ['sell', 'skipSell']
 
                 // Be more open minded and sell the record, or be clingy and skip it.
-                if (this.lucky(this.sd.clingyGrade)) {
+                if (this.lucky(this.sd.clingyness)) {
                     this.ram.nextProgressActionChoices = ['sell']
                 }
                 else {
@@ -629,6 +633,21 @@ const MusicAddict2 = {
         this.sd.upgrades[upgradeName] += 1
 
         this.uiSetVal('actionLog', `Upgraded ${upgradeName} to level ${newLevel} for ${this.moneyString(newPrice, true)}.`)
+    },
+
+    updateBehaviour(behaviourName) {
+        let newGrade = parseFloat(prompt(`Enter your new ${behaviourName} grade.`, String(this.sd[behaviourName])))
+        if (newGrade === NaN) {
+            return
+        }
+        if (!newGrade || newGrade < 0.1 || newGrade > 1.0) {
+            alert(`Invalid ${behaviourName} grade number.`)
+            return
+        }
+        if (this.sd[behaviourName] != newGrade) {
+            this.sd[behaviourName] = newGrade
+            this.uiSetVal('actionLog', `Updated ${behaviourName} to ${this.sd[behaviourName]}.`)
+        }
     },
 
     /**
@@ -829,6 +848,20 @@ const MusicAddict2 = {
         this.uiSetDisplay('recordCollection', 'toggle')
     },
 
+    /**
+     * Handle changePickyness clicks.
+     */
+    changePickynessHandleClick(/* e */) {
+        this.updateBehaviour('pickyness')
+    },
+
+    /**
+     * Handle changeClingyness clicks.
+     */
+    changeClingynessHandleClick(/* e */) {
+        this.updateBehaviour('clingyness')
+    },
+
 
 
 
@@ -859,10 +892,14 @@ const MusicAddict2 = {
 
         // Update UI elements.
         this.uiSetVal('sdCash', `${this.moneyString(this.sd.cash)}`)
-        this.uiSetVal('sdRecordsCount', `<span class="a">${this.sd.records.length}</span>`)
+        this.uiSetVal('sdRecordsCount', this.sd.records.length)
         this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
-        this.uiSetVal('upgradeClickspeedLevel', `<span class="a">Level ${this.sd.upgrades.clickspeed}</span>, ${this.currentClickSpeed()/1000}s`)
+        this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}, ${this.currentClickSpeed()/1000}s`)
+
+        this.uiSetVal('changePickyness', this.sd.pickyness)
+        this.uiSetVal('changeClingyness', this.sd.clingyness)
+
     },
 
     /**
