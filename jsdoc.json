@@ -1,0 +1,20 @@
+{
+    "opts": {
+        "encoding": "utf8",
+        "destination": "./dev/jsdoc/",
+        "recurse": true
+    },
+    "source": {
+        "include" : ["./dist/web/lib/"],
+        "exclude" : [],
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "sourceType": "script",
+    "recurseDepth": 5,
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "plugins": ["plugins/markdown"]
+}

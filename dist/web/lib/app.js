@@ -1,93 +1,86 @@
 // @ts-check
 'use strict'
 
+
+/**
+ * @file Core of the app. Must be included/loaded first.
+ * @example
+ * <script src="./lib/app.js"></script>
+ * <script src="./lib/main.js"></script>
+ */
+
+
 /**
  * All the magic.
  * @namespace MusicAddict2
- * @prop {object} ui  User-Interface HTML elements collected in main().
- * @prop {object} rd  Random data from data.js. Mainly to use with the random* methods.
- * @prop {object} sd  Save data to be stored to the database.
- * @prop {object} conf  Static configuration.
- * @prop {object} ram  Temporary vars and objects.
  */
 const MusicAddict2 = {
     /**
-     * A float or integer number representing milliseconds.
-     * @typedef {number} secMilli
-     */
-
-    /**
-     * A float or integer number representing an unixtime value in milliseconds.
-     * @typedef {number} unixMilli
-     */
-
-    /**
-     * A float number representing a chance value between 0.0 and 1.0. The higher the number the higher the chance to be lucky.
+     * Float representing the chance to be lucky. Valid range: `0.0` (no luck) and `1.0` (win).
      * @typedef {number} luckyChance
      */
 
     /**
-     * Collected User-Interface HTML elements.
-     * @prop {object} ui
+     * Random record object.
+     * @typedef {object} randomRecord
+     * @prop {string} title  Record title.
+     * @prop {string} artist  Artist name.
+     * @prop {string} format  Record format.
+     * @prop {number} buyPrice  Buy price.
+     * @prop {number|null} sellPrice  Sell price. Only set if action offer.
      */
-    ui: {},
 
     /**
-     * Random data from data.js. Mainly to use with the random* methods.
-     * @prop {object} rd
+     * Integer representing milliseconds.
+     * @typedef {number} secMilli
      */
-    rd: {},
 
     /**
-     * Save data to be stored to the database.
-     * @prop {object} sd
-     * @prop {string} sd.token=null  Secret token.
-     * @prop {unixMilli} sd.firstPlayedOn=null  First play time.
-     * @prop {string} sd.playerName='Anonymous'  Player name.
-     * @prop {integer} sd.cash=7  Cash holdings.
-     * @prop {array} sd.records=[]]  Record collection.
-     * @todo Doc upgrades.
-     * @todo Doc tradeProfit.
+     * Integer representing an unixtime stamp in milliseconds.
+     * @typedef {number} unixMilli
      */
-    sd: {
-        token: null,
-        firstPlayedOn: null,
-        playerName: 'Anonymous',
-        cash: 7,
-        tradeProfit: 0,
-        records: [],
-        upgrades: {
-            clickspeed: 0,
-        },
-    },
 
     /**
-     * Static configuration.
-     * @prop {object} conf
-     * @prop {string} conf.apiPath='./api.php'  Absolute or relative path to dist/web/api.php.
-     * @prop {object} conf.eventHandler={...}  Event handler configuration.
-     * @prop {integer} conf.actionLogMax=500  How many lines to keep in the action log.
-     * @prop {secMilli} conf.backgroundUpdateInterval=500  Background updater interval delay.
-     * @prop {secMilli} conf.clickspeed=1_500  Timeout after a ctrlProgress click.
-     * @prop {secMilli} conf.exitDelay=2_000  Delay before exiting after ctrlExit.
-     * @prop {secMilli} conf.autoSaveInterval=60_000  How often to save automagically.
-     * @prop {integer} conf.recordsMax=500  How many records the player can keep in the collection before a bulk sale gets triggered.
-     * @prop {integer} conf.bulkSaleAmount=50  How many records to sell in a bulk sale.
-     * @prop {object} conf.listenDuration={...}  Range for randomly choosing the listening duration from.
-     * @prop {secMilli} conf.listenDuration.min=5_000  Minimum listening duration
-     * @prop {secMilli} conf.listenDuration.max=20_000  Maximum listening duration
-     * @prop {luckyChance} conf.discoverChance=0.20  Chance a interesting record can be discovered.
-     * @prop {luckyChance} conf.offerChance=0.125  Chance get a opportunity to sell a record.
-     * @prop {secMilli} conf.maxIdleDuration=600_000  Maximum time can pass without clicking before getting kicked out of the game.
-     * @prop {object} conf.buyPriceRanges={...}  Buy price configuration.
-     * @prop {float} conf.sellPriceRangeMultiplikator=0.5  Used to calculate the maximum possible sellPrice of a record: buyPrice * sellPriceRangeMultiplikator.
-     * @todo doc conf.preloadMedia
-     * @todo doc conf.upgrades
-     * @todo Doc conf.buyChance
-     * @todo Doc conf.sellChance
+     * App/game configuration.
+     * @prop {object} MusicAddict2.conf
+     * @prop {integer} MusicAddict2.conf.actionLogMax=500  Maximum number of lines to keep in the actionLog.
+     * @prop {string} MusicAddict2.conf.apiPath='./api.php'  Relative from dist/web/index.html or absolute path to dist/web/api.php.
+     * @prop {secMilli} MusicAddict2.conf.autoSaveInterval=300_000  Auto-save interval.
+     * @prop {secMilli} MusicAddict2.conf.backgroundUpdateInterval=500  Background updater interval.
+     * @prop {integer} MusicAddict2.conf.bulkSaleAmount=50  How many records to sell in a bulk sale.
+     * @prop {luckyChance} MusicAddict2.conf.buyChance=0.5  Chance to buy a record after having listened to it.
+     * @prop {object} MusicAddict2.conf.buyPriceRanges={...}  Buy price ranges.
+     * @prop {secMilli} MusicAddict2.conf.clickspeed=1_500  Base clickspeed from which the final clickspeed is calculated.
+     * @prop {luckyChance} MusicAddict2.conf.discoverChance=0.20  Chance to discover an interesting record.
+     * @prop {array} MusicAddict2.conf.eventHandler=[...]]  Event handler configuration.
+     * @prop {secMilli} MusicAddict2.conf.exitDelay=5_000  Delay before reloading the page after the player has clicked the exit button.
+     * @prop {object} MusicAddict2.conf.listenDuration={...}  Listen duration range.
+     * @prop {secMilli} MusicAddict2.conf.maxIdleDuration=600_000  Maximum time without a click on the progress button that can pass before kicking auto-exiting.
+     * @prop {luckyChance} MusicAddict2.conf.offerChance=0.125
+     * @prop {array} MusicAddict2.conf.preloadMedia=[...]]  Media to preload the oldskool way.
+     * @prop {integer} MusicAddict2.conf.recordsMax=500  Maximum number of records the player can keep in their collection before a bulk sale gets triggered.
+     * @prop {luckyChance} MusicAddict2.conf.sellChance=0.5  Chance to sell a record on when getting an offer.
+     * @prop {float} MusicAddict2.conf.sellPriceRangeMultiplikator=0.5  Used to calculate the maximum possible sellPrice of a record: buyPrice * sellPriceRangeMultiplikator.
+     * @prop {object} MusicAddict2.conf.upgrades={...}  Upgrades the player can unlock.
      */
     conf: {
+        actionLogMax: 500,
         apiPath: './api.php',
+        autoSaveInterval: 300_000,
+        backgroundUpdateInterval: 500,
+        bulkSaleAmount: 50,
+        buyChance: 0.5,
+        buyPriceRanges: {
+            legendary: { rollMax: 0.0001, minCash: 100_000, range: [100_000, 1_000_000] },
+            tier6: { rollMax: 0.0025, minCash: 500, range: [501, 1_000] },
+            tier5: { rollMax: 0.0050, minCash: 200, range: [201, 500] },
+            tier4: { rollMax: 0.0500, minCash: 50, range: [51, 200] },
+            tier3: { rollMax: 0.0700, minCash: 20, range: [21, 50] },
+            tier2: { rollMax: 0.7000, minCash: 7, range: [8, 20] },
+            tier1: { rollMax: 1.0000, minCash: 0, range: [1, 7] },
+        },
+        clickspeed: 1_500,
+        discoverChance: 0.20,
         eventHandler: [
             { uikey: 'ctrlRegister', type: 'click', handler: 'ctrlRegisterHandleClick' },
             { uikey: 'ctrlContinue', type: 'click', handler: 'ctrlContinueHandleClick' },
@@ -98,27 +91,10 @@ const MusicAddict2 = {
             { uikey: 'sdRecordsCount', type: 'click', handler: 'sdRecordsCountHandleClick' },
             { uikey: 'recordCollectionClose', type: 'click', handler: 'sdRecordsCountHandleClick' },
         ],
-        actionLogMax: 500,
-        backgroundUpdateInterval: 500,
-        clickspeed: 1_500,
-        exitDelay: 2_000,
-        autoSaveInterval: 180_000,
-        recordsMax: 500,
-        bulkSaleAmount: 50,
-        listenDuration: { min: 5_000, max: 20_000 },
-        discoverChance: 0.20,
-        offerChance: 0.125,
+        exitDelay: 5_000,
+        listenDuration: { min: 10_000, max: 30_000 },
         maxIdleDuration: 600_000,
-        buyPriceRanges: {
-            'Legendary': { rollMax: 0.0001, minCash: 100_000, range: [100_000, 1_000_000] },
-            'Tier6': { rollMax: 0.0025, minCash: 500, range: [501, 1_000] },
-            'Tier5': { rollMax: 0.0050, minCash: 200, range: [201, 500] },
-            'Tier4': { rollMax: 0.0500, minCash: 50, range: [51, 200] },
-            'Tier3': { rollMax: 0.0700, minCash: 20, range: [21, 50] },
-            'Tier2': { rollMax: 0.7000, minCash: 7, range: [8, 20] },
-            'Tier1': { rollMax: 1.0000, minCash: 0, range: [1, 7] },
-        },
-        sellPriceRangeMultiplikator: 0.5,
+        offerChance: 0.125,
         preloadMedia: [
             { tag: 'img', attrs: { src: './res/actiongif/broke.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/bulkSale.gif' } },
@@ -132,54 +108,417 @@ const MusicAddict2 = {
             { tag: 'img', attrs: { src: './res/actiongif/skipBuy.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/skipSell.gif' } },
         ],
-
+        recordsMax: 500,
+        sellChance: 0.5,
+        sellPriceRangeMultiplikator: 0.5,
         upgrades: {
             clickspeed: {
                 initialPrice: 100,
                 maxLevel: 10,
             },
         },
-
-        buyChance: 0.5,
-        sellChance: 0.5,
     },
 
     /**
-     * Temporary vars and objects.
-     * @prop {object} ram
-     * @prop {integer} ram.backgroundUpdateIntervalID=null  ID of backgroundUpdate()'s setInterval loop.
-     * @prop {unixMilli} ram.lastCtrlProgressClickOn=null  When the ui.ctrlProgress element was last clicked.
-     * @prop {unixMilli} ram.lastSavedOn=null  When the last save occured.
-     * @prop {string} ram.nextProgressAction=null  What the next progress() action will be.
-     * @prop {array} ram.nextProgressActionChoices=null  What the choices are for the next progress() action.
-     * @prop {object} ram.randomRecord=null  The current record for either the buy or sell progress() action.
-     * @prop {boolean} ram.incomingOffer=null  True if there is an incoming offer.
-     * @prop {integer} ram.bulkSaleID=null  ID of the bulkSale progress() action's setInterval loop.
-     * @prop {secMilli} ram.listenDuration=null  For how to to listen to a record.
-     * @prop {unixMilli} ram.startedListeningOn=null  When the player has started listening to a record.
-     * @prop {unixMilli} ram.startedSessionOn=null  When the current game session was started.
+     * Temporary stuff the app needs to work.
+     * @prop {object} MusicAddict2.ram
+     * @prop {integer} MusicAddict2.ram.backgroundUpdateIntervalID=null  ID of the background updater's setInterval() loop.
+     * @prop {integer} MusicAddict2.ram.bulkSaleID=null  ID of the bulk sale's setInterval() loop.
+     * @prop {boolean} MusicAddict2.ram.incomingOffer=null  Whether there is an incoming offer.
+     * @prop {unixMilli} MusicAddict2.ram.lastCtrlProgressClickOn=null  When the progress button was last clicked.
+     * @prop {unixMilli} MusicAddict2.ram.lastSavedOn=null  When the game progress was last saved.
+     * @prop {unixMilli} MusicAddict2.ram.listenDuration=null  How long to listen to a record.
+     * @prop {string} MusicAddict2.ram.nextProgressAction=null  What the next progress action will be.
+     * @prop {array} MusicAddict2.ram.nextProgressActionChoices=null  What the next progress actions could be.
+     * @prop {randomRecord} MusicAddict2.ram.randomRecord=null  Latest randomly generated record.
+     * @prop {unixMilli} MusicAddict2.ram.startedListeningOn=null  When the player started to listen to a record.
+     * @prop {unixMilli} MusicAddict2.ram.startedSessionOn=null  When the player entered the game.
      */
     ram: {
         backgroundUpdateIntervalID: null,
+        bulkSaleID: null,
+        incomingOffer: null,
         lastCtrlProgressClickOn: null,
         lastSavedOn: null,
+        listenDuration: null,
         nextProgressAction: null,
         nextProgressActionChoices: null,
         randomRecord: null,
-        incomingOffer: null,
-        bulkSaleID: null,
-        listenDuration: null,
         startedListeningOn: null,
         startedSessionOn: null,
     },
 
-
-
-
-    /* ========================================= CORE ========================================== */
+    /**
+     * Random data sources.
+     * @prop {object} MusicAddict2.rd
+     * @prop {array} MusicAddict2.rd.artistNameWords=[...]]  Words from which artist names are built.
+     * @prop {array} MusicAddict2.rd.recordFormats=[...]]  Record formats.
+     * @prop {array} MusicAddict2.rd.recordTitleWords=[...]]  Words from which record titles are built.
+     */
+    rd: {},
 
     /**
-     * Init crucial stuff.
+     * Save data to be stored to the database.
+     * @prop {object} MusicAddict2.sd
+     * @prop {integer} MusicAddict2.sd.cash=7  Cash amount.
+     * @prop {unixMilli} MusicAddict2.sd.firstPlayedOn=null  Time first played.
+     * @prop {string} MusicAddict2.sd.playerName='Anonymous'  Player name.
+     * @prop {array} MusicAddict2.sd.records=[]]  Record collection.
+     * @prop {string} MusicAddict2.sd.token=null  Unique secret token.
+     * @prop {integer} MusicAddict2.sd.tradeProfit=0  Total trade profit amount.
+     * @prop {object} MusicAddict2.sd.upgrades={...}  Bought Upgrades.
+     */
+    sd: {
+        cash: 7,
+        firstPlayedOn: null,
+        playerName: 'Anonymous',
+        records: [],
+        token: null,
+        tradeProfit: 0,
+        upgrades: {
+            clickspeed: 0,
+        },
+    },
+
+    /**
+     * User interface elements.
+     * @prop {object} MusicAddict2.ui={}
+     */
+    ui: {},
+
+    /**
+     * Query the API for something.
+     * @method MusicAddict2.apiRequest
+     * @param {object} query  Query properties.
+     * @param {function} [onSuccess=null]  On success handler method.
+     * @returns void
+     */
+    apiRequest(query, onSuccess=null) {
+        // Prepare query data.
+        const queryData = new FormData()
+        for (const k in query) {
+            queryData.append(k, query[k])
+        }
+
+        // Send request to api.
+        fetch(this.conf.apiPath, {
+            method: 'POST',
+            body: queryData,
+        })
+        // Process the response.
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not OK')
+            }
+            return response.json()
+        })
+        // Pass the response to the onSuccess handler function.
+        .then(responseData => {
+            if (typeof(onSuccess) == 'function') {
+                onSuccess(responseData)
+            }
+        })
+        // Sad times.
+        .catch(error => {
+            console.error('apiRequest Error:', error)
+            alert(`apiRequest Error.\n\n${error}`)
+        })
+    },
+
+    /**
+     * Update stuff in the background.
+     * @method MusicAddict2.backgroundUpdate
+     * @param {boolean} [startWorker=false]  Whether to start the setInterval() loop.
+     * @returns void
+     */
+    backgroundUpdate(startWorker=false) {
+        // Start worker loop if startWorker=true and there is no background worker already running.
+        if (startWorker && !this.ram.backgroundUpdateIntervalID) {
+            this.ram.backgroundUpdateIntervalID = setInterval(() => {
+                this.backgroundUpdate()
+            }, this.conf.backgroundUpdateInterval)
+        }
+
+        // Auto-save from time to time.
+        if (this.timesUp(this.ram.lastSavedOn, this.conf.autoSaveInterval)) {
+            this.save()
+        }
+
+        // Auto-exit if idling for too long.
+        if (this.timesUp(this.ram.lastCtrlProgressClickOn, this.conf.maxIdleDuration)) {
+            this.uiSetVal('actionLog', `Idle detection kicked in.`)
+            this.save(true)
+        }
+
+        // Update UI elements.
+        this.uiSetVal('sdCash', `${this.moneyString(this.sd.cash)}`)
+        this.uiSetVal('sdRecordsCount', `${this.sd.records.length}`)
+        this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
+        this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
+        this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}`)
+        this.uiSetVal('sdUpgradesClickspeed', `${this.currentClickspeed()/1000}s`)
+    },
+
+    /**
+     * Stop/reset background worker setInterval() loop.
+     * @method MusicAddict2.backgroundUpdateStop
+     * @returns void
+     */
+    backgroundUpdateStop() {
+        // Clear the update worker.
+        clearInterval(this.ram.backgroundUpdateIntervalID)
+
+        // Reset the worker's interval ID.
+        this.ram.backgroundUpdateIntervalID = null
+    },
+
+    /**
+     * Buy upgrade.
+     * @method MusicAddict2.buyUpgrade
+     * @param {string} upgradeName  Key of the upgrade's configuration.
+     * @returns void
+     */
+    buyUpgrade(upgradeName) {
+        // Stop if max level already reached.
+        if (this.sd.upgrades[upgradeName] >= this.conf.upgrades[upgradeName].maxLevel) {
+            alert(`${upgradeName} level already maxed out (${this.conf.upgrades[upgradeName].maxLevel}).`)
+            return
+        }
+
+        // Calculate price based on new level.
+        let newLevel = this.sd.upgrades[upgradeName] + 1
+        let newPrice = Math.round(this.conf.upgrades[upgradeName].initialPrice ** (newLevel ** 0.420))
+
+        // Stop if not enough cash.
+        if (this.sd.cash < newPrice) {
+            alert(`Not enough cash to upgrade ${upgradeName} to level ${newLevel} for ${newPrice}◈ (need ${newPrice - this.sd.cash}◈ more).`)
+            return
+        }
+
+        // Confirm action just in case it was clicked unintentionally.
+        if (!confirm(`Upgrade ${upgradeName} to level ${newLevel} for ${newPrice}◈?`)) {
+            return
+        }
+
+        // Pay for the upgrade.
+        this.sd.cash -= newPrice
+
+        // Increase level.
+        this.sd.upgrades[upgradeName] += 1
+
+        this.uiSetVal('actionLog', `Upgraded ${upgradeName} to level ${newLevel} for ${this.moneyString(newPrice, true)}.`)
+    },
+
+    /**
+     * Handle ctrlContinue clicks.
+     * @method MusicAddict2.ctrlContinueHandleClick
+     * @returns void
+     */
+    ctrlContinueHandleClick(/* e */) {
+        // Stop if we already have a token.
+        if (this.sd.token) {
+            return
+        }
+
+        // Stop if the token input is empty.
+        let inputToken = this.ui.inputToken.value.trim()
+        if (!inputToken) {
+            alert(`Please enter your secret token to continue.`)
+            return
+        }
+
+        // Disable continue button for a short while.
+        this.uiSetState('ctrlContinue', 'disabled')
+        setTimeout(() => {
+            this.uiSetState('ctrlContinue', 'enabled')
+        }, 30_000)
+
+        // Request save data from api.
+        this.apiRequest({
+            action: 'continue',
+            token: inputToken,
+        },
+        (response) => {
+            if (!response.saveData) {
+                alert(`Error while fetching save data.\n\n${response._errors.join('\n')}`)
+                return
+            }
+
+            // Store token the db returned not what the user has entered.
+            this.sd = response.saveData
+
+            // Start the game.
+            this.start()
+        })
+    },
+
+    /**
+     * Handle ctrlExit clicks.
+     * @method MusicAddict2.ctrlExitHandleClick
+     * @returns void
+     */
+    ctrlExitHandleClick(/* e */) {
+        // Disable exit button for a short while.
+        this.uiSetState('ctrlExit', 'disabled')
+        setTimeout(() => {
+            this.uiSetState('ctrlExit', 'enabled')
+        }, 30_000)
+
+        if (confirm('Exit the game?')) {
+            // Save and exit.
+            this.save(true)
+        }
+    },
+
+    /**
+     * Handle ctrlProgress clicks.
+     * @method MusicAddict2.ctrlProgressHandleClick
+     * @returns void
+     */
+    ctrlProgressHandleClick(/* e */) {
+        // Stop if we don't have a token.
+        if (!this.sd.token) {
+            return
+        }
+
+        // Show again actionLog if recordCollection opened.
+        this.uiSetDisplay('actionLog', 'show')
+        this.uiSetDisplay('recordCollection', 'hide')
+
+        // Disable progress button for a short while.
+        this.uiSetState('ctrlProgress', 'disabled')
+        setTimeout(() => {
+            if (!this.ram.bulkSaleID) {
+                this.uiSetState('ctrlProgress', 'enabled')
+            }
+        }, this.currentClickspeed())
+
+        // Remember when this method was last run for later use.
+        this.ram.lastCtrlProgressClickOn = Date.now()
+
+        // Trigger a progress action.
+        this.progress()
+    },
+
+    /**
+     * Handle ctrlRegister clicks.
+     * @method MusicAddict2.ctrlRegisterHandleClick
+     * @returns void
+     */
+    ctrlRegisterHandleClick(/* e */) {
+        // Stop if we already have a token.
+        if (this.sd.token) {
+            return
+        }
+
+        // Disable register button for a short while.
+        this.uiSetState('ctrlRegister', 'disabled')
+        setTimeout(() => {
+            this.uiSetState('ctrlRegister', 'enabled')
+        }, 30_000)
+
+        // Request new token from api
+        this.apiRequest({
+            action: 'register',
+        },
+        (response) => {
+            if (!response.token) {
+                alert(`Error while requesting new token.\n\n${response._errors.join('\n')}`)
+                return
+            }
+
+            // Store new token the db returned.
+            this.sd.token = response.token
+
+            // Reset localStorage token.
+            if (window.localStorage) {
+                window.localStorage.removeItem('musicaddict2')
+            }
+
+            // Set player name from input or leave it to the default.
+            let playerName = this.ui.inputPlayerName.value.trim().substring(0, 20)
+            playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
+            if (playerName) {
+                this.sd.playerName = playerName
+            }
+
+            // Start the game.
+            this.start()
+        })
+    },
+
+    /**
+     * Get the current calculated clickspeed.
+     * @method MusicAddict2.currentClickspeed
+     * @returns {number}  Current clickspeed.
+     */
+    currentClickspeed() {
+        return Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100))
+    },
+
+    /**
+     * Exit game and go back to start page.
+     * @method MusicAddict2.exit
+     * @returns void
+     */
+    exit() {
+        // Stop the background update worker
+        this.backgroundUpdateStop()
+
+        // Update ui elements
+        this.uiSetState('ctrlProgress', 'disabled')
+        this.uiSetState('ctrlExit', 'disabled')
+        this.uiSetVal('actionLog', `<span class="sys">Bye ${this.sd.playerName}, see you soon!</span>`)
+
+        // Wait a bit before exiting.
+        setTimeout(() => {
+            location.reload()
+        }, this.conf.exitDelay)
+    },
+
+    /**
+     * Inject oldskool preloaders.
+     * @method MusicAddict2.injectPreloaders
+     * @returns void
+     */
+    injectPreloaders() {
+        this.conf.preloadMedia.forEach(v => {
+            let ele = document.createElement(v.tag)
+            for (const k in v.attrs) {
+                ele.setAttribute(k, v.attrs[k])
+                ele.classList.add('preloader')
+                document.body.append(ele)
+            }
+        })
+    },
+
+    /**
+     * Inject a script from the lib, yo.
+     * @method MusicAddict2.injectScript
+     * @param {string} scriptName  Filename in dist/web/lib/ without extension.
+     * @returns void
+     */
+    injectScript(scriptName) {
+        let ele = document.createElement('script')
+        ele.src = `./lib/${scriptName}.js?v=${Date.now()}`
+        document.body.append(ele)
+    },
+
+    /**
+     * Be lucky or not.
+     * @method MusicAddict2.lucky
+     * @param {luckyChance} chance  Chance to be lucky.
+     * @returns {boolean}  Whether the roll was a lucky one.
+     */
+    lucky(chance) {
+        chance = (chance >= 0.0 && chance <= 1.0) ? chance : 0.0
+        return Math.random() < chance
+    },
+
+    /**
+     * Initialize app.
+     * @method MusicAddict2.main
+     * @returns void
      */
     main() {
         // Collect marked ui elements.
@@ -216,118 +555,87 @@ const MusicAddict2 = {
     },
 
     /**
-     * Start or continue playing. Primarily used by ctrlRegisterHandleClick() and ctrlContinueHandler().
+     * Making HTML tables sortable with a click on column headings.
+     * @method MusicAddict2.makeTablesSortable
+     * @author mozilla.org <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#table_sorting>
+     * @returns void
      */
-    start() {
-        // Load additional data.
-        this.injectScript('data')
-
-        // Let the browser preload the action GIFs.
-        this.injectPreloaders()
-
-        // Remember when the current session has started.
-        this.ram.startedSessionOn = Date.now()
-
-        // Don't auto-save right after starting.
-        this.ram.lastSavedOn = Date.now()
-
-        // Don't auto-exit right after starting.
-        this.ram.lastCtrlProgressClickOn = Date.now()
-
-        // Update ui elements.
-        this.uiSetDisplay('story', 'hide')
-        this.uiSetDisplay('auth', 'hide')
-        this.uiSetDisplay('playerName', 'show')
-        this.uiSetVal('playerName', this.playerNameString())
-        this.uiSetDisplay('gameCtrl', 'show')
-        this.uiSetDisplay('gameStats', 'show')
-        this.uiSetDisplay('gameOutput', 'show')
-
-        // If this is the first session, remember it and tell the user to remember the token.
-        if (!this.sd.firstPlayedOn) {
-            this.sd.firstPlayedOn = Date.now()
-            this.uiSetVal('actionLog', `
-                <span class="sys">
-                    Welcome ${this.sd.playerName}!<br>
-                    <br>
-                    This is your secret token:<br>
-                    <br>
-                    ${this.sd.token}<br>
-                    <br>
-                    Store it somewhere safe and don't share it.
-                    You will need this to continue the game when you come back.
-                </span>`
-            )
+    makeTablesSortable() {
+        for (let table of document.querySelectorAll('table')) {
+            for (let th of table.tHead.rows[0].cells) {
+                th.onclick = function () {
+                    const tBody = table.tBodies[0]
+                    const rows = tBody.rows
+                    for (let tr of rows) {
+                        Array.prototype.slice.call(rows)
+                        .sort(function (tr1, tr2) {
+                            const cellIndex = th.cellIndex
+                            return tr1.cells[cellIndex].textContent.localeCompare(tr2.cells[cellIndex].textContent)
+                        })
+                        .forEach(function (tr) {
+                            this.appendChild(this.removeChild(tr))
+                        }, tBody)
+                    }
+                }
+            }
         }
-        else {
-            this.uiSetVal('actionLog', `<span class="sys">Welcome back ${this.sd.playerName}!</span>`)
-        }
-
-        // Start background update.
-        this.backgroundUpdate(true)
     },
 
     /**
-     * Save progress.
-     * @param {boolean} [exit=false]  If true, trigger exit() after saving.
+     * Get a nicely formatted money string.
+     * @method MusicAddict2.moneyString
+     * @param {number} moneyAmount  Input money amount.
+     * @param {boolean} [addWarning=false]  Whether to add CSS warning class also to positive amounts.
+     * @returns {string}  Formatted money amount.
      */
-    save(exit=false) {
-        // No token no save.
-        if (!this.sd.token) {
+    moneyString(moneyAmount, addWarning=false) {
+        let warningClass = (moneyAmount <= 0 || addWarning) ? ` warning` : ``
+        return `<span class="money${warningClass}">${moneyAmount}</span>`
+    },
+
+    /**
+     * Pad number<10 and number>=0 with a 0 (zero).
+     * @method MusicAddict2.padNum
+     * @param {number} num  Input to be padded.
+     * @returns {string}  Padded or original.
+     */
+    padNum(num) {
+        return (num < 10 && num >= 0) ? `0${num}` : `${num}`
+    },
+
+    /**
+     * Handle playerName clicks.
+     * @method MusicAddict2.playerNameHandleClick
+     * @returns void
+     */
+    playerNameHandleClick(/* e */) {
+        let playerName = prompt('Change player name.\n20 characters maximum.\nAllowed: A-Z a-z 0-9 _ -\n\n', this.sd.playerName)
+
+        if (!playerName) {
             return
         }
 
-        // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
-        this.ram.lastSavedOn = Date.now()
-
-        // Sanitize and remember player name input.
-        let playerName = this.ui.inputPlayerName.value.trim().substring(0, 20)
+        playerName = playerName.trim().substring(0, 20)
         playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
         if (playerName) {
             this.sd.playerName = playerName
+            this.uiSetVal('playerName', this.playerNameString())
         }
-
-        // Save progress data to the database.
-        this.apiRequest({
-            action: 'save',
-            saveData: JSON.stringify(this.sd),
-        },
-        (response) => {
-            if (!response.saved) {
-                return
-            }
-
-            // Remember Token in localStorage for easy continuing next time.
-            if (window.localStorage) {
-                window.localStorage.setItem('musicaddict2', btoa(this.sd.token))
-            }
-
-            if (exit) {
-                this.exit()
-            }
-        })
     },
 
     /**
-     * Stop the world from turning and reload life.
+     * Get a nicely formatted player name.
+     * @method MusicAddict2.playerNameString
+     * @returns {string}  Formatted player name.
      */
-    exit() {
-        // Stop the background update worker
-        this.backgroundUpdateStop()
-
-        // Update ui elements
-        this.uiSetState('ctrlProgress', 'disabled')
-        this.uiSetState('ctrlExit', 'disabled')
-        this.uiSetVal('actionLog', `<span class="sys">Bye ${this.sd.playerName}, see you soon!</span>`)
-
-        // Wait a bit before exiting.
-        setTimeout(() => {
-            location.reload()
-        }, this.conf.exitDelay)
+    playerNameString() {
+        return `<span class="playerName a">&lt;${this.sd.playerName}&gt;</span>`
     },
 
     /**
-     * Progress in the game.
+     * Run progress action.
+     * @method MusicAddict2.progress
+     * @returns void
      */
     progress() {
         // Fall back to digg by default.
@@ -596,73 +904,149 @@ const MusicAddict2 = {
     },
 
     /**
-     * By upgrades.
-     * @idea Buy upgrades with cash...
-     * @param {string} upgradeName
+     * Get a random item from an array.
+     * @method MusicAddict2.randomArrayItem
+     * @param {array} arr  Input to chose the items from.
+     * @returns {any}  Nobody knows.
      */
-    buyUpgrade(upgradeName) {
-        // Stop if max level already reached.
-        if (this.sd.upgrades[upgradeName] >= this.conf.upgrades[upgradeName].maxLevel) {
-            alert(`${upgradeName} level already maxed out (${this.conf.upgrades[upgradeName].maxLevel}).`)
-            return
-        }
-
-        // Calculate price based on new level.
-        let newLevel = this.sd.upgrades[upgradeName] + 1
-        let newPrice = Math.round(this.conf.upgrades[upgradeName].initialPrice ** (newLevel ** 0.420))
-
-        // Stop if not enough cash.
-        if (this.sd.cash < newPrice) {
-            alert(`Not enough cash to upgrade ${upgradeName} to level ${newLevel} for ${newPrice}◈ (need ${newPrice - this.sd.cash}◈ more).`)
-            return
-        }
-
-        // Confirm action just in case it was clicked unintentionally.
-        if (!confirm(`Upgrade ${upgradeName} to level ${newLevel} for ${newPrice}◈?`)) {
-            return
-        }
-
-        // Pay for the upgrade.
-        this.sd.cash -= newPrice
-
-        // Increase level.
-        this.sd.upgrades[upgradeName] += 1
-
-        this.uiSetVal('actionLog', `Upgraded ${upgradeName} to level ${newLevel} for ${this.moneyString(newPrice, true)}.`)
+    randomArrayItem(arr) {
+        return arr[Math.floor(Math.random() * arr.length)]
     },
 
-    updateBehaviour(behaviourName) {
-        let newGrade = parseFloat(prompt(`Enter your new ${behaviourName} grade.`, String(this.sd[behaviourName])))
-        if (newGrade === NaN) {
-            return
-        }
-        if (!newGrade || newGrade < 0.1 || newGrade > 1.0) {
-            alert(`Invalid ${behaviourName} grade number.`)
-            return
-        }
-        if (this.sd[behaviourName] != newGrade) {
-            this.sd[behaviourName] = newGrade
-            this.uiSetVal('actionLog', `Updated ${behaviourName} to ${this.sd[behaviourName]}.`)
+    /**
+     * Get a random numeric array key.
+     * @method MusicAddict2.randomArrayKey
+     * @param {array} arr  Input to chose the keys from.
+     * @returns {any}  Nobody knows.
+     */
+    randomArrayKey(arr) {
+        return Math.floor(Math.random() * arr.length)
+    },
+
+    /**
+     * Get a random buy price.
+     * @method MusicAddict2.randomBuyPrice
+     * @returns {number}  Random buy price.
+     */
+    randomBuyPrice() {
+        for (const k in this.conf.buyPriceRanges) {
+            let roll = Math.random()
+            if (this.sd.cash >= this.conf.buyPriceRanges[k].minCash && roll <= this.conf.buyPriceRanges[k].rollMax) {
+                return this.randomInteger(this.conf.buyPriceRanges[k].range[0], this.conf.buyPriceRanges[k].range[1])
+            }
         }
     },
 
     /**
-     * Update record collection list.
+     * Get a random integer.
+     * @method MusicAddict2.randomInteger
+     * @param {number} min  Smallest number to include in the range.
+     * @param {number} max  Largest number to include in the range.
+     * @returns {number}  Random integer.
      */
-    updateRecordCollection() {
-        this.ui.recordCollectionList.innerHTML = ``
-        this.sd.records.forEach((v) => {
-            this.uiSetVal('recordCollectionList', v)
-        })
+    randomInteger(min, max) {
+        min = Math.ceil(min)
+        max = Math.floor(max)
+        return Math.floor(Math.random() * (max - min + 1) + min)
     },
 
-
-
-
-    /* ==================================== EVENT HANDLERS ===================================== */
+    /**
+     * Get a randomly generated record.
+     * @method MusicAddict2.randomRecord
+     * @returns {randomRecord}  Random record.
+     */
+    randomRecord() {
+        return {
+            title: this.randomString('recordTitle'),
+            artist: this.randomString('artistName'),
+            format: this.randomRecordFormat(),
+            buyPrice: this.randomBuyPrice(),
+            sellPrice: null, // will be decided in action offer, not when buying.
+        }
+    },
 
     /**
-     * Register event handlers.
+     * Get a random record format.
+     * @method MusicAddict2.randomRecordFormat
+     * @returns {string}  Random record format.
+     */
+    randomRecordFormat() {
+        return this.randomArrayItem(this.rd.recordFormats)
+    },
+
+    /**
+     * Get a random sell price based on buy price.
+     * @method MusicAddict2.randomSellPrice
+     * @param {number} buyPrice  Buy price.
+     * @returns {number}  Random sell price.
+     */
+    randomSellPrice(buyPrice) {
+        return buyPrice + this.randomInteger(1, Math.max(2, buyPrice * this.conf.sellPriceRangeMultiplikator))
+    },
+
+    /**
+     * Get a random string built from single words.
+     * @method MusicAddict2.randomString
+     * @param {string} stringType  What type of string to return.
+     * @returns {string}  Random string.
+     */
+    randomString(stringType) {
+        let wordCount = 1
+        let randomString = []
+
+        switch (stringType) {
+            case 'artistName':
+                wordCount = this.randomInteger(1, 3)
+                break
+
+            case 'recordTitle':
+                wordCount = this.randomInteger(1, 4)
+                break
+
+            default:
+                console.error('Unknown stringType:', stringType)
+                return
+        }
+
+        while (randomString.length < wordCount) {
+            let word = this.randomArrayItem(this.rd[`${stringType}Words`])
+            if (randomString.indexOf(word) == -1) {
+                randomString.push(word)
+            }
+        }
+
+        return randomString.join(' ')
+    },
+
+    /**
+     * Handle recordCollectionClose clicks.
+     * @method MusicAddict2.recordCollectionCloseHandleClick
+     * @returns void
+     */
+    recordCollectionCloseHandleClick(/* e */) {
+        this.uiSetDisplay('actionLog', 'toggle')
+        this.uiSetDisplay('recordCollection', 'toggle')
+    },
+
+    /**
+     * Get a nicely formatted record string.
+     * @method MusicAddict2.recordString
+     * @param {object} record  Input record.
+     * @returns {string}  Formatted record.
+     */
+    recordString(record) {
+        return `
+        <span class="record">
+            <span class="title">${record.title}</span>
+            by <span class="artist">${record.artist}</span>
+            <span class="format">[${record.format}]</span>
+        </span>`
+    },
+
+    /**
+     * Register configured event handlers.
+     * @method MusicAddict2.registerEventHandlers
+     * @returns void
      */
     registerEventHandlers() {
         this.conf.eventHandler.forEach((v) => {
@@ -681,163 +1065,52 @@ const MusicAddict2 = {
     },
 
     /**
-     * Handle ctrlRegister clicks.
+     * Save game progress.
+     * @method MusicAddict2.save
+     * @param {boolean} [exit=false]  Whether to exit after saving.
+     * @returns void
      */
-    ctrlRegisterHandleClick(/* e */) {
-        // Stop if we already have a token.
-        if (this.sd.token) {
-            return
-        }
-
-        // Disable register button for a short while.
-        this.uiSetState('ctrlRegister', 'disabled')
-        setTimeout(() => {
-            this.uiSetState('ctrlRegister', 'enabled')
-        }, 30_000)
-
-        // Request new token from api
-        this.apiRequest({
-            action: 'register',
-        },
-        (response) => {
-            if (!response.token) {
-                alert(`Error while requesting new token.\n\n${response._errors.join('\n')}`)
-                return
-            }
-
-            // Store new token the db returned.
-            this.sd.token = response.token
-
-            // Reset localStorage token.
-            if (window.localStorage) {
-                window.localStorage.removeItem('musicaddict2')
-            }
-
-            // Set player name from input or leave it to the default.
-            let playerName = this.ui.inputPlayerName.value.trim().substring(0, 20)
-            playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
-            if (playerName) {
-                this.sd.playerName = playerName
-            }
-
-            // Start the game.
-            this.start()
-        })
-    },
-
-    /**
-     * Handle ctrlContinue clicks.
-     */
-    ctrlContinueHandleClick(/* e */) {
-        // Stop if we already have a token.
-        if (this.sd.token) {
-            return
-        }
-
-        // Stop if the token input is empty.
-        let inputToken = this.ui.inputToken.value.trim()
-        if (!inputToken) {
-            alert(`Please enter your secret token to continue.`)
-            return
-        }
-
-        // Disable continue button for a short while.
-        this.uiSetState('ctrlContinue', 'disabled')
-        setTimeout(() => {
-            this.uiSetState('ctrlContinue', 'enabled')
-        }, 30_000)
-
-        // Request save data from api.
-        this.apiRequest({
-            action: 'continue',
-            token: inputToken,
-        },
-        (response) => {
-            if (!response.saveData) {
-                alert(`Error while fetching save data.\n\n${response._errors.join('\n')}`)
-                return
-            }
-
-            // Store token the db returned not what the user has entered.
-            this.sd = response.saveData
-
-            // Start the game.
-            this.start()
-        })
-    },
-
-    /**
-     * Handle ctrlProgress clicks.
-     */
-    ctrlProgressHandleClick(/* e */) {
-        // Stop if we don't have a token.
+    save(exit=false) {
+        // No token no save.
         if (!this.sd.token) {
             return
         }
 
-        // Show again actionLog if recordCollection opened.
-        this.uiSetDisplay('actionLog', 'show')
-        this.uiSetDisplay('recordCollection', 'hide')
+        // Always reset lastSavedOn even if the api request failed or we get into an endless try/fail loop.
+        this.ram.lastSavedOn = Date.now()
 
-        // Disable progress button for a short while.
-        this.uiSetState('ctrlProgress', 'disabled')
-        setTimeout(() => {
-            if (!this.ram.bulkSaleID) {
-                this.uiSetState('ctrlProgress', 'enabled')
-            }
-        }, this.currentClickspeed())
-
-        // Remember when this method was last run for later use.
-        this.ram.lastCtrlProgressClickOn = Date.now()
-
-        // Trigger a progress action.
-        this.progress()
-    },
-
-    /**
-     * Handle ctrlExit clicks.
-     */
-    ctrlExitHandleClick(/* e */) {
-        // Disable exit button for a short while.
-        this.uiSetState('ctrlExit', 'disabled')
-        setTimeout(() => {
-            this.uiSetState('ctrlExit', 'enabled')
-        }, 30_000)
-
-        if (confirm('Exit the game?')) {
-            // Save and exit.
-            this.save(true)
-        }
-    },
-
-    /**
-     * Handle playerName clicks.
-     * @todo Make this cost cash.
-     */
-    playerNameHandleClick(/* e */) {
-        let playerName = prompt('Change player name.\n20 characters maximum.\nAllowed: A-Z a-z 0-9 _ -\n\n', this.sd.playerName)
-
-        if (!playerName) {
-            return
-        }
-
-        playerName = playerName.trim().substring(0, 20)
+        // Sanitize and remember player name input.
+        let playerName = this.ui.inputPlayerName.value.trim().substring(0, 20)
         playerName = playerName.replace(/[^A-Za-z0-9_-]/g, '')
         if (playerName) {
             this.sd.playerName = playerName
-            this.uiSetVal('playerName', this.playerNameString())
         }
-    },
 
-    /**
-     * Handle upgradeClickspeedLevel clicks.
-     */
-    upgradeClickspeedLevelHandleClick(/* e */) {
-        this.buyUpgrade('clickspeed')
+        // Save progress data to the database.
+        this.apiRequest({
+            action: 'save',
+            saveData: JSON.stringify(this.sd),
+        },
+        (response) => {
+            if (!response.saved) {
+                return
+            }
+
+            // Remember Token in localStorage for easy continuing next time.
+            if (window.localStorage) {
+                window.localStorage.setItem('musicaddict2', btoa(this.sd.token))
+            }
+
+            if (exit) {
+                this.exit()
+            }
+        })
     },
 
     /**
      * Handle sdRecordsCount clicks.
+     * @method MusicAddict2.sdRecordsCountHandleClick
+     * @returns void
      */
     sdRecordsCountHandleClick(/* e */) {
         this.updateRecordCollection()
@@ -846,134 +1119,123 @@ const MusicAddict2 = {
     },
 
     /**
-     * Handle recordCollectionClose clicks.
+     * Convert seconds to a human readable duration format.
+     * @method MusicAddict2.secToDHMS
+     * @param {number} sec  Input to be converted.
+     * @param {boolean} [milli=true]  Whether to treat sec as milliseconds.
+     * @returns {string}  Converted duration.
      */
-    recordCollectionCloseHandleClick(/* e */) {
-        this.uiSetDisplay('actionLog', 'toggle')
-        this.uiSetDisplay('recordCollection', 'toggle')
-    },
-
-
-
-
-    /* ================================== BACKGROUND UPDATE ==================================== */
-
-    /**
-     * Update stuff in the background.
-     * @param {boolean} [startWorker=false]  If true, start worker interval.
-     */
-    backgroundUpdate(startWorker=false) {
-        // Start worker loop if startWorker=true and there is no background worker already running.
-        if (startWorker && !this.ram.backgroundUpdateIntervalID) {
-            this.ram.backgroundUpdateIntervalID = setInterval(() => {
-                this.backgroundUpdate()
-            }, this.conf.backgroundUpdateInterval)
+    secToDHMS(sec, milli=true) {
+        if (milli) {
+            sec = sec / 1000
         }
 
-        // Auto-save from time to time.
-        if (this.timesUp(this.ram.lastSavedOn, this.conf.autoSaveInterval)) {
-            this.save()
-        }
+        sec = Math.max(0, sec)
 
-        // Auto-exit if idling for too long.
-        if (this.timesUp(this.ram.lastCtrlProgressClickOn, this.conf.maxIdleDuration)) {
-            this.uiSetVal('actionLog', `Idle detection kicked in.`)
-            this.save(true)
-        }
+        let d = Math.floor(sec / (3600 * 24))
+        let h = Math.floor(sec % (3600 * 24) / 3600)
+        let m = Math.floor(sec % 3600 / 60)
+        let s = Math.floor(sec % 60)
 
-        // Update UI elements.
-        this.uiSetVal('sdCash', `${this.moneyString(this.sd.cash)}`)
-        this.uiSetVal('sdRecordsCount', this.sd.records.length)
-        this.uiSetVal('sdTradeProfit', `${this.moneyString(this.sd.tradeProfit)}`)
-        this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
-        this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}`)
-        this.uiSetVal('sdUpgradesClickspeed', `${this.currentClickspeed()/1000}s`)
+        if (d > 0) return `${d}d${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
+        if (h > 0) return `${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
+        if (m > 0) return `${this.padNum(m)}m${this.padNum(s)}s`
+        return `${this.padNum(s)}s`
     },
 
     /**
-     * Stop updating stuff in the background.
+     * Start game.
+     * @method MusicAddict2.start
+     * @returns void
      */
-    backgroundUpdateStop() {
-        // Clear the update worker.
-        clearInterval(this.ram.backgroundUpdateIntervalID)
+    start() {
+        // Load additional data.
+        this.injectScript('data')
 
-        // Reset the worker's interval ID.
-        this.ram.backgroundUpdateIntervalID = null
-    },
+        // Let the browser preload the action GIFs.
+        this.injectPreloaders()
 
+        // Remember when the current session has started.
+        this.ram.startedSessionOn = Date.now()
 
+        // Don't auto-save right after starting.
+        this.ram.lastSavedOn = Date.now()
 
+        // Don't auto-exit right after starting.
+        this.ram.lastCtrlProgressClickOn = Date.now()
 
-    /* ========================================= UI ============================================ */
+        // Update ui elements.
+        this.uiSetDisplay('story', 'hide')
+        this.uiSetDisplay('auth', 'hide')
+        this.uiSetDisplay('playerName', 'show')
+        this.uiSetVal('playerName', this.playerNameString())
+        this.uiSetDisplay('gameCtrl', 'show')
+        this.uiSetDisplay('gameStats', 'show')
+        this.uiSetDisplay('gameOutput', 'show')
 
-    /**
-     * Set UI element values.
-     * @todo rename to uiSetValue
-     * @param {string} uikey  Key of the element stored inside ui. By default innerHTML will be set to val. For the following some extra transformation will be applied: actionLog, inputPlayerName, inputToken, actionGif.
-     * @param {string|object} [val='']  Value to update the element with.
-     */
-    uiSetVal(uikey, val='') {
-        // Stop if no uikey.
-        if (!uikey || !this.ui[uikey]) {
-            console.warn('Missing or unknown uikey:', uikey)
-            return
+        // If this is the first session, remember it and tell the user to remember the token.
+        if (!this.sd.firstPlayedOn) {
+            this.sd.firstPlayedOn = Date.now()
+            this.uiSetVal('actionLog', `
+                <span class="sys">
+                    Welcome ${this.sd.playerName}!<br>
+                    <br>
+                    This is your secret token:<br>
+                    <br>
+                    ${this.sd.token}<br>
+                    <br>
+                    Store it somewhere safe and don't share it.
+                    You will need this to continue the game when you come back.
+                </span>`
+            )
+        }
+        else {
+            this.uiSetVal('actionLog', `<span class="sys">Welcome back ${this.sd.playerName}!</span>`)
         }
 
-        switch (uikey) {
-            case 'actionLog':
-                // Prepend a <p> element.
-                let p = document.createElement('p')
-                p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.ram.startedSessionOn)} &middot;</span> ${val}`
-                this.ui[uikey].prepend(p)
-                // Remove excess lines.
-                while (this.ui[uikey].children.length > this.conf.actionLogMax) {
-                    this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
-                }
-                break
-
-            case 'recordCollectionList':
-                let tr = document.createElement('tr')
-                let td1 = document.createElement('td')
-                let td2 = document.createElement('td')
-                let td3 = document.createElement('td')
-                let td4 = document.createElement('td')
-
-                tr.classList.add('record')
-                td1.innerHTML = `<span class="title">${val.title}</span>`
-                td2.innerHTML = `<span class="artist">${val.artist}</span>`
-                td3.innerHTML = `<span class="format">${val.format}</span>`
-                td4.innerHTML = this.moneyString(val.buyPrice)
-
-                tr.append(td1)
-                tr.append(td2)
-                tr.append(td3)
-                tr.append(td4)
-
-                this.ui.recordCollectionList.append(tr)
-                break
-
-            case 'inputPlayerName':
-            case 'inputToken':
-                // Set <input> values.
-                this.ui[uikey].value = val
-                break
-
-            case 'actionGif':
-                // Set CSS property background-image.
-                this.ui[uikey].style.backgroundImage = `url('res/actiongif/${val}.gif')`
-                break
-
-            default:
-                this.ui[uikey].innerHTML = val
-        }
+        // Start background update.
+        this.backgroundUpdate(true)
     },
 
     /**
-     * Set UI element display.
-     * @param {string} uikey  Key of the element stored inside ui.
-     * @param {string} vis  Can be either hide, show, toggle, or any value accepted by CSS's display property.
+     * Check if time's up based on past time and an interval.
+     * @method MusicAddict2.timesUp
+     * @param {unixMilli} pastTime  Past time.
+     * @param {secMilli} interval  Duration that can pass before time's up.
+     * @returns {boolean}  Whether the time's up.
      */
-    uiSetDisplay(uikey, vis) {
+    timesUp(pastTime, interval) {
+        return Date.now() - pastTime > interval
+    },
+
+    /**
+     * Collect marked ui elements and store them in {@link MusicAddict2.ui}.
+     * @method MusicAddict2.uiCollectElements
+     * @returns void
+     * @example
+     * // mark an element for collection:
+     * <span data-uikey="foo">hello world</span> <!-- before collection -->
+     * @example
+     * // CSS classes for .<uikey> and .ui will be injected automatically when the elements are collected.
+     * <span class="ui foo" data-uikey="foo">hello world</span> <!-- after collection -->
+     */
+    uiCollectElements() {
+        document.querySelectorAll('[data-uikey]').forEach(ele => {
+            // @ts-ignore  Property 'dataset' does not exist on type 'Element'.ts(2339)
+            this.ui[ele.dataset.uikey] = ele
+            // @ts-ignore  Property 'dataset' does not exist on type 'Element'.ts(2339)
+            ele.classList.add('ui', ele.dataset.uikey)
+        })
+    },
+
+    /**
+     * Set display of ui element.
+     * @method MusicAddict2.uiSetDisplay
+     * @param {string} uikey  Key of element in {@link MusicAddict2.ui}.
+     * @param {string} [vis='toggle']  Display value.
+     * @returns void
+     */
+    uiSetDisplay(uikey, vis='toggle') {
         // Stop if no uikey.
         if (!uikey || !this.ui[uikey]) {
             console.warn('Missing or unknown uikey:', uikey)
@@ -1014,9 +1276,11 @@ const MusicAddict2 = {
     },
 
     /**
-     * Set UI element state.
-     * @param {string} uikey  Key of the element stored inside ui.
-     * @param {string} [state='toggle']  Can be either set to enabled, disabled or toggle.
+     * Set state of ui element.
+     * @method MusicAddict2.uiSetState
+     * @param {string} uikey  Key of element in {@link MusicAddict2.ui}.
+     * @param {string} [state='toggle']  State value.
+     * @returns void
      */
     uiSetState(uikey, state='toggle') {
         // Stop if no uikey.
@@ -1053,325 +1317,93 @@ const MusicAddict2 = {
     },
 
     /**
-     * Collect marked ui elements.
-     * @example
-     * // Mark element for collection with the key "foo".
-     * <span data-uikey="foo">hello world</span>
-     * @example
-     * // The CSS classes .ui and .foo will be added automagically.
-     * <span class="ui foo" data-uikey="foo">hello world</span>
+     * Set value of ui element.
+     * @todo Rename to uiSetValue.
+     * @method MusicAddict2.uiSetVal
+     * @param {string} uikey  Key of element in {@link MusicAddict2.ui}.
+     * @param {string} [val='']  Value to set the element to.
+     * @returns void
      */
-    uiCollectElements() {
-        document.querySelectorAll('[data-uikey]').forEach(ele => {
-            // @ts-ignore
-            this.ui[ele.dataset.uikey] = ele
-            // @ts-ignore
-            ele.classList.add('ui', ele.dataset.uikey)
-        })
-    },
-
-
-
-
-    /* ========================================= API =========================================== */
-
-    /**
-     * Make an API request.
-     * @param {object} query  The query to send to the API.
-     * @param {function} [onSuccess=null]  A function to run on success. That function will get the response data passed over.
-     */
-    apiRequest(query, onSuccess=null) {
-        // Prepare query data.
-        const queryData = new FormData()
-        for (const k in query) {
-            queryData.append(k, query[k])
+    uiSetVal(uikey, val='') {
+        // Stop if no uikey.
+        if (!uikey || !this.ui[uikey]) {
+            console.warn('Missing or unknown uikey:', uikey)
+            return
         }
 
-        // Send request to api.
-        fetch(this.conf.apiPath, {
-            method: 'POST',
-            body: queryData,
-        })
-        // Process the response.
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not OK')
-            }
-            return response.json()
-        })
-        // Pass the response to the onSuccess handler function.
-        .then(responseData => {
-            if (typeof(onSuccess) == 'function') {
-                onSuccess(responseData)
-            }
-        })
-        // Sad times.
-        .catch(error => {
-            console.error('apiRequest Error:', error)
-            alert(`apiRequest Error.\n\n${error}`)
-        })
-    },
-
-
-
-
-    /* ====================================== RANDOMNESS ======================================= */
-
-    /**
-     * Be lucky, or not.
-     * @param {luckyChance} chance  The chance to be lucky.
-     * @returns {boolean}  True if lucky.
-     */
-    lucky(chance) {
-        chance = (chance >= 0.0 && chance <= 1.0) ? chance : 0.0
-        return Math.random() < chance
-    },
-
-    /**
-     * A complete random record.
-     * @returns {object}  A complete random record with the attributes: title, artist, format, buyPrice, sellPrice.
-     */
-    randomRecord() {
-        return {
-            title: this.randomString('recordTitle'),
-            artist: this.randomString('artistName'),
-            format: this.randomRecordFormat(),
-            buyPrice: this.randomBuyPrice(),
-            sellPrice: null, // will be decided in action offer, not when buying.
-        }
-    },
-
-    /**
-     * A random string for names and titles.
-     * @param {string} stringType  Can be artistName or recordTitle.
-     * @returns {string}  Random string with variable word count.
-     */
-    randomString(stringType) {
-        let wordCount = 1
-        let randomString = []
-
-        switch (stringType) {
-            case 'artistName':
-                wordCount = this.randomInteger(1, 3)
+        switch (uikey) {
+            case 'actionLog':
+                // Prepend a <p> element.
+                let p = document.createElement('p')
+                p.innerHTML = `<span class="sys">${this.secToDHMS(Date.now() - this.ram.startedSessionOn)} &middot;</span> ${val}`
+                this.ui[uikey].prepend(p)
+                // Remove excess lines.
+                while (this.ui[uikey].children.length > this.conf.actionLogMax) {
+                    this.ui[uikey].removeChild(this.ui[uikey].lastElementChild)
+                }
                 break
 
-            case 'recordTitle':
-                wordCount = this.randomInteger(1, 4)
+            case 'recordCollectionList':
+                let tr = document.createElement('tr')
+                let td1 = document.createElement('td')
+                let td2 = document.createElement('td')
+                let td3 = document.createElement('td')
+                let td4 = document.createElement('td')
+
+                tr.classList.add('record')
+                // @ts-ignore
+                td1.innerHTML = `<span class="title">${val.title}</span>`
+                // @ts-ignore
+                td2.innerHTML = `<span class="artist">${val.artist}</span>`
+                // @ts-ignore
+                td3.innerHTML = `<span class="format">${val.format}</span>`
+                // @ts-ignore
+                td4.innerHTML = this.moneyString(val.buyPrice)
+
+                tr.append(td1)
+                tr.append(td2)
+                tr.append(td3)
+                tr.append(td4)
+
+                this.ui.recordCollectionList.append(tr)
+                break
+
+            case 'inputPlayerName':
+            case 'inputToken':
+                // Set <input> values.
+                this.ui[uikey].value = val
+                break
+
+            case 'actionGif':
+                // Set CSS property background-image.
+                this.ui[uikey].style.backgroundImage = `url('res/actiongif/${val}.gif')`
                 break
 
             default:
-                console.error('Unknown stringType:', stringType)
-                return
-        }
-
-        while (randomString.length < wordCount) {
-            let word = this.randomArrayItem(this.rd[`${stringType}Words`])
-            if (randomString.indexOf(word) == -1) {
-                randomString.push(word)
-            }
-        }
-
-        return randomString.join(' ')
-    },
-
-    /**
-     * A random record format.
-     * @returns {string}  A random record format.
-     */
-    randomRecordFormat() {
-        return this.randomArrayItem(this.rd.recordFormat)
-    },
-
-    /**
-     * A random record buy price.
-     * @returns {number}  A random buy price.
-     */
-    randomBuyPrice() {
-        for (const k in this.conf.buyPriceRanges) {
-            let roll = Math.random()
-            if (this.sd.cash > this.conf.buyPriceRanges[k].minCash && roll < this.conf.buyPriceRanges[k].rollMax) {
-                return this.randomInteger(this.conf.buyPriceRanges[k].range[0], this.conf.buyPriceRanges[k].range[1])
-            }
+                this.ui[uikey].innerHTML = val
         }
     },
 
     /**
-     * A random sellPrice based on buyPrice.
-     * @param {number} buyPrice  The record's buy price to use as base for the highly scientific calculation.
-     * @returns {number}  A random sellPrice.
+     * Update record collection listing.
+     * @method MusicAddict2.updateRecordCollection
+     * @returns void
      */
-    randomSellPrice(buyPrice) {
-        return buyPrice + this.randomInteger(1, Math.max(2, buyPrice * this.conf.sellPriceRangeMultiplikator))
-    },
-
-    /**
-     * Get a random item from an array.
-     * @param {array} array  Input array with items to choose from.
-     * @returns {any}  Nobody knows.
-     */
-    randomArrayItem(array) {
-        return array[Math.floor(Math.random() * array.length)]
-    },
-
-    /**
-     * Get a numeric random array key.
-     * @param {array} array  Input array to choose they keys from.
-     * @returns {number}  Random key.
-     */
-    randomArrayKey(array) {
-        return Math.floor(Math.random() * array.length)
-    },
-
-    /**
-     * Get a random integer between and minNum and maxNum (inclusive).
-     * @param {number} minNum  Smallest number to include in the range.
-     * @param {number} maxNum  Largest number to include in the range.
-     * @return {number} - Random integer between and inclusive minNum and maxNum.
-     */
-    randomInteger(minNum, maxNum) {
-        minNum = Math.ceil(minNum)
-        maxNum = Math.floor(maxNum)
-        return Math.floor(Math.random() * (maxNum - minNum + 1) + minNum)
-    },
-
-
-
-
-    /* ====================================== DATE/TIME ======================================== */
-
-    /**
-     * Check if time's up.
-     * @param {unixMilli} pastTime  Past time to use as a base for the check.
-     * @param {secMilli} interval  Interval duration to use for the check.
-     * @returns {boolean}  True if Date.now() - pastTime > interval.
-     */
-    timesUp(pastTime, interval) {
-        return Date.now() - pastTime > interval
-    },
-
-    /**
-     * Convert seconds to a human readable duration string.
-     * @param {number} sec  Seconds to convert.
-     * @param {boolean} [milli=true]  If true, indicates that milliseconds are used as input.
-     * @returns {string}  A string in the format NdNNhNNmNNs.
-     */
-    secToDHMS(sec, milli=true) {
-        if (milli) {
-            sec = sec / 1000
-        }
-
-        sec = Math.max(0, sec)
-
-        let d = Math.floor(sec / (3600 * 24))
-        let h = Math.floor(sec % (3600 * 24) / 3600)
-        let m = Math.floor(sec % 3600 / 60)
-        let s = Math.floor(sec % 60)
-
-        if (d > 0) return `${d}d${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
-        if (h > 0) return `${this.padNum(h)}h${this.padNum(m)}m${this.padNum(s)}s`
-        if (m > 0) return `${this.padNum(m)}m${this.padNum(s)}s`
-        return `${this.padNum(s)}s`
-    },
-
-    /**
-     * Get the calculated click speed.
-     * @returns {secMilli}  Calculated click speed.
-     */
-    currentClickspeed() {
-        return Math.round(this.conf.clickspeed - (this.sd.upgrades.clickspeed * 100))
-    },
-
-
-    /* ============================== TEXT/NUMBER TRASNFORM ==================================== */
-
-    /**
-     * Pad numbers < 10 with a 0.
-     * @param {number} num  The number to be padded.
-     * @returns {string}  A padded or the original number.
-     */
-    padNum(num) {
-        return (num < 10 && num >= 0) ? `0${num}` : `${num}`
-    },
-
-    /**
-     * Nice formatted record string.
-     * @param {object} record  A record object.
-     * @returns {string}  Formatted HTML.
-     */
-    recordString(record) {
-        return `
-        <span class="record">
-            <span class="title">${record.title}</span>
-            by <span class="artist">${record.artist}</span>
-            <span class="format">[${record.format}]</span>
-        </span>`
-    },
-
-    /**
-     * Nice formatted money string.
-     * @param {number} moneyAmount  Amount of money.
-     * @param {boolean} addWarning  If true, add CSS .warning class also to numbers > 0.
-     * @returns {string}  Formatted HTML.
-     */
-    moneyString(moneyAmount, addWarning=false) {
-        let warningClass = (moneyAmount <= 0 || addWarning) ? ` warning` : ``
-        return `<span class="money${warningClass}">${moneyAmount}</span>`
-    },
-
-    /**
-     * Nice formatted player name string.
-     * @returns {string}  Formatted HTML.
-     */
-    playerNameString() {
-        return `<span class="playerName a">&lt;${this.sd.playerName}&gt;</span>`
-    },
-
-
-    /* ====================================== MISC ==================================== */
-
-    /**
-     * Append a <script> element to document.body.
-     * @param {string} scriptName  Script filename without extension. Must reside in dist/web/lib/.
-     */
-    injectScript(scriptName) {
-        let ele = document.createElement('script')
-        ele.src = `./lib/${scriptName}.js?v=${Date.now()}`
-        document.body.append(ele)
-    },
-
-    /**
-     * Append old-skool preloaders to the document.body.
-     */
-    injectPreloaders() {
-        this.conf.preloadMedia.forEach(v => {
-            let ele = document.createElement(v.tag)
-            for (const k in v.attrs) {
-                ele.setAttribute(k, v.attrs[k])
-                ele.classList.add('preloader')
-                document.body.append(ele)
-            }
+    updateRecordCollection() {
+        this.ui.recordCollectionList.innerHTML = ``
+        this.sd.records.forEach((v) => {
+            this.uiSetVal('recordCollectionList', v)
         })
     },
 
-    makeTablesSortable() {
-        for (let table of document.querySelectorAll('table')) {
-            for (let th of table.tHead.rows[0].cells) {
-                th.onclick = function () {
-                    const tBody = table.tBodies[0]
-                    const rows = tBody.rows
-                    for (let tr of rows) {
-                        Array.prototype.slice.call(rows)
-                        .sort(function (tr1, tr2) {
-                            const cellIndex = th.cellIndex
-                            return tr1.cells[cellIndex].textContent.localeCompare(tr2.cells[cellIndex].textContent)
-                        })
-                        .forEach(function (tr) {
-                            this.appendChild(this.removeChild(tr))
-                        }, tBody)
-                    }
-                }
-            }
-        }
-    }
+    /**
+     * Handle upgradeClickspeedLevel clicks.
+     * @method MusicAddict2.upgradeClickspeedLevelHandleClick
+     * @returns void
+     */
+    upgradeClickspeedLevelHandleClick(/* e */) {
+        this.buyUpgrade('clickspeed')
+    },
+
 
 } // /MusicAddict2
