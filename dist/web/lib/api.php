@@ -15,7 +15,6 @@ class MusicAddictAPI {
 
     /**
      * Init class, on success parse request, and output.
-     *
      * @param string $querySrc  From where to read the query. Can be post, get or both.
      * @return void
      */
@@ -72,7 +71,6 @@ class MusicAddictAPI {
 
     /**
      * Parse and process query.
-     *
      * @return void
      */
     protected function parseQuery() {
@@ -263,7 +261,6 @@ class MusicAddictAPI {
 
     /**
      * Output response as JSON and exit.
-     *
      * @return void
      */
     protected function output() {

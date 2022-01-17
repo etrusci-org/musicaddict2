@@ -6,8 +6,6 @@ In no particular order.
 
 ## TO-DO
 
-- Code doc lib/api.php.
-  - Started, but not done yet.
 - Better variable/method names.
 
 ---

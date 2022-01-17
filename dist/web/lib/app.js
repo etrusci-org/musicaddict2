@@ -113,7 +113,7 @@ const MusicAddict2 = {
         sellPriceRangeMultiplikator: 0.5,
         upgrades: {
             clickspeed: {
-                initialPrice: 100,
+                initialPrice: 10,
                 maxLevel: 10,
             },
         },
