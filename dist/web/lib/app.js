@@ -131,6 +131,7 @@ const MusicAddict2 = {
      * @prop {string} MusicAddict2.ram.nextProgressAction=null  What the next progress action will be.
      * @prop {array} MusicAddict2.ram.nextProgressActionChoices=null  What the next progress actions could be.
      * @prop {randomRecord} MusicAddict2.ram.randomRecord=null  Latest randomly generated record.
+     * @prop {integer} MusicAddict2.ram.sessionProgressClicks=null  Progress clicks count in current session.
      * @prop {unixMilli} MusicAddict2.ram.startedListeningOn=null  When the player started to listen to a record.
      * @prop {unixMilli} MusicAddict2.ram.startedSessionOn=null  When the player entered the game.
      */
@@ -144,6 +145,7 @@ const MusicAddict2 = {
         nextProgressAction: null,
         nextProgressActionChoices: null,
         randomRecord: null,
+        sessionProgressClicks: null,
         startedListeningOn: null,
         startedSessionOn: null,
     },
@@ -165,6 +167,7 @@ const MusicAddict2 = {
      * @prop {string} MusicAddict2.sd.playerName='Anonymous'  Player name.
      * @prop {array} MusicAddict2.sd.records=[]]  Record collection.
      * @prop {string} MusicAddict2.sd.token=null  Unique secret token.
+     * @prop {integer} MusicAddict2.sd.totalProgressClicks=null  Progress clicks count total since first game start.
      * @prop {integer} MusicAddict2.sd.tradeProfit=0  Total trade profit amount.
      * @prop {object} MusicAddict2.sd.upgrades={...}  Bought Upgrades.
      */
@@ -174,6 +177,7 @@ const MusicAddict2 = {
         playerName: 'Anonymous',
         records: [],
         token: null,
+        totalProgressClicks: 0,
         tradeProfit: 0,
         upgrades: {
             clickspeed: 0,
@@ -257,6 +261,8 @@ const MusicAddict2 = {
         this.uiSetVal('sdFirstPlayedOn', `${this.secToDHMS(Date.now() - this.sd.firstPlayedOn)} ago`)
         this.uiSetVal('upgradeClickspeedLevel', `Level ${this.sd.upgrades.clickspeed}`)
         this.uiSetVal('sdUpgradesClickspeed', `${this.currentClickspeed()/1000}s`)
+        this.uiSetVal('sdSessionProgressClicks', `${this.ram.sessionProgressClicks | 0}`)
+        this.uiSetVal('sdTotalProgressClicks', `${this.sd.totalProgressClicks}`)
     },
 
     /**
@@ -395,6 +401,10 @@ const MusicAddict2 = {
 
         // Remember when this method was last run for later use.
         this.ram.lastCtrlProgressClickOn = Date.now()
+
+        // Count session progress clicks.
+        this.ram.sessionProgressClicks += 1
+        this.sd.totalProgressClicks += 1
 
         // Trigger a progress action.
         this.progress()

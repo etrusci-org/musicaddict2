@@ -109,13 +109,14 @@ class MusicAddictAPI {
 
                 // Define valid database table columns.
                 $validCols = array(
-                    'token'         => SQLITE3_TEXT,
-                    'firstPlayedOn' => SQLITE3_INTEGER,
-                    'playerName'    => SQLITE3_TEXT,
-                    'cash'          => SQLITE3_INTEGER,
-                    'tradeProfit'   => SQLITE3_INTEGER,
-                    'records'       => SQLITE3_TEXT,
-                    'upgrades'      => SQLITE3_TEXT,
+                    'cash'                => SQLITE3_INTEGER,
+                    'firstPlayedOn'       => SQLITE3_INTEGER,
+                    'playerName'          => SQLITE3_TEXT,
+                    'records'             => SQLITE3_TEXT,
+                    'token'               => SQLITE3_TEXT,
+                    'totalProgressClicks' => SQLITE3_INTEGER,
+                    'tradeProfit'         => SQLITE3_INTEGER,
+                    'upgrades'            => SQLITE3_TEXT,
                 );
 
                 // Query database for data.
@@ -171,12 +172,13 @@ class MusicAddictAPI {
 
                 // Define valid database table columns.
                 $validCols = array(
-                    'token'         => SQLITE3_TEXT,
+                    'cash'          => SQLITE3_INTEGER,
                     'firstPlayedOn' => SQLITE3_INTEGER,
                     'playerName'    => SQLITE3_TEXT,
-                    'cash'          => SQLITE3_INTEGER,
-                    'tradeProfit'   => SQLITE3_INTEGER,
                     'records'       => SQLITE3_TEXT,
+                    'token'         => SQLITE3_TEXT,
+                    'totalProgressClicks' => SQLITE3_INTEGER,
+                    'tradeProfit'   => SQLITE3_INTEGER,
                     'upgrades'      => SQLITE3_TEXT,
                 );
                 // unset($saveData['playerName']); // simulate error
