@@ -1,10 +1,14 @@
 # CREDITS
 
+Special thanks to the folks providing the stuff listed here.
+
 ---
 
-## FONT SOURCES
+## DATA SOURCES
 
-- Share Tech: <https://fonts.google.com/specimen/Share+Tech>
+- MusicAddict2.rd.artistNameWords: <http://data.discogs.com/?prefix=data/2021>
+- MusicAddict2.rd.recordFormats: <http://discogs.com>
+- MusicAddict2.rd.recordTitleWords: <http://data.discogs.com/?prefix=data/2008>
 
 ---
 
@@ -22,5 +26,11 @@
 - sell: <https://giphy.com/gifs/YDxyPAyIRKS5i>
 - skipBuy: <https://giphy.com/gifs/oxTYQeTb6F286IbY4r>
 - skipSell: <https://giphy.com/gifs/15aGGXfSlat2dP6ohs>
+
+---
+
+## FONT SOURCES
+
+- Share Tech: <https://fonts.google.com/specimen/Share+Tech>
 
 ---
