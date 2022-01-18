@@ -55,11 +55,7 @@ Your progress will be auto-saved every now and then, or when you click the **EXI
 
 ---
 
-## Feedback + Bug-Reports
-
-Feel free to contact arT2 (<https://etrusci.org>) if something in the game doesn't work and you can not solve it yourself.
-
----
+<!--
 
 ## Hosting The Game
 
@@ -100,9 +96,7 @@ Create data/ dir on your web-server **outside of the public webroot**.
 
 Use dev/bin/sqlite3.exe and dev/sql/db-schema.sql to create the database file db.sqlite3 and upload it to the previously created data/ dir.
 
-
-
-
+-->
 
 <!--
 ### Upload contents of dist/web/ to /musicaddict2 on your web-server
@@ -148,31 +142,8 @@ Adjust the paths for the CSS and script files.
 <script src="path/to/dist/web/lib/main.js"></script>
 ``` -->
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!--
 *If you want to know more what happens before you begin, read the spoilers section below.*
-
----
 
 ## Spoilers
 
@@ -184,5 +155,4 @@ With more cash comes the ability/chance to buy higher priced records, and thus m
 
 After a while you'll have enough cash to upgrade your **click speed**. Do it. More clicks mean more chances for good luck/profit.
 
----
 -->

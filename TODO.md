@@ -6,10 +6,8 @@ In no particular order.
 
 ## TO-DO
 
-- Better variable/method names.
+- Finish README.
 
 ---
 
 ## IDEAS
-
-- Log recent trades in ram for a listing.

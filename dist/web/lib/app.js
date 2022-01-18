@@ -41,6 +41,31 @@ const MusicAddict2 = {
      */
 
     /**
+     * App name.
+     * @prop {string} APP_NAME
+     */
+    APP_NAME: 'Music Addict 2',
+
+    /**
+     * App version.
+     * @prop {string} APP_VERSION
+     */
+    APP_VERSION: '2.0.0-dev',
+
+    /**
+     * App author.
+     * @prop {string} APP_AUTHOR
+     * @see https://etrusci.org
+     */
+    APP_AUTHOR: 'arT2 <etrusci.org>',
+
+    /**
+     * App GitHub link.
+     * @prop {string} APP_GITHUB
+     */
+    APP_GITHUB: 'https://github.com/etrusci-org/musicaddict2',
+
+    /**
      * App/game configuration.
      * @prop {object} MusicAddict2.conf
      * @prop {integer} MusicAddict2.conf.actionLogMax=500  Maximum number of lines to keep in the actionLog.
@@ -55,7 +80,7 @@ const MusicAddict2 = {
      * @prop {array} MusicAddict2.conf.eventHandler=[...]]  Event handler configuration.
      * @prop {secMilli} MusicAddict2.conf.exitDelay=5_000  Delay before reloading the page after the player has clicked the exit button.
      * @prop {object} MusicAddict2.conf.listenDuration={...}  Listen duration range.
-     * @prop {secMilli} MusicAddict2.conf.maxIdleDuration=600_000  Maximum time without a click on the progress button that can pass before kicking auto-exiting.
+     * @prop {secMilli} MusicAddict2.conf.maxIdleDuration=3600_000  Maximum time without a click on the progress button that can pass before kicking auto-exiting.
      * @prop {luckyChance} MusicAddict2.conf.offerChance=0.125
      * @prop {array} MusicAddict2.conf.preloadMedia=[...]]  Media to preload the oldskool way.
      * @prop {integer} MusicAddict2.conf.recordsMax=500  Maximum number of records the player can keep in their collection before a bulk sale gets triggered.
@@ -93,20 +118,20 @@ const MusicAddict2 = {
         ],
         exitDelay: 5_000,
         listenDuration: { min: 10_000, max: 30_000 },
-        maxIdleDuration: 600_000,
+        maxIdleDuration: 3600_000,
         offerChance: 0.125,
         preloadMedia: [
-            { tag: 'img', attrs: { src: './res/actiongif/broke.gif' } },
-            { tag: 'img', attrs: { src: './res/actiongif/bulkSale.gif' } },
-            { tag: 'img', attrs: { src: './res/actiongif/bulkSaleStart.gif' } },
-            { tag: 'img', attrs: { src: './res/actiongif/buy.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/digg.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/discover.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/listen.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/buy.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/skipBuy.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/offer.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/sell.gif' } },
-            { tag: 'img', attrs: { src: './res/actiongif/skipBuy.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/skipSell.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/broke.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/bulkSale.gif' } },
+            { tag: 'img', attrs: { src: './res/actiongif/bulkSaleStart.gif' } },
         ],
         recordsMax: 500,
         sellChance: 0.5,
@@ -531,6 +556,9 @@ const MusicAddict2 = {
      * @returns void
      */
     main() {
+        console.time('main()')
+        console.log(`%c${this.APP_NAME}  ·  v${this.APP_VERSION}\n${this.APP_GITHUB}`, `color: #4FC6AB; background: #212529; padding: 5px; font-size: 24px; font-family: 'Share Tech', sans-serif;`)
+
         // Collect marked ui elements.
         this.uiCollectElements()
 
@@ -562,6 +590,8 @@ const MusicAddict2 = {
 
         // Finally un-hide the app.
         this.uiSetDisplay('app', 'block')
+
+        console.timeEnd('main()')
     },
 
     /**
@@ -1159,6 +1189,8 @@ const MusicAddict2 = {
      * @returns void
      */
     start() {
+        console.time('start()')
+
         // Load additional data.
         this.injectScript('data')
 
@@ -1176,6 +1208,7 @@ const MusicAddict2 = {
 
         // Update ui elements.
         this.uiSetDisplay('story', 'hide')
+        this.uiSetDisplay('links', 'hide')
         this.uiSetDisplay('auth', 'hide')
         this.uiSetDisplay('playerName', 'show')
         this.uiSetVal('playerName', this.playerNameString())
@@ -1205,6 +1238,8 @@ const MusicAddict2 = {
 
         // Start background update.
         this.backgroundUpdate(true)
+
+        console.timeEnd('start()')
     },
 
     /**
