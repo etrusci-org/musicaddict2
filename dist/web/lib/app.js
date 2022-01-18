@@ -50,7 +50,7 @@ const MusicAddict2 = {
      * App version.
      * @prop {string} APP_VERSION
      */
-    APP_VERSION: '2.0.0-dev',
+    APP_VERSION: '2.0.0-beta1',
 
     /**
      * App author.
@@ -58,6 +58,12 @@ const MusicAddict2 = {
      * @see https://etrusci.org
      */
     APP_AUTHOR: 'arT2 <etrusci.org>',
+
+    /**
+     * App license.
+     * @prop {string} APP_LICENSE
+     */
+    APP_LICENSE: 'Public Domain Worldwide',
 
     /**
      * App GitHub link.
@@ -588,6 +594,7 @@ const MusicAddict2 = {
         this.uiSetDisplay('recordCollection', 'hide') // unhide in start()
 
         // Update some UI elements.
+        this.uiSetVal('APP_VERSION', this.APP_VERSION)
         this.uiSetVal('inputPlayerName', '')
         this.uiSetVal('actionGif', 'idle')
 
