@@ -399,6 +399,9 @@ const MusicAddict2 = {
             // Save and exit.
             this.save(true)
         }
+        else {
+            this.uiSetState('ctrlExit', 'enabled')
+        }
     },
 
     /**
