@@ -1,16 +1,10 @@
-# Music Addict 2
+# Music Addict 2 - Readme
 
-A clicker game for audionauts that can be played in your web-browser.
+Music Addict 2 is a clicker game for Audionauts that can be played in a web-browser.
 
-**CURRENTLY SOME THINGS ARE STILL WORK IN PROGRESS.**
+It was primarily written to learn more [JavaScript](https://developer.mozilla.org/docs/Web/JavaScript) things.
 
-![Contemplative Jazz Music](dist/web/res/actiongif/idle.gif)
-
----
-
-## Development Motivation
-
-It's a JavaScript learning project.
+<!-- ![Contemplative Jazz Music](https://media.giphy.com/media/NiT29gUcZ3IS4/giphy.gif) -->
 
 ---
 
@@ -24,6 +18,7 @@ You're broke and lonely. After many sleepless nights in your nearly empty 1-room
 
 - Internet connection. 3G or higher speeds recommended.
 - Web-browser [supporting ES6](https://caniuse.com/es6).
+- Free disk space for caching files. 25MB should be enough.
 
 ---
 
@@ -55,104 +50,19 @@ Your progress will be auto-saved every now and then, or when you click the **EXI
 
 ---
 
-<!--
+## Your Progress Data
 
-## Hosting The Game
+As long as you have your secret token and the server doesn't explode, you will be able to load your previous progress.
 
-This guide is just raw/WIP.
+There are some cases where it can get lost:
 
-For this guide it's assumed that the following directory structure is created on the web-server:
+- If you don't login for at least 12 months.
+- If an update is introducing major data structure or logic changes.
 
-    public/
-      musicaddict2/
-        lib/
-          api.php
-          app.js
-          main.js
-          shared.php
-        res/
-          actiongif/
-          css/
-          font/
-        api.php
-        index.html
-    protected/
-      musicaddict2-data/
-        db.sqlite3
+---
 
-### Download The Code
+[CREDITS](https://github.com/etrusci-org/musicaddict2/blob/main/CREDITS.md)
+[LICENSE](https://github.com/etrusci-org/musicaddict2/blob/main/LICENSE.md)
+[INSTALL](https://github.com/etrusci-org/musicaddict2/blob/main/INSTALL.md)
 
-From GitHub.
-
-### Create Root Directory
-
-Create musicaddict2/ dir on your web-server inside of the public webroot.
-
-### Create Data Directory
-
-Create data/ dir on your web-server **outside of the public webroot**.
-
-### Create Database File
-
-Use dev/bin/sqlite3.exe and dev/sql/db-schema.sql to create the database file db.sqlite3 and upload it to the previously created data/ dir.
-
--->
-
-<!--
-### Upload contents of dist/web/ to /musicaddict2 on your web-server
-
-### Give webserver+php r+w perm for data/ dir
-
-### Give webserver+php r+w perm for the data/db.sqlite3 file
-
-### Configuration
-
-#### Edit dist/web/api.php
-
-Change **$querySrc** to **'post'** if you don't plan to develop the API further. It's just nifty to being able to send test data also tru GET while developing.
-
-```php
-$API = new MusicAddictAPI(
-    $querySrc='post',
-    $databaseFile='/path/to/data/db.sqlite3'
-);
-```
-
-Change **$databaseFile** to an absolute path that points to the data/ dir you've created earlier.
-
-#### Edit dist/web/lib/app.js
-
-Only required if you move index.html or dist/web/lib dir to another location.
-
-Adjust the apiPath configuration value. Make it relative from dist/web/index.html.
-
-```javascript
-const MusicAddict2 = {
-    conf: {
-        apiPath: './api.php',
-    }
-}
-```
-
-Adjust the paths for the CSS and script files.
-
-```html
-<link rel="stylesheet" href="path/to/dist/web/res/css/app.min.css">
-<script src="path/to/dist/web/lib/app.js"></script>
-<script src="path/to/dist/web/lib/main.js"></script>
-``` -->
-
-<!--
-*If you want to know more what happens before you begin, read the spoilers section below.*
-
-## Spoilers
-
-You start with 7◈ cash. Since you're addicted to music, you'll never stop digging for more records. Sometimes you discover a very interesting one, and buy it, just to go right back to digging.
-
-After a while someone may offer you cash for a record in your collection, and you sell it for profit.
-
-With more cash comes the ability/chance to buy higher priced records, and thus make better profits when selling.
-
-After a while you'll have enough cash to upgrade your **click speed**. Do it. More clicks mean more chances for good luck/profit.
-
--->
+---

@@ -597,7 +597,7 @@ const MusicAddict2 = {
     /**
      * Making HTML tables sortable with a click on column headings.
      * @method MusicAddict2.makeTablesSortable
-     * @author mozilla.org <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#table_sorting>
+     * @author mozilla.org <https://developer.mozilla.org/docs/Web/HTML/Element/table#table_sorting>
      * @returns void
      */
     makeTablesSortable() {
