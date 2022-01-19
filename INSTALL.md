@@ -33,7 +33,7 @@ See the dev/bin directory for some Windows scripts for those tools:
 
 ---
 
-## Setting Things Up
+## Setup
 
 For this guide it's assumed that the following directory structure is created on the webserver.
 
@@ -61,35 +61,60 @@ example.org:
         └───db.sqlite3
 ```
 
-**1. Download The Code:**
-From GitHub: <https://github.com/etrusci-org/musicaddict2>
+### 1. Download The Code
 
-**2. Create App Root Directory:**
-Create `public/musicaddict2/`.
+<https://github.com/etrusci-org/musicaddict2>
 
-**3. Create App Data Directory:**
-Create `protected/musicaddict2-data/`.
+### 2. Create App Root Directory
 
-**4. Create App Database File:**
-Use dev/bin/sqlite3.exe and dev/sql/db-schema.sql to create the database file and upload it to `protected/musicaddict2-data/db.sqlite3`.
+```text
+public/musicaddict2/
+```
 
-**5. Upload App Root Files:**
-Upload contents of dist/web/ to the previously created app root directory.
-`dist/web/lib/ -> public/musicaddict2/lib/`
-`dist/web/res/ -> public/musicaddict2/res/`
-`dist/web/api.php -> public/musicaddict2/api.php`
-`dist/web/index.html -> public/musicaddict2/index.html`
+### 3. Create App Data Directory
 
-**6. Setting Permissions:**
+```text
+protected/musicaddict2-data/
+```
+
+### 4. Create App Database File
+
+Use **dev/bin/sqlite3.exe** and **dev/sql/db-schema.sql** to create the database file and upload it to the app data directory.
+
+```text
+sqlite3.exe db.sqlite3 ".read db-schema.sql"
+protected/musicaddict2-data/db.sqlite3
+```
+
+### 5. Upload App Root Files
+
+Upload contents of **dist/web/** to the previously created app root directory.
+
+```text
+dist/web/lib/ -> public/musicaddict2/lib/
+dist/web/res/ -> public/musicaddict2/res/
+dist/web/api.php -> public/musicaddict2/api.php
+dist/web/index.html -> public/musicaddict2/index.html
+```
+
+### 6. Setting Permissions
+
 Set the permissions for both `protected/musicaddict2-data/` and `protected/musicaddict2-data/db.sqlite3` so that the webserver and PHP can read and write (sqlite3 must be able to create temporary files inside the app data directory).
+
+```text
+protected/musicaddict2-data/ -> rw
+protected/musicaddict2-data/db.sqlite3 -> rw
+```
 
 ---
 
-## One More Thing
+## Configuration
 
-In `public/musicaddict2/api.php`, change `$querySrc` to `'post'`.
+### File: public/musicaddict2/api.php
 
-Also change `$databaseFile` to `protected/musicaddict2-data/db.sqlite3`.
+Change `$querySrc` to `'post'`.
+
+Change `$databaseFile` to `protected/musicaddict2-data/db.sqlite3`.
 
 ```php
 $API = new MusicAddictAPI(
@@ -100,7 +125,7 @@ $API = new MusicAddictAPI(
 
 ---
 
-## The Moment Of Truth
+## Test It
 
 At this point everything should work. Go to <https://example.org/musicaddict2> and try it out. Open the dev console in your browser to check for errors if you're unsure.
 

@@ -4,7 +4,7 @@ Music Addict 2 is a clicker game for Audionauts that can be played in a web-brow
 
 It was primarily written to learn more [JavaScript](https://developer.mozilla.org/docs/Web/JavaScript) things.
 
-<!-- ![Contemplative Jazz Music](https://media.giphy.com/media/NiT29gUcZ3IS4/giphy.gif) -->
+![Contemplative Jazz Music](https://media.giphy.com/media/NiT29gUcZ3IS4/giphy.gif)
 
 ---
 
