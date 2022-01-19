@@ -6,6 +6,7 @@ In no particular order.
 
 ## TO-DO
 
+- Balance game conf.
 - Finish README.
 
 ---

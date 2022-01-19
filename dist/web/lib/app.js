@@ -395,6 +395,10 @@ const MusicAddict2 = {
      * @returns void
      */
     ctrlExitHandleClick(/* e */) {
+        // Show again actionLog if recordCollection opened.
+        this.uiSetDisplay('actionLog', 'show')
+        this.uiSetDisplay('recordCollection', 'hide')
+
         // Disable exit button for a short while.
         this.uiSetState('ctrlExit', 'disabled')
         setTimeout(() => {
