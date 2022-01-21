@@ -6,8 +6,9 @@ In no particular order.
 
 ## TO-DO
 
-- Balance game conf.
+- Balance game.
 - Finish README.
+- Finish INSTALL.
 
 ---
 

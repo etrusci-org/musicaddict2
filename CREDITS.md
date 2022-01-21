@@ -7,7 +7,7 @@ Special thanks to the folks providing the stuff listed here.
 ## Random Data
 
 - Artist Name Words: <http://data.discogs.com/?prefix=data/2021>
-- Record Formats: <http://discogs.com>
+- Record Formats: <https://www.discogs.com/search/?type=all>
 - Record Title Words: <http://data.discogs.com/?prefix=data/2008>
 
 ---
@@ -32,6 +32,16 @@ Special thanks to the folks providing the stuff listed here.
 ## Main Font
 
 - Share Tech: <https://fonts.google.com/specimen/Share+Tech>
+
+---
+
+## Dev Tools
+
+- CSSO: <https://github.com/css/csso>
+- JSDoc: <https://jsdoc.app>
+- PHPDoc: <https://phpdoc.org>
+- SASS: <https://sass-lang.com>
+- SQLite: <https://sqlite.org>
 
 ---
 

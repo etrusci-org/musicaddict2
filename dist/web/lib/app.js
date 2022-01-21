@@ -111,7 +111,8 @@ const MusicAddict2 = {
             tier1: { rollMax: 1.0000, minCash: 0, range: [1, 7] },
         },
         clickspeed: 1_500,
-        discoverChance: 0.20,
+        // discoverChance: 0.20,
+        discoverChance: 0.40,
         eventHandler: [
             { uikey: 'ctrlRegister', type: 'click', handler: 'ctrlRegisterHandleClick' },
             { uikey: 'ctrlContinue', type: 'click', handler: 'ctrlContinueHandleClick' },
@@ -125,7 +126,8 @@ const MusicAddict2 = {
         exitDelay: 5_000,
         listenDuration: { min: 10_000, max: 30_000 },
         maxIdleDuration: 3600_000,
-        offerChance: 0.125,
+        // offerChance: 0.125,
+        offerChance: 0.25,
         preloadMedia: [
             { tag: 'img', attrs: { src: './res/actiongif/digg.gif' } },
             { tag: 'img', attrs: { src: './res/actiongif/discover.gif' } },
@@ -578,9 +580,6 @@ const MusicAddict2 = {
         // Register event handlers.
         this.registerEventHandlers()
 
-        // Make tables sortable
-        this.makeTablesSortable()
-
         // Check if we have a token in localStorage and enter it into inputToken for the lazy.
         if (window.localStorage) {
             let localStorageToken = window.localStorage.getItem('musicaddict2')
@@ -598,7 +597,7 @@ const MusicAddict2 = {
         this.uiSetDisplay('recordCollection', 'hide') // unhide in start()
 
         // Update some UI elements.
-        this.uiSetVal('APP_VERSION', this.APP_VERSION)
+        this.uiSetVal('APP_VERSION', `v${this.APP_VERSION}`)
         this.uiSetVal('inputPlayerName', '')
         this.uiSetVal('actionGif', 'idle')
 
@@ -606,33 +605,6 @@ const MusicAddict2 = {
         this.uiSetDisplay('app', 'block')
 
         console.timeEnd('main()')
-    },
-
-    /**
-     * Making HTML tables sortable with a click on column headings.
-     * @method MusicAddict2.makeTablesSortable
-     * @author mozilla.org <https://developer.mozilla.org/docs/Web/HTML/Element/table#table_sorting>
-     * @returns void
-     */
-    makeTablesSortable() {
-        for (let table of document.querySelectorAll('table')) {
-            for (let th of table.tHead.rows[0].cells) {
-                th.onclick = function () {
-                    const tBody = table.tBodies[0]
-                    const rows = tBody.rows
-                    for (let tr of rows) {
-                        Array.prototype.slice.call(rows)
-                        .sort(function (tr1, tr2) {
-                            const cellIndex = th.cellIndex
-                            return tr1.cells[cellIndex].textContent.localeCompare(tr2.cells[cellIndex].textContent)
-                        })
-                        .forEach(function (tr) {
-                            this.appendChild(this.removeChild(tr))
-                        }, tBody)
-                    }
-                }
-            }
-        }
     },
 
     /**
