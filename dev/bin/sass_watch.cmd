@@ -1,7 +1,7 @@
 @ECHO OFF
 
-SET input=./dev/scss/app.scss
-SET output=./dist/web/res/css/app.css
+SET input="./dev/scss/app.scss"
+SET output="./dist/web/res/css/app.css"
 
 :: Usage:
 ::

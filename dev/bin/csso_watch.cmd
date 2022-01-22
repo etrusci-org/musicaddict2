@@ -1,7 +1,7 @@
 @ECHO OFF
 
-SET inputFile=./dist/web/res/css/app.css
-SET outputFile=./dist/web/res/css/app.min.css
+SET inputFile="./dist/web/res/css/app.css"
+SET outputFile="./dist/web/res/css/app.min.css"
 
 :: Usage:
 ::

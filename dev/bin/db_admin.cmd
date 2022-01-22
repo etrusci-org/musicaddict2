@@ -1,7 +1,7 @@
 @ECHO OFF
 
-SET sqlite3Bin=dev\bin\sqlite3.exe
-SET dbPath=dist/data/db.sqlite3
+SET sqlite3Bin="dev/bin/sqlite3.exe"
+SET dbPath="dist/data/db.sqlite3"
 
 :: Usage:
 ::

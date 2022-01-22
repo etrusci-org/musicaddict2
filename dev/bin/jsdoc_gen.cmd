@@ -1,6 +1,6 @@
 @ECHO OFF
 
-SET jsdocConfigFile=./jsdoc.json
+SET jsdocConfigFile="./jsdoc.json"
 
 :: Usage:
 ::
