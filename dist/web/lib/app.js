@@ -82,12 +82,12 @@ const MusicAddict2 = {
      * @prop {luckyChance} MusicAddict2.conf.buyChance=0.5  Chance to buy a record after having listened to it.
      * @prop {object} MusicAddict2.conf.buyPriceRanges={...}  Buy price ranges.
      * @prop {secMilli} MusicAddict2.conf.clickspeed=1_500  Base clickspeed from which the final clickspeed is calculated.
-     * @prop {luckyChance} MusicAddict2.conf.discoverChance=0.20  Chance to discover an interesting record.
+     * @prop {luckyChance} MusicAddict2.conf.discoverChance=0.40  Chance to discover an interesting record.
      * @prop {array} MusicAddict2.conf.eventHandler=[...]]  Event handler configuration.
      * @prop {secMilli} MusicAddict2.conf.exitDelay=5_000  Delay before reloading the page after the player has clicked the exit button.
      * @prop {object} MusicAddict2.conf.listenDuration={...}  Listen duration range.
      * @prop {secMilli} MusicAddict2.conf.maxIdleDuration=3600_000  Maximum time without a click on the progress button that can pass before kicking auto-exiting.
-     * @prop {luckyChance} MusicAddict2.conf.offerChance=0.125
+     * @prop {luckyChance} MusicAddict2.conf.offerChance=0.25
      * @prop {array} MusicAddict2.conf.preloadMedia=[...]]  Media to preload the oldskool way.
      * @prop {integer} MusicAddict2.conf.recordsMax=500  Maximum number of records the player can keep in their collection before a bulk sale gets triggered.
      * @prop {luckyChance} MusicAddict2.conf.sellChance=0.5  Chance to sell a record on when getting an offer.
@@ -107,11 +107,10 @@ const MusicAddict2 = {
             tier5: { rollMax: 0.0050, minCash: 200, range: [201, 500] },
             tier4: { rollMax: 0.0500, minCash: 50, range: [51, 200] },
             tier3: { rollMax: 0.0700, minCash: 20, range: [21, 50] },
-            tier2: { rollMax: 0.7000, minCash: 7, range: [8, 20] },
+            tier2: { rollMax: 0.4000, minCash: 7, range: [8, 20] },
             tier1: { rollMax: 1.0000, minCash: 0, range: [1, 7] },
         },
         clickspeed: 1_500,
-        // discoverChance: 0.20,
         discoverChance: 0.40,
         eventHandler: [
             { uikey: 'ctrlRegister', type: 'click', handler: 'ctrlRegisterHandleClick' },
@@ -126,7 +125,6 @@ const MusicAddict2 = {
         exitDelay: 5_000,
         listenDuration: { min: 10_000, max: 30_000 },
         maxIdleDuration: 3600_000,
-        // offerChance: 0.125,
         offerChance: 0.25,
         preloadMedia: [
             { tag: 'img', attrs: { src: './res/actiongif/digg.gif' } },
