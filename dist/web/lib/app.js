@@ -6,6 +6,7 @@
  * @file Core of the app. Must be included/loaded first.
  * @example
  * <script src="./lib/app.js"></script>
+ * <script src="./lib/version.js"></script>
  * <script src="./lib/main.js"></script>
  */
 
@@ -39,37 +40,6 @@ const MusicAddict2 = {
      * Integer representing an unixtime stamp in milliseconds.
      * @typedef {number} unixMilli
      */
-
-    /**
-     * App name.
-     * @prop {string} APP_NAME
-     */
-    APP_NAME: 'Music Addict 2',
-
-    /**
-     * App version.
-     * @prop {string} APP_VERSION
-     */
-    APP_VERSION: '2.0.0-beta1',
-
-    /**
-     * App author.
-     * @prop {string} APP_AUTHOR
-     * @see https://etrusci.org
-     */
-    APP_AUTHOR: 'arT2 <etrusci.org>',
-
-    /**
-     * App license.
-     * @prop {string} APP_LICENSE
-     */
-    APP_LICENSE: 'Public Domain Worldwide',
-
-    /**
-     * App GitHub link.
-     * @prop {string} APP_GITHUB
-     */
-    APP_GITHUB: 'https://github.com/etrusci-org/musicaddict2',
 
     /**
      * App/game configuration.
