@@ -16,7 +16,7 @@ To just host the game:
 To further develop the game some nifty tools are recommended:
 
 - [SQLite3](https://sqlite.org) for managing the database.
-- [SASS](https://sass-lang.com) for  writing and building CSS.
+- [SASS](https://sass-lang.com) for writing and building CSS.
 - [CSSO](https://github.com/css/csso) for optimizing CSS.
 - [JSDoc](https://jsdoc.app) for generating JavaScript docs.
 - [PHPDoc](https://phpdoc.org) for generating PHP docs.
@@ -82,7 +82,8 @@ protected/musicaddict2-data/
 Use **dev/bin/sqlite3.exe** and **dev/sql/db-schema.sql** to create the database file and upload it to the app data directory.
 
 ```text
-sqlite3.exe db.sqlite3 ".read db-schema.sql"
+dev/bin/sqlite3.exe db.sqlite3 ".read dev/sql/db-schema.sql"
+
 protected/musicaddict2-data/db.sqlite3
 ```
 
@@ -131,8 +132,8 @@ At this point everything should work. Go to <https://example.org/musicaddict2> a
 
 ---
 
-[README](https://github.com/etrusci-org/musicaddict2/blob/main/README.md)
-[CREDITS](https://github.com/etrusci-org/musicaddict2/blob/main/CREDITS.md)
-[LICENSE](https://github.com/etrusci-org/musicaddict2/blob/main/LICENSE.md)
+- [README](https://github.com/etrusci-org/musicaddict2/blob/main/README.md)
+- [CREDITS](https://github.com/etrusci-org/musicaddict2/blob/main/CREDITS.md)
+- [LICENSE](https://github.com/etrusci-org/musicaddict2/blob/main/LICENSE.md)
 
 ---

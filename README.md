@@ -2,8 +2,6 @@
 
 Music Addict 2 is a clicker game for Audionauts that can be played in a web-browser.
 
-It was primarily written to learn more [JavaScript](https://developer.mozilla.org/docs/Web/JavaScript) things.
-
 ![Contemplative Jazz Music](https://media.giphy.com/media/NiT29gUcZ3IS4/giphy.gif)
 
 ---
@@ -28,7 +26,7 @@ To begin, open your web-browser an go to: <https://etrusci.org/play/musicaddict2
 
 ### First Time Players
 
-This will give you a new **Secret Token** and put you into the game. **Store it somewhere safe. It can not be recovered.** Although the app will remember it by storing it in the local storage of your web-browser (if available), and will enter it for you when you return (so you can just click the **CONTINUE** button), this is bound to the current device your on and may get lost if you clear all your browser data. Better you store it somewhere safe.
+This will give you a new **Secret Token** and put you into the game. Store it somewhere safe. It can not be recovered.
 
 1. Enter a **Player Name** (can be changed later) or leave it empty to play as *Anonymous*.
 2. Click the **REGISTER** button.
@@ -39,6 +37,10 @@ This will load your previous progress and put you into the game.
 
 1. Enter your **Secret Token**.
 2. Click the **Continue** button.
+
+### Keep Your Secret Token Safe
+
+Although the app will remember your **Secret Token** by storing it in the local storage of your web-browser (if available), and will enter it for you when you return (so you can just click the **CONTINUE** button), it's bound to the current device your on and may get lost if you clear all your browser data.
 
 ---
 
@@ -61,8 +63,8 @@ There are some cases where it can get lost:
 
 ---
 
-[CREDITS](https://github.com/etrusci-org/musicaddict2/blob/main/CREDITS.md)
-[LICENSE](https://github.com/etrusci-org/musicaddict2/blob/main/LICENSE.md)
-[INSTALL](https://github.com/etrusci-org/musicaddict2/blob/main/INSTALL.md)
+- [CREDITS](https://github.com/etrusci-org/musicaddict2/blob/main/CREDITS.md)
+- [LICENSE](https://github.com/etrusci-org/musicaddict2/blob/main/LICENSE.md)
+- [INSTALL](https://github.com/etrusci-org/musicaddict2/blob/main/INSTALL.md)
 
 ---
