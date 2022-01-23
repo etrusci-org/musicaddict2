@@ -85,7 +85,6 @@ table {
 table th {
   position: sticky;
   top: 0;
-  cursor: pointer;
 }
 table th,
 table td {

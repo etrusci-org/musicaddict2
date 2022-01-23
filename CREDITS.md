@@ -10,8 +10,6 @@ Special thanks to the folks providing the stuff listed here.
 - Record Formats: <https://www.discogs.com/search/?type=all> ([License](http://creativecommons.org/about/cc0))
 - Record Title Words: <http://data.discogs.com/?prefix=data/2008> ([License](http://creativecommons.org/about/cc0))
 
-License Discogs data:
-
 ---
 
 ## Progress Action GIFs
