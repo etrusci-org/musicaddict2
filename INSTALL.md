@@ -2,8 +2,6 @@
 
 Here is hopefully all the info you need to host the game on your own server.
 
-**This guide is still a bit WIP.**
-
 ---
 
 ## Requirements

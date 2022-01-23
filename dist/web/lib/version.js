@@ -21,7 +21,7 @@ MusicAddict2.APP_NAME = 'Music Addict 2'
  * App version.
  * @prop {string} MusicAddict2.APP_VERSION
  */
-MusicAddict2.APP_VERSION = '2.0.0-beta2'
+MusicAddict2.APP_VERSION = '2.0.0'
 
 /**
  * App author.
