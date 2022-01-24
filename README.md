@@ -12,6 +12,16 @@ You're broke and lonely. After many sleepless nights in your nearly empty 1-room
 
 ---
 
+## Screenshots
+
+Warning: Spoilers ahead!
+
+- [Main](screenshot-1-ui-main.png)
+- [Record collection](screenshot-2-ui-records.png)
+- [Upgrades](screenshot-3-ui-upgrades.png)
+
+---
+
 ## Usage Requirements
 
 - Internet connection. 3G or higher speeds recommended.
